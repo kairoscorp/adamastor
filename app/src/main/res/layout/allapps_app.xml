@@ -3,11 +3,10 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_gravity="center"
+    android:background="@android:color/transparent"
     android:gravity="center"
     android:orientation="vertical"
-    android:padding="8dp"
-    android:background="@android:color/transparent"
-    >
+    android:padding="8dp">
 
     <ImageView
         android:id="@+id/app_image"
@@ -15,15 +14,14 @@
         android:layout_height="64dp"
         android:layout_gravity="center"
         android:contentDescription="image"
-        android:scaleType="fitCenter"
         android:padding="1dp"
-        />
+        android:scaleType="fitCenter" />
 
     <TextView
         android:id="@+id/app_text"
-        android:layout_width="102dp"
-        android:layout_height="41dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:gravity="center"
-        android:textColor="@color/appLabelText"></TextView>
+        android:textColor="@color/appLabelText" />
 </LinearLayout>

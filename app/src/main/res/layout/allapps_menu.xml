@@ -2,8 +2,10 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:background="@android:color/transparent"
-    android:orientation="vertical" >
+    android:orientation="vertical"
+    android:layout_margin="10dp"
+    android:background="@drawable/shape"
+    >
 
     <GridView
         android:id="@+id/allapps_menu"
@@ -11,9 +13,9 @@
         android:layout_height="wrap_content"
         android:fadingEdge="none"
         android:numColumns="auto_fit"
-        android:columnWidth="90dp"
-        android:verticalSpacing="10dp"
-        android:horizontalSpacing="10dp"
+        android:columnWidth="100dp"
+        android:verticalSpacing="5dp"
+        android:horizontalSpacing="5dp"
         android:stretchMode="columnWidth"
         android:gravity="center"
         />

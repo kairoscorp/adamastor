@@ -27,7 +27,7 @@
 
         <activity
             android:name=".AllApps.AllAppsActivity"
-            android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen"
             >
         </activity>
     </application>
