@@ -7,6 +7,7 @@ import android.content.pm.ResolveInfo;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
@@ -89,6 +90,28 @@ public class AllAppsActivity extends Activity {
 
     protected void overridePendingTransitionExit() {
         overridePendingTransition(R.anim.slide_from_left, R.anim.slide_to_right);
+    }
+
+    private float x1;
+    private float x2;
+    private float MIN_DISTANCE = 200;
+    @Override
+    public boolean onTouchEvent(MotionEvent event)
+    {
+        switch(event.getAction())
+        {
+            case MotionEvent.ACTION_DOWN:
+                x1 = event.getX();
+                break;
+            case MotionEvent.ACTION_UP:
+                x2 = event.getX();
+                float deltaX = x2 - x1;
+                if (deltaX > MIN_DISTANCE) {
+                    onBackPressed();
+                }
+                break;
+        }
+        return super.onTouchEvent(event);
     }
 
     @Override
