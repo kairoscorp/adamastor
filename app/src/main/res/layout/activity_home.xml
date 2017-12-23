@@ -7,13 +7,35 @@
     android:id="@+id/homeActivity"
     >
 
-    <Button
+    <TextView
+        android:id="@+id/id_context_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="70dp"
+        android:textSize="30sp"
+        android:textColor="@android:color/white"
+        android:text="Hello"
+        android:onClick="changeContext"/>
+
+    <Button
+        android:id="@+id/id_all_apps_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
         android:clickable="true"
         android:background="@drawable/ic_allapps"
         android:onClick="showAllAppsMenu" />
+
+
+    <LinearLayout
+        android:id="@+id/id_context_apps_list"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/id_all_apps_button"
+        android:orientation="horizontal">
+    </LinearLayout>
 
 </RelativeLayout>

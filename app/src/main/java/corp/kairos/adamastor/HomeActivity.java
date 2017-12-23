@@ -10,6 +10,14 @@ import android.support.v4.view.MotionEventCompat;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 import corp.kairos.adamastor.AllApps.AllAppsActivity;
 import corp.kairos.adamastor.R;
@@ -31,10 +39,53 @@ public class HomeActivity extends Activity {
     private float mDisplacementY;
     private float mDisplacementX;
 
+    private UserContext currentContext;
+    private int currentContextIndex;
+    private UserContext[] contexts = new UserContext[4];
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+
+        setContexts();
+        this.currentContext = this.contexts[0];
+        this.currentContextIndex = 0;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        adjustScreenToContext();
+    }
+
+    private void adjustScreenToContext() {
+        TextView contextOnScreen = ((TextView) findViewById(R.id.id_context_label));
+
+        if(!(contextOnScreen.getText().equals(currentContext.getContextName()))) {
+            LinearLayout contextAppsList = findViewById(R.id.id_context_apps_list);
+            contextAppsList.removeAllViews();
+            contextOnScreen.setText(currentContext.getContextName());
+
+
+            for (String app : currentContext.getContextApps()) {
+                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                params.setMargins(10, 10, 10, 10);
+
+                TextView newApp = new TextView(this);
+                newApp.setText(app);
+                newApp.setLayoutParams(params);
+
+                contextAppsList.addView(newApp);
+            }
+        }
+    }
+
+    private void setContexts(){
+        this.contexts[0] = new UserContext("Home", Arrays.asList("App1", "App2", "App3"));
+        this.contexts[1] = new UserContext("Work", Arrays.asList("App4", "App5", "App6"));
+        this.contexts[2] = new UserContext("Workout", Arrays.asList("App7", "App8", "App9"));
+        this.contexts[3] = new UserContext("Travelling", Arrays.asList("App10", "App11", "App12"));
     }
 
     @Override
@@ -91,6 +142,12 @@ public class HomeActivity extends Activity {
                 break;
         }
         return super.onTouchEvent(event);
+    }
+
+    public void changeContext(View view){
+        this.currentContextIndex = (this.currentContextIndex + 1) % this.contexts.length;
+        this.currentContext = this.contexts[this.currentContextIndex];
+        adjustScreenToContext();
     }
 
 }
