@@ -11,9 +11,9 @@ import corp.kairos.adamastor.AllApps.AppDetail;
 
 public class UserContext {
     private String contextName;
-    private List<String> contextApps;
+    private List<AppDetail> contextApps;
 
-    public UserContext(String contextName, List<String> contextApps) {
+    public UserContext(String contextName, List<AppDetail> contextApps) {
         this.contextName = contextName;
         this.contextApps = contextApps;
     }
@@ -22,7 +22,7 @@ public class UserContext {
         return contextName;
     }
 
-    public List<String> getContextApps() {
+    public List<AppDetail> getContextApps() {
         return contextApps;
     }
 }

@@ -1,16 +1,24 @@
 package corp.kairos.adamastor;
 
 import android.app.Activity;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Vibrator;
+import android.support.annotation.Nullable;
 import android.support.v4.view.MotionEventCompat;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -18,11 +26,15 @@ import android.widget.TextView;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import corp.kairos.adamastor.AllApps.AllAppsActivity;
+import corp.kairos.adamastor.AllApps.AppDetail;
 import corp.kairos.adamastor.R;
 
 public class HomeActivity extends Activity {
+
+    private static final String TAG = HomeActivity.class.getName();
 
     private long mCurrentMillis;
     private float mVelocity;
@@ -42,6 +54,8 @@ public class HomeActivity extends Activity {
     private UserContext currentContext;
     private int currentContextIndex;
     private UserContext[] contexts = new UserContext[4];
+    private View.OnClickListener clickHandler;
+    private PackageManager pm;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +65,19 @@ public class HomeActivity extends Activity {
         setContexts();
         this.currentContext = this.contexts[0];
         this.currentContextIndex = 0;
+
+        addClickListener();
+    }
+
+    private void addClickListener(){
+        clickHandler = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                HomeApp ha = (HomeApp) v;
+                Intent i = pm.getLaunchIntentForPackage(ha.getPackageName());
+                HomeActivity.this.startActivity(i);
+            }
+        };
     }
 
     @Override
@@ -68,24 +95,54 @@ public class HomeActivity extends Activity {
             contextOnScreen.setText(currentContext.getContextName());
 
 
-            for (String app : currentContext.getContextApps()) {
-                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                params.setMargins(10, 10, 10, 10);
+            for (AppDetail app : currentContext.getContextApps()) {
+                LayoutInflater inflater = LayoutInflater.from(this);
+                HomeApp inflatedView = (HomeApp) inflater.inflate(R.layout.home_app, null);
 
-                TextView newApp = new TextView(this);
-                newApp.setText(app);
-                newApp.setLayoutParams(params);
+                inflatedView.setPackageName(app.getName());
+                TextView textViewTitle = (TextView) inflatedView.findViewById(R.id.app_text);
+                ImageView imageViewIte = (ImageView) inflatedView.findViewById(R.id.app_image);
 
-                contextAppsList.addView(newApp);
+                textViewTitle.setText(app.getLabel());
+                imageViewIte.setImageDrawable(app.getIcon());
+
+                inflatedView.setOnClickListener(clickHandler);
+
+                contextAppsList.addView(inflatedView);
             }
         }
     }
 
     private void setContexts(){
-        this.contexts[0] = new UserContext("Home", Arrays.asList("App1", "App2", "App3"));
-        this.contexts[1] = new UserContext("Work", Arrays.asList("App4", "App5", "App6"));
-        this.contexts[2] = new UserContext("Workout", Arrays.asList("App7", "App8", "App9"));
-        this.contexts[3] = new UserContext("Travelling", Arrays.asList("App10", "App11", "App12"));
+        List<String> homeApps = Arrays.asList("com.google.android.talk", "com.facebook.katana");
+        List<String> workApps = Arrays.asList("com.google.android.gm", "com.Slack", "com.google.android.calendar");
+        List<String> workoutApps = Arrays.asList("com.google.android.apps.fitness");
+        List<String> travellingApps = Arrays.asList("com.google.android.apps.maps");
+
+        List<List<String>> apps = Arrays.asList(homeApps, workApps, workoutApps, travellingApps);
+
+        pm = getPackageManager();
+
+        int n = 0;
+        for(List<String> appsList : apps){
+            List<AppDetail> appDetails = new ArrayList<>();
+            for(String p: appsList){
+                try {
+                    ApplicationInfo ai = pm.getApplicationInfo(p,0);
+
+                    String label = (String) pm.getApplicationLabel(ai);
+                    String name = ai.packageName.toString();
+                    Drawable icon = pm.getApplicationIcon(ai);
+                    AppDetail app = new AppDetail(label, name, icon);
+                    appDetails.add(app);
+                } catch (PackageManager.NameNotFoundException e) {
+                    Log.e(TAG, "App not found");
+                    e.printStackTrace();
+                }
+            }
+            this.contexts[n] = new UserContext("Context " + n, appDetails);
+            n++;
+        }
     }
 
     @Override
