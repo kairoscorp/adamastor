@@ -7,29 +7,67 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.TabHost;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.LatLng;
 
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.GregorianCalendar;
 
 import corp.kairos.adamastor.HomeActivity;
 import corp.kairos.adamastor.R;
+import corp.kairos.adamastor.Settings;
 
 public class OnboardingActivity extends AppCompatActivity {
 
-    GoogleMap workMap;
-    GoogleMap homeMap;
-    MapView workplaceView;
-    MapView homeplaceView;
+    private GoogleMap workMap;
+    private GoogleMap homeMap;
+    private MapView workplaceView;
+    private MapView homeplaceView;
+    private static final String MAP_VIEW_BUNDLE_WORK_KEY = "MapViewBundleWorkKey";
+    private static final String MAP_VIEW_BUNDLE_HOME_KEY = "MapViewBundleHomeKey";
+    private Settings sets;
 
-    private Date workFrom = new Date();
-    private Date workTo = new Date();
 
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.onboarding);
+
+        this.sets = new Settings(this);
+        loadTabViewSettings();
+        loadMapsSettings(savedInstanceState);
+        loadWorkTimeSettings();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        Bundle mapWorkViewBundle = outState.getBundle(MAP_VIEW_BUNDLE_WORK_KEY);
+        Bundle mapHomeViewBundle = outState.getBundle(MAP_VIEW_BUNDLE_WORK_KEY);
+        if (mapWorkViewBundle == null) {
+            mapWorkViewBundle = new Bundle();
+            outState.putBundle(MAP_VIEW_BUNDLE_WORK_KEY, mapWorkViewBundle);
+        }
+        if (mapHomeViewBundle == null) {
+            mapHomeViewBundle = new Bundle();
+            outState.putBundle(MAP_VIEW_BUNDLE_HOME_KEY, mapHomeViewBundle);
+        }
+
+        workplaceView.onSaveInstanceState(mapWorkViewBundle);
+        homeplaceView.onSaveInstanceState(mapHomeViewBundle);
+
+    }
+
+    //Override Methods in order to control life cycle of MapViews
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -52,81 +90,115 @@ public class OnboardingActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.onboarding);
-
-        // Relacionado com os mapas
-        //TODO: Por os mapas a funcionar corretamente
-        workplaceView = findViewById(R.id.mapWork);
-        workplaceView.onCreate(savedInstanceState);
-
-        homeplaceView = findViewById(R.id.mapHome);
-        homeplaceView.onCreate(savedInstanceState);
-
-        workplaceView.getMapAsync(new OnMapReadyCallback() {
-            public void onMapReady(GoogleMap workMap) {
-                workMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-            }
-        });
-
-        loadWorkTimeSettings();
+    protected void onStart() {
+        super.onStart();
+        workplaceView.onStart();
+        homeplaceView.onStart();
     }
 
-    public void ShowWorkRelatedApps(View v){
-        saveTimeSettings();
-        Intent i = new Intent(this, WorkRelatedAppsActivity.class);
+    @Override
+    protected void onStop() {
+        super.onStop();
+        workplaceView.onStop();
+        homeplaceView.onStop();
+    }
+
+    @Override
+    public void onLowMemory() {
+        super.onLowMemory();
+        workplaceView.onLowMemory();
+        homeplaceView.onLowMemory();
+    }
+
+
+    public void ShowWorkRelatedApps(View v) {
+        saveWorkTimeSettings();
+        Intent i = new Intent(this, ContextRelatedAppsActivity.class);
+        String ctx = "Work";
+        i.putExtra("CONTEXT", ctx);
         startActivity(i);
     }
 
-    public void ShowLeisureApps(View v){
-        saveTimeSettings();
-        Intent i = new Intent(this, LeisureAppsActivity.class);
+    public void ShowLeisureApps(View v) {
+        saveWorkTimeSettings();
+        Intent i = new Intent(this, ContextRelatedAppsActivity.class);
+        String ctx = "Leisure";
+        i.putExtra("CONTEXT", ctx);
         startActivity(i);
     }
 
     public void loadWorkTimeSettings() {
-        SharedPreferences sharedPref = this.getSharedPreferences("OnboardingPrefs", Context.MODE_PRIVATE);
-
-        this.workFrom.setTime(sharedPref.getLong("workFrom",0));
-        this.workTo.setTime(sharedPref.getLong("workTo",0));
-
         EditText timeFrom = findViewById(R.id.work_from);
-        EditText timeTo =  findViewById(R.id.work_to);
+        EditText timeTo = findViewById(R.id.work_to);
 
         DateFormat formatter = new SimpleDateFormat("HH:mm");
 
-        timeFrom.setText(formatter.format(workFrom).toString());
-        timeTo.setText(formatter.format(workTo).toString());
-
-
+        timeFrom.setText(formatter.format(sets.getUserContext("Work").getInit().getTime()));
+        timeTo.setText(formatter.format(sets.getUserContext("Work").getEnd().getTime()));
     }
-    public void saveTimeSettings() {
+
+    public void saveWorkTimeSettings() {
         EditText timeFrom = findViewById(R.id.work_from);
-        EditText timeTo =  findViewById(R.id.work_to);
+        EditText timeTo = findViewById(R.id.work_to);
 
         DateFormat formatter = new SimpleDateFormat("HH:mm");
+        GregorianCalendar from = new GregorianCalendar();
+        GregorianCalendar to = new GregorianCalendar();
+
         try {
-            this.workFrom = formatter.parse(timeFrom.getText().toString());
-            this.workTo = formatter.parse(timeTo.getText().toString());
+            from.setTime(formatter.parse(timeFrom.getText().toString()));
+            to.setTime(formatter.parse(timeTo.getText().toString()));
         } catch (ParseException e) {
             e.printStackTrace();
         }
-
-        //Log.println(Log.INFO,"TIME FROM",timeFrom.getText().toString());
-        //Log.println(Log.INFO,"TIME TO",timeTo.getText().toString());
-
-        //Save to shared Preferences
-        SharedPreferences sharedPref = this.getSharedPreferences("OnboardingPrefs", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPref.edit();
-
-        editor.putLong("workFrom",this.workFrom.getTime());
-        editor.putLong("workTo",this.workTo.getTime());
-        editor.apply();
+        sets.getUserContext("Work").setTimes(from,to);
     }
 
-    public void saveChanges(View v)  {
-        saveTimeSettings();
+    public void loadMapsSettings(Bundle savedInstanceState) {
+        //TODO: Add listeners to collect location and save in sharedPreferences
+        //TODO: Add marker to the map
+
+        workplaceView = findViewById(R.id.mapWork);
+        workplaceView.onCreate(savedInstanceState);
+        workplaceView.getMapAsync(new OnMapReadyCallback() {
+            public void onMapReady(GoogleMap googleMap) {
+                workMap = googleMap;
+                workMap.setMinZoomPreference(12);
+                LatLng ny = new LatLng(40.7143528, -74.0059731);
+                workMap.moveCamera(CameraUpdateFactory.newLatLng(ny));
+            }
+        });
+
+        homeplaceView = findViewById(R.id.mapHome);
+        homeplaceView.onCreate(savedInstanceState);
+        homeplaceView.getMapAsync(new OnMapReadyCallback() {
+            public void onMapReady(GoogleMap googleMap) {
+                homeMap = googleMap;
+                homeMap.setMinZoomPreference(12);
+                LatLng pt = new LatLng(41.5503200, -8.4200500);
+                homeMap.moveCamera(CameraUpdateFactory.newLatLng(pt));
+            }
+        });
+
+    }
+
+    public void loadTabViewSettings() {
+        TabHost host = findViewById(R.id.TabHost);
+        host.setup();
+        //Tab Context work
+        TabHost.TabSpec spec = host.newTabSpec("Tab One");
+        spec.setContent(R.id.tab1);
+        spec.setIndicator("Work Context");
+        host.addTab(spec);
+        //Tab Context Leisure
+        spec = host.newTabSpec("Tab Two");
+        spec.setContent(R.id.tab2);
+        spec.setIndicator("Leisure Context");
+        host.addTab(spec);
+    }
+
+    public void saveChanges(View v) {
+        this.sets.saveContextSettings("Work");
         Intent i = new Intent(this, HomeActivity.class);
         startActivity(i);
     }

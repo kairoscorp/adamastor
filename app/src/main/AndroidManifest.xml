@@ -52,21 +52,13 @@
                 android:value="corp.kairos.adamastor.HomeActivity" />
         </activity>
         <activity
-            android:name=".Onboarding.WorkRelatedAppsActivity"
+            android:name=".Onboarding.ContextRelatedAppsActivity"
             android:parentActivityName=".Onboarding.OnboardingActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="corp.kairos.adamastor.Onboarding.OnboardingActivity" />
-
         </activity>
-        <activity
-            android:name=".Onboarding.LeisureAppsActivity"
-            android:parentActivityName=".Onboarding.OnboardingActivity">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="corp.kairos.adamastor.Onboarding.OnboardingActivity" />
 
-        </activity>
     </application>
 
 </manifest>
