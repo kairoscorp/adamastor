@@ -48,6 +48,19 @@ public class UserContext {
         this.init=init;
         this.end=end;
     }
+
+    public GregorianCalendar getEnd() {
+        return end;
+    }
+
+    public GregorianCalendar getInit() {
+        return init;
+    }
+
+    public Location getLocation() {
+        return location;
+    }
+
     public void setLocation(Location location){
         this.location = location;
     }
