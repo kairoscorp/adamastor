@@ -36,11 +36,11 @@ public class UserContext {
     public List<AppDetail> getContextApps() {
         return contextApps;
     }
-    private void addApp(AppDetail app){contextApps.add(app);}
-    private void removeApp(AppDetail app){
+    public void addApp(AppDetail app){contextApps.add(app);}
+    public void removeApp(AppDetail app){
         contextApps.remove(app);
     }
-    private boolean appExists(AppDetail app){
+    public boolean appExists(AppDetail app){
         return contextApps.contains(app);
 
     }
