@@ -36,6 +36,7 @@ public class UserContext {
     public List<AppDetail> getContextApps() {
         return contextApps;
     }
+    private void addApp(AppDetail app){contextApps.add(app);}
     private void removeApp(AppDetail app){
         contextApps.remove(app);
     }
