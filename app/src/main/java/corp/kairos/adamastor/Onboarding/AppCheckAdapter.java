@@ -75,10 +75,8 @@ public class AppCheckAdapter extends ArrayAdapter {
                     AppDetail app = (AppDetail) cb.getTag();
                     if (cb.isChecked()) {
                         uc.addApp(app);
-                        Log.println(Log.INFO, "SELECTED", app.getLabel());
                     } else {
                         uc.removeApp(app);
-                        Log.println(Log.INFO, "DESELECTED", app.getLabel());
                     }
 
 

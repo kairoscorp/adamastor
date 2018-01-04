@@ -1,8 +1,6 @@
 package corp.kairos.adamastor.Onboarding;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -18,7 +16,6 @@ import com.google.android.gms.maps.model.LatLng;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.GregorianCalendar;
 
 import corp.kairos.adamastor.HomeActivity;
@@ -198,9 +195,11 @@ public class OnboardingActivity extends AppCompatActivity {
     }
 
     public void saveChanges(View v) {
+        saveWorkTimeSettings();
         this.sets.saveContextSettings("Work");
         Intent i = new Intent(this, HomeActivity.class);
         startActivity(i);
+        finish();
     }
 
 }
