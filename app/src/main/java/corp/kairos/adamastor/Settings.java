@@ -94,10 +94,10 @@ public class Settings {
     }
 
 
+
     public Set<AppDetail> loadApps() {
-
         Set<AppDetail> apps = new TreeSet<>(new AppDetailComparator());
-
+      
         Intent i = new Intent(Intent.ACTION_MAIN, null);
         i.addCategory(Intent.CATEGORY_LAUNCHER);
 
@@ -119,6 +119,7 @@ public class Settings {
     public UserContext getUserContext(String c) {
         return this.contexts.get(c);
     }
+
 
     public Set<AppDetail> getAllApps() {return this.allApps;}
 }
