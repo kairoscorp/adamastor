@@ -1,6 +1,17 @@
 <resources>
+
     <string name="app_name">Adamastor</string>
+    <string name="google_android_map_api_key">AIzaSyD9GnbGKudeaNFVXWUftSla7Wfr6JGg_BU</string>
 
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
+
+    <!-- Strings related to onboarding -->
+    <string name="onboarding_summary">we want to know some things about you!</string>
+    <string name="onboarding_work_hours">working hours</string>
+    <string name="onboarding_work_place">Workplace Location</string>
+    <string name="onboarding_house">Home Location</string>
+
+    <string name="pref_onboarding">Onboarding</string>
+
 </resources>

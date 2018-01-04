@@ -23,10 +23,10 @@
         android:id="@+id/id_all_apps_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
         android:layout_alignParentBottom="true"
-        android:clickable="true"
+        android:layout_centerHorizontal="true"
         android:background="@drawable/ic_allapps"
+        android:clickable="true"
         android:onClick="showAllAppsMenu" />
 
 
@@ -38,4 +38,14 @@
         android:orientation="horizontal">
     </LinearLayout>
 
+    <Button
+        android:id="@+id/config_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginEnd="19dp"
+        android:layout_marginTop="23dp"
+        android:background="@android:drawable/ic_menu_preferences"
+        android:onClick="showSettings" />
 </RelativeLayout>

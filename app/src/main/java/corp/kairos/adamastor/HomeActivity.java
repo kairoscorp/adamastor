@@ -30,6 +30,7 @@ import java.util.List;
 
 import corp.kairos.adamastor.AllApps.AllAppsActivity;
 import corp.kairos.adamastor.AllApps.AppDetail;
+import corp.kairos.adamastor.Onboarding.OnboardingActivity;
 import corp.kairos.adamastor.R;
 
 public class HomeActivity extends Activity {
@@ -182,6 +183,11 @@ public class HomeActivity extends Activity {
         Vibrator vibe = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
         vibe.vibrate(50);
         Intent i = new Intent(this, AllAppsActivity.class);
+        startActivity(i);
+    }
+
+    public void showSettings(View v){
+        Intent i = new Intent(this, OnboardingActivity.class);
         startActivity(i);
     }
 
