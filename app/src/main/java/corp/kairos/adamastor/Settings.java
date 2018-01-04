@@ -1,6 +1,5 @@
 package corp.kairos.adamastor;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -8,28 +7,11 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
-import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
-import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ListView;
-import android.widget.TabHost;
-
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
-
-
 import corp.kairos.adamastor.AllApps.AppDetail;
 
 
@@ -51,8 +33,11 @@ public class Settings {
     private static final String LOC_LNG = "_lng";
     private static final String CONTEXT_NAME = "_name";
 
-    public Settings () {
+    public Settings (Context c) {
+        this.ctx = c;
+        this.packageManager = ctx.getPackageManager();
         this.allApps = loadApps();
+
         this.contexts = new HashMap<>();
         this.contexts.put("Work",loadContextSettings("Work"));
         this.contexts.put("Leisure",loadContextSettings("Leisure"));
@@ -107,7 +92,7 @@ public class Settings {
 
 
     public List<AppDetail> loadApps() {
-        this.packageManager = ctx.getPackageManager();
+
         List<AppDetail> apps = new ArrayList<>();
 
         Intent i = new Intent(Intent.ACTION_MAIN, null);
