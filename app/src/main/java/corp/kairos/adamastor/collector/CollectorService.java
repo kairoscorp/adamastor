@@ -46,7 +46,6 @@ public class CollectorService extends Service implements GoogleApiClient.Connect
     private static final String NULL_APP = "NULL";
 
     private CollectorServiceBinder mCollectorServiceBinder = new CollectorServiceBinder();;
-    private boolean inCycle;
     private LocationManager locationManager;
     private PackageManager packageManager;
     private LocationListener locationListener;
@@ -59,7 +58,6 @@ public class CollectorService extends Service implements GoogleApiClient.Connect
 
 
     public void onCreate(){
-        inCycle = false;
         Log.i("CollectorServiceLog", "ServiceCreated");
         locationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
         packageManager = this.getPackageManager();
@@ -95,7 +93,7 @@ public class CollectorService extends Service implements GoogleApiClient.Connect
 
     private void mainLoop(){
         Log.i("CollectorServiceLog", "MainLoopStarted");
-        while(getAndLockCycle()){
+        while(true){
             try {
                 double latitude = 0;
                 double longitude = 0;
@@ -292,14 +290,6 @@ public class CollectorService extends Service implements GoogleApiClient.Connect
         return result;
     }
 
-
-    private synchronized boolean getAndLockCycle(){
-        if(this.inCycle == false) {
-            inCycle = true;
-        }
-
-        return inCycle;
-    }
 
     private void createLocationListener(){
         locationListener = new LocationListener() {
