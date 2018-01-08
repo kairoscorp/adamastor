@@ -7,6 +7,7 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
+
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
@@ -15,13 +16,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
-import corp.kairos.adamastor.AllApps.AppDetail;
-import corp.kairos.adamastor.AllApps.AppDetailComparator;
-
-
-/**
- * Created by jlsilva94 on 03/01/18.
- */
 
 public class Settings {
     private Context ctx;

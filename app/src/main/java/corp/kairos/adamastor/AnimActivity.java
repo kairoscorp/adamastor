@@ -2,7 +2,6 @@ package corp.kairos.adamastor;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.util.Log;
 import android.view.MotionEvent;
 
 

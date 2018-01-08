@@ -1,4 +1,4 @@
-package corp.kairos.adamastor;
+package corp.kairos.adamastor.Home;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -6,9 +6,7 @@ import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.widget.LinearLayout;
 
-/**
- * Created by kiko on 27-12-2017.
- */
+import corp.kairos.adamastor.R;
 
 /*
 * This class is a custom view for an app in the home screen

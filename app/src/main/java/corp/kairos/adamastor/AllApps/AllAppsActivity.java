@@ -1,13 +1,10 @@
 package corp.kairos.adamastor.AllApps;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
@@ -17,7 +14,9 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import corp.kairos.adamastor.AnimActivity;
-import corp.kairos.adamastor.HomeActivity;
+import corp.kairos.adamastor.AppDetail;
+import corp.kairos.adamastor.AppDetailComparator;
+import corp.kairos.adamastor.Home.HomeActivity;
 import corp.kairos.adamastor.R;
 
 import static corp.kairos.adamastor.Util.getObjectByIndex;
