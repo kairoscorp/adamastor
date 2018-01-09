@@ -4,9 +4,7 @@ package corp.kairos.adamastor.Home;
 import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.support.v4.app.ActivityCompat;
@@ -17,19 +15,16 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 import corp.kairos.adamastor.AllApps.AllAppsActivity;
 import corp.kairos.adamastor.AnimActivity;
 import corp.kairos.adamastor.AppDetail;
+import corp.kairos.adamastor.ContextList.ContextListActivity;
+import corp.kairos.adamastor.Onboarding.Onboard1Activity;
 import corp.kairos.adamastor.R;
 import corp.kairos.adamastor.Settings.ContextRelated.ContextRelatedSettingsActivity;
-import corp.kairos.adamastor.UserContext;
-
-import corp.kairos.adamastor.Onboarding.Onboard1Activity;
 import corp.kairos.adamastor.Settings.Settings;
+import corp.kairos.adamastor.UserContext;
+import corp.kairos.adamastor.Util;
 import corp.kairos.adamastor.collector.CollectorService;
 
 public class HomeActivity extends AnimActivity {
@@ -38,7 +33,7 @@ public class HomeActivity extends AnimActivity {
 
     private UserContext currentContext;
     private int currentContextIndex;
-    private UserContext[] contexts = new UserContext[4];
+    private UserContext[] contexts;
     private View.OnClickListener clickHandler;
     private PackageManager pm;
 
@@ -55,12 +50,13 @@ public class HomeActivity extends AnimActivity {
             finish();
         } else {
             setContentView(R.layout.activity_home);
+            pm = getPackageManager();
 
-            setContexts();
-            this.currentContext = this.contexts[0];
+            this.setRightActivity(ContextListActivity.class);
+
+            contexts = Util.createDummyContextList(TAG, pm);
             this.currentContextIndex = 0;
-            this.setRightActivity(AllAppsActivity.class);
-
+            this.currentContext = this.contexts[0];
             addClickListener();
         }
     }
@@ -116,44 +112,6 @@ public class HomeActivity extends AnimActivity {
             }
         }
     }
-
-    private void setContexts(){
-        /*
-        * Creating 4 static contexts to simulate the intended behaviour */
-        List<String> homeApps = Arrays.asList("com.google.android.talk", "com.facebook.katana");
-        List<String> workApps = Arrays.asList("com.google.android.gm", "com.Slack", "com.google.android.calendar");
-        List<String> workoutApps = Arrays.asList("com.google.android.apps.fitness");
-        List<String> travellingApps = Arrays.asList("com.google.android.apps.maps");
-
-        List<List<String>> apps = Arrays.asList(homeApps, workApps, workoutApps, travellingApps);
-
-        pm = getPackageManager();
-
-        /*
-        * These loops just associate different apps with different contexts*/
-        int n = 0;
-        for(List<String> appsList : apps){
-            List<AppDetail> appDetails = new ArrayList<>();
-            for(String p: appsList){
-                try {
-                    ApplicationInfo ai = pm.getApplicationInfo(p,0);
-
-                    String label = (String) pm.getApplicationLabel(ai);
-                    String name = ai.packageName.toString();
-                    Drawable icon = pm.getApplicationIcon(ai);
-
-                    AppDetail app = new AppDetail(label, name, icon);
-                    appDetails.add(app);
-                } catch (PackageManager.NameNotFoundException e) {
-                    Log.e(TAG, "App not found");
-                    e.printStackTrace();
-                }
-            }
-            this.contexts[n] = new UserContext("Context " + n, appDetails);
-            n++;
-        }
-    }
-
 
     public void showAllAppsMenu(View v){
         Vibrator vibe = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);

@@ -16,7 +16,7 @@ import java.util.TreeSet;
 import corp.kairos.adamastor.AnimActivity;
 import corp.kairos.adamastor.AppDetail;
 import corp.kairos.adamastor.AppDetailComparator;
-import corp.kairos.adamastor.Home.HomeActivity;
+import corp.kairos.adamastor.ContextList.ContextListActivity;
 import corp.kairos.adamastor.R;
 
 import static corp.kairos.adamastor.Util.getObjectByIndex;
@@ -31,7 +31,7 @@ public class AllAppsActivity extends AnimActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.allapps_menu);
 
-        this.setLeftActivity(HomeActivity.class);
+        this.setLeftActivity(ContextListActivity.class);
 
         loadApps();
         loadListView();

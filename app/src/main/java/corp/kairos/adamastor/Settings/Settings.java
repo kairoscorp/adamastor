@@ -137,7 +137,6 @@ public class Settings{
         return this.contexts.get(c);
     }
 
-
     public Set<AppDetail> getAllApps() {return this.allApps;}
 
     public void resetSettings() {
@@ -146,6 +145,17 @@ public class Settings{
             ctx.deleteSharedPreferences("Prefs_Leisure");
             ctx.deleteSharedPreferences("Prefs_Travel");
         }
+    }
+
+    public UserContext[] getUserContextsAsArray() {
+        int numberOfContexts = this.contexts.size();
+        UserContext[] userContextsArray = new UserContext[numberOfContexts];
+        int i = 0;
+        for (UserContext context : this.contexts.values()) {
+            userContextsArray[i] = context;
+            i++;
+        }
+        return userContextsArray;
     }
 }
 

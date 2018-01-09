@@ -9,4 +9,5 @@
     <string name="onboarding_work_place">Workplace Location</string>
     <string name="onboarding_house">Home Location</string>
 
+    <string name="dummy_context_name">Context 1</string>
 </resources>
