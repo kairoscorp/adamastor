@@ -28,7 +28,7 @@
             <FrameLayout
                 android:id="@android:id/tabcontent"
                 android:layout_width="match_parent"
-                android:layout_height="450dp">
+                android:layout_height="wrap_content">
 
                 <LinearLayout
                     android:id="@+id/tab2"
@@ -194,6 +194,9 @@
 
             </FrameLayout>
 
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
             <Button
                 android:id="@+id/save_onboarding"
                 style="@style/Widget.AppCompat.Button.Colored"
@@ -201,7 +204,9 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:onClick="saveChanges"
-                android:text="Save Changes" />
+                android:text="Save Changes"
+                android:layout_alignParentBottom="true"/>
+            </RelativeLayout>
 
         </LinearLayout>
 
