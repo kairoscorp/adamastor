@@ -1,5 +1,6 @@
 package corp.kairos.adamastor;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Context;
@@ -12,6 +13,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Vibrator;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.MotionEventCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -31,6 +33,7 @@ import java.util.List;
 import corp.kairos.adamastor.AllApps.AllAppsActivity;
 import corp.kairos.adamastor.AllApps.AppDetail;
 import corp.kairos.adamastor.R;
+import corp.kairos.adamastor.collector.CollectorService;
 
 public class HomeActivity extends AnimActivity {
 
@@ -41,6 +44,9 @@ public class HomeActivity extends AnimActivity {
     private UserContext[] contexts = new UserContext[4];
     private View.OnClickListener clickHandler;
     private PackageManager pm;
+
+    private boolean permissionsGranted = false;
+    public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,6 +76,12 @@ public class HomeActivity extends AnimActivity {
     protected void onResume() {
         super.onResume();
         adjustScreenToContext();
+
+        checkPermissions();
+        if(permissionsGranted == true){
+            bindCollectorService();
+        }
+
     }
 
     /*
@@ -154,6 +166,64 @@ public class HomeActivity extends AnimActivity {
         this.currentContextIndex = (this.currentContextIndex + 1) % this.contexts.length;
         this.currentContext = this.contexts[this.currentContextIndex];
         adjustScreenToContext();
+    }
+
+    //KAIROS
+    private void checkPermissions(){
+        if ((ActivityCompat.checkSelfPermission(this,
+                android.Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) ||
+                (ActivityCompat.checkSelfPermission(this,
+                        android.Manifest.permission.ACCESS_COARSE_LOCATION)
+                        != PackageManager.PERMISSION_GRANTED)||
+                (ActivityCompat.checkSelfPermission(this,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                        != PackageManager.PERMISSION_GRANTED) ||
+                (ActivityCompat.checkSelfPermission(this,
+                        Manifest.permission.GET_ACCOUNTS)
+                        != PackageManager.PERMISSION_GRANTED)){
+
+
+            requestPremissions();
+
+        }else{
+            Log.i("CollectorServiceLog", "permissions OK");
+            permissionsGranted = true;
+        }
+    }
+
+    //KAIROS
+    private void requestPremissions(){
+        ActivityCompat.requestPermissions(this,
+                new String[]{Manifest.permission.ACCESS_COARSE_LOCATION,
+                        Manifest.permission.ACCESS_FINE_LOCATION,
+                        Manifest.permission.ACCOUNT_MANAGER,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                        Manifest.permission.PACKAGE_USAGE_STATS,
+                        Manifest.permission.GET_ACCOUNTS},
+                MY_PERMISSIONS_REQUEST_LOCATION);
+    }
+
+    //KAIROS
+    private void bindCollectorService(){
+        Log.i("CollectorServiceLog", "Binding Service");
+        Intent intent = new Intent(this, CollectorService.class);
+        startService(intent);
+
+    }
+
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+
+        if(requestCode == MY_PERMISSIONS_REQUEST_LOCATION) {
+
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    permissionsGranted = true;
+                } else {
+                    permissionsGranted = false;
+                }
+
+        }
+
     }
 
 }
