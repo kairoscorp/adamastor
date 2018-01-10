@@ -67,7 +67,7 @@ public class AllAppsActivity extends AnimActivity {
             public void onItemClick(AdapterView<?> av, View v, int pos,
                                     long id) {
                 AppDetail app = (AppDetail) getObjectByIndex(pos, allApps);
-                Intent i = packageManager.getLaunchIntentForPackage(app.getName());
+                Intent i = packageManager.getLaunchIntentForPackage(app.getPackageName());
                 AllAppsActivity.this.startActivity(i);
             }
         });

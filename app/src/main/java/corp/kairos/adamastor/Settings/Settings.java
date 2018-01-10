@@ -10,6 +10,7 @@ import android.location.Location;
 import android.os.Build;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
@@ -17,18 +18,16 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
-
 import corp.kairos.adamastor.AppDetail;
 import corp.kairos.adamastor.AppDetailComparator;
 import corp.kairos.adamastor.UserContext;
-
 
 
 public class Settings{
     private Context ctx;
     private PackageManager packageManager;
 
-    private Map<String,UserContext> contexts;
+    private Map<String, UserContext> contexts;
     private Set<AppDetail> allApps;
 
     private static final String TIME_FROM = "_timeFrom";
@@ -75,7 +74,7 @@ public class Settings{
         pos.setLongitude(sharedPref.getFloat(LOC_LNG,0));
 
         for (AppDetail app : this.allApps) {
-            if(sharedPref.getBoolean(app.getName(), false)) {
+            if(sharedPref.getBoolean(app.getPackageName(), false)) {
                 ctxApps.add(app);
             }
         }
@@ -100,7 +99,7 @@ public class Settings{
         editor.putFloat(LOC_LNG,(float)uc.getLocation().getLongitude());
         //Save Apps
         for (AppDetail app : uc.getContextApps()) {
-            editor.putBoolean(app.getName(), true);
+            editor.putBoolean(app.getPackageName(), true);
         }
         editor.apply();
     }
@@ -156,6 +155,22 @@ public class Settings{
             i++;
         }
         return userContextsArray;
+    }
+
+    public UserContext getZeroContext() {
+        Collection<UserContext> contexts = this.contexts.values();
+        UserContext zeroContext = new UserContext("Other Apps", new ArrayList<>());
+        int i;
+        for (AppDetail app: this.allApps) {
+            i = 0;
+            for (UserContext context: contexts) {
+                if (context.appExists(app)) break;
+                else i++;
+            }
+            if (i==3) zeroContext.addApp(app);
+        }
+
+        return zeroContext;
     }
 }
 

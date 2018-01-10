@@ -16,7 +16,7 @@ public class AppDetail implements Comparable{
 
     public AppDetail(AppDetail appDetail) {
         this.label = appDetail.getLabel();
-        this.name = appDetail.getName();
+        this.name = appDetail.getPackageName();
         this.icon = appDetail.getIcon();
     }
 
@@ -28,11 +28,11 @@ public class AppDetail implements Comparable{
         this.label = label;
     }
 
-    public String getName() {
+    public String getPackageName() {
         return name;
     }
 
-    public void setName(String name) {
+    public void setPackageName(String name) {
         this.name = name;
     }
 

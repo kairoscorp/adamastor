@@ -24,7 +24,6 @@ import corp.kairos.adamastor.R;
 import corp.kairos.adamastor.Settings.ContextRelated.ContextRelatedSettingsActivity;
 import corp.kairos.adamastor.Settings.Settings;
 import corp.kairos.adamastor.UserContext;
-import corp.kairos.adamastor.Util;
 import corp.kairos.adamastor.collector.CollectorService;
 
 public class HomeActivity extends AnimActivity {
@@ -43,6 +42,7 @@ public class HomeActivity extends AnimActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         Settings sets = new Settings(this);
         if(!sets.isOnboardingDone()){
             Intent i = new Intent(this, Onboard1Activity.class);
@@ -52,9 +52,13 @@ public class HomeActivity extends AnimActivity {
             setContentView(R.layout.activity_home);
             pm = getPackageManager();
 
+            // Set navigation activity
             this.setRightActivity(ContextListActivity.class);
 
-            contexts = Util.createDummyContextList(TAG, pm);
+            // Setup contexts
+//            contexts = Util.createDummyContextList(TAG, pm);
+            Settings settings = new Settings(getApplicationContext());
+            contexts = settings.getUserContextsAsArray();
             this.currentContextIndex = 0;
             this.currentContext = this.contexts[0];
             addClickListener();
@@ -100,7 +104,7 @@ public class HomeActivity extends AnimActivity {
                 LayoutInflater inflater = LayoutInflater.from(this);
                 HomeApp inflatedView = (HomeApp) inflater.inflate(R.layout.home_app, null);
 
-                inflatedView.setPackageName(app.getName());
+                inflatedView.setPackageName(app.getPackageName());
                 TextView textViewTitle = (TextView) inflatedView.findViewById(R.id.app_text);
                 ImageView imageViewIte = (ImageView) inflatedView.findViewById(R.id.app_image);
 
