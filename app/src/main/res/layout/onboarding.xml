@@ -31,6 +31,133 @@
                 android:layout_height="wrap_content">
 
                 <LinearLayout
+                    android:id="@+id/tab1"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginStart="10dp"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/textView9"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="20dp"
+                        android:gravity="center"
+                        android:text="@string/onboarding_work_place"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+
+                    <com.google.android.gms.maps.MapView
+                        android:id="@+id/mapWork"
+                        android:layout_width="match_parent"
+                        android:layout_height="202dp"
+                        android:layout_marginEnd="15dp"
+                        android:layout_marginStart="15dp" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginTop="10dp"
+                        android:background="@color/common_google_signin_btn_text_dark_disabled" />
+
+
+                    <TextView
+                        android:id="@+id/textView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:gravity="center"
+                        android:text="@string/onboarding_work_hours"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+
+                    <android.support.constraint.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:id="@+id/textViewFrom"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:layout_marginTop="16dp"
+                            android:text="From"
+                            android:textAppearance="@style/TextAppearance.AppCompat"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <TextView
+                            android:id="@+id/work_from"
+                            android:layout_width="60dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:layout_marginTop="16dp"
+                            android:ems="20"
+                            android:maxLength="5"
+                            android:text="10:00"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+                            app:layout_constraintStart_toEndOf="@id/textViewFrom"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <TextView
+                            android:id="@+id/textViewTo"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="24dp"
+                            android:layout_marginTop="16dp"
+                            android:text="To"
+                            android:textAppearance="@style/TextAppearance.AppCompat"
+                            app:layout_constraintStart_toEndOf="@id/work_from"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <TextView
+                            android:id="@+id/work_to"
+                            android:layout_width="60dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:layout_marginTop="16dp"
+                            android:ems="10"
+                            android:maxLength="5"
+                            android:text="18:00"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+                            app:layout_constraintStart_toEndOf="@id/textViewTo"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <Button
+                            android:id="@+id/pickTime"
+                            style="@style/Widget.AppCompat.Button"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="256dp"
+                            android:onClick="showTimePicker"
+                            android:text="Pick Time"
+                            android:textSize="12sp"
+                            app:layout_constraintEnd_toStartOf="@+id/work_from"
+                            app:layout_constraintHorizontal_bias="0.0"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                    </android.support.constraint.ConstraintLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginTop="10dp"
+                        android:background="@color/common_google_signin_btn_text_dark_disabled" />
+
+
+                    <Button
+                        android:id="@+id/work_apps"
+                        style="@style/Widget.AppCompat.Button"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:onClick="ShowWorkRelatedApps"
+                        android:text="Work related Applications"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Headline" />
+
+                </LinearLayout>
+
+                <LinearLayout
                     android:id="@+id/tab2"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -72,126 +199,6 @@
 
                 </LinearLayout>
 
-                <LinearLayout
-                    android:id="@+id/tab1"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginEnd="10dp"
-                    android:layout_marginStart="10dp"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:id="@+id/textView9"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="20dp"
-                        android:gravity="center"
-                        android:text="@string/onboarding_work_place"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Large" />
-
-                    <com.google.android.gms.maps.MapView
-                        android:id="@+id/mapWork"
-                        android:layout_width="match_parent"
-                        android:layout_height="214dp"
-                        android:layout_marginEnd="15dp"
-                        android:layout_marginStart="15dp" />
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:layout_marginTop="15dp"
-                        android:background="@color/common_google_signin_btn_text_dark_disabled" />
-
-
-                    <TextView
-                        android:id="@+id/textView"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
-                        android:gravity="center"
-                        android:text="@string/onboarding_work_hours"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Large" />
-
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
-
-                        <TextView
-                            android:id="@+id/textView5"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentStart="true"
-                            android:layout_alignParentTop="true"
-                            android:layout_marginStart="14dp"
-                            android:layout_marginTop="12dp"
-                            android:text="From"
-                            android:textAppearance="@style/TextAppearance.AppCompat"
-                            tools:layout_conversion_absoluteHeight="19dp"
-                            tools:layout_conversion_absoluteWidth="58dp"
-                            tools:layout_editor_absoluteX="94dp"
-                            tools:layout_editor_absoluteY="75dp" />
-
-                        <EditText
-                            android:id="@+id/work_from"
-                            style="@style/Widget.AppCompat.EditText"
-                            android:layout_width="120dp"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="17dp"
-                            android:layout_toEndOf="@+id/textView5"
-                            android:defaultFocusHighlightEnabled="false"
-                            android:ems="10"
-                            android:inputType="time"
-                            android:selectAllOnFocus="false"
-                            android:text="10:00" />
-
-                        <TextView
-                            android:id="@+id/textView6"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignBaseline="@+id/textView5"
-                            android:layout_alignBottom="@+id/textView5"
-                            android:layout_marginStart="13dp"
-                            android:layout_marginTop="10dp"
-                            android:layout_toEndOf="@+id/work_from"
-                            android:text="To"
-                            android:textAppearance="@style/TextAppearance.AppCompat"
-                            app:layout_constraintStart_toStartOf="parent"
-                            tools:layout_conversion_absoluteHeight="19dp"
-                            tools:layout_conversion_absoluteWidth="58dp"
-                            tools:layout_editor_absoluteY="75dp" />
-
-                        <EditText
-                            android:id="@+id/work_to"
-                            style="@style/Widget.AppCompat.EditText"
-                            android:layout_width="128dp"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="17dp"
-                            android:layout_toEndOf="@+id/textView6"
-                            android:ems="10"
-                            android:inputType="time"
-                            android:text="18:00" />
-
-                    </RelativeLayout>
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:layout_marginTop="15dp"
-                        android:background="@color/common_google_signin_btn_text_dark_disabled" />
-
-
-                    <Button
-                        android:id="@+id/work_apps"
-                        style="@style/Widget.AppCompat.Button"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
-                        android:onClick="ShowWorkRelatedApps"
-                        android:text="Work related Applications"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Headline" />
-
-                </LinearLayout>
-
             </FrameLayout>
 
             <RelativeLayout
@@ -202,7 +209,6 @@
                 style="@style/Widget.AppCompat.Button.Colored"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
                 android:onClick="saveChanges"
                 android:text="Save Changes"
                 android:layout_alignParentBottom="true"/>
