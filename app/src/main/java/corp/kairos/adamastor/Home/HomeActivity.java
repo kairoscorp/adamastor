@@ -1,39 +1,32 @@
-package corp.kairos.adamastor;
+package corp.kairos.adamastor.Home;
+
 
 import android.Manifest;
-import android.app.Activity;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.Vibrator;
-import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.view.MotionEventCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import corp.kairos.adamastor.AllApps.AllAppsActivity;
-import corp.kairos.adamastor.AllApps.AppDetail;
+import corp.kairos.adamastor.AnimActivity;
+import corp.kairos.adamastor.AppDetail;
 import corp.kairos.adamastor.Onboarding.OnboardingActivity;
 import corp.kairos.adamastor.R;
+import corp.kairos.adamastor.UserContext;
 import corp.kairos.adamastor.collector.CollectorService;
 
 public class HomeActivity extends AnimActivity {

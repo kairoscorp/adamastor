@@ -2,18 +2,8 @@ package corp.kairos.adamastor;
 
 import android.location.Location;
 
-import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
-
-import corp.kairos.adamastor.AllApps.AppDetail;
-import corp.kairos.adamastor.AllApps.AppDetailComparator;
-
-/**
- * Created by kiko on 23-12-2017.
- */
 
 /*
 * This class represents a context

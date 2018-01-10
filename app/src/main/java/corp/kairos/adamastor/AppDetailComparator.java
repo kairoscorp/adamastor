@@ -1,4 +1,4 @@
-package corp.kairos.adamastor.AllApps;
+package corp.kairos.adamastor;
 
 import java.util.Comparator;
 
