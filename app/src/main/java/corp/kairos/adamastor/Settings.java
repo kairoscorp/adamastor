@@ -12,8 +12,11 @@ import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import corp.kairos.adamastor.AllApps.AppDetail;
+import java.util.Set;
+import java.util.TreeSet;
 
+import corp.kairos.adamastor.AllApps.AppDetail;
+import corp.kairos.adamastor.AllApps.AppDetailComparator;
 
 
 /**
@@ -25,7 +28,7 @@ public class Settings {
     private PackageManager packageManager;
 
     private Map<String,UserContext> contexts;
-    private List<AppDetail> allApps;
+    private Set<AppDetail> allApps;
 
     private static final String TIME_FROM = "_timeFrom";
     private static final String TIME_TO = "_timeTo";
@@ -91,10 +94,10 @@ public class Settings {
     }
 
 
-    public List<AppDetail> loadApps() {
 
-        List<AppDetail> apps = new ArrayList<>();
-
+    public Set<AppDetail> loadApps() {
+        Set<AppDetail> apps = new TreeSet<>(new AppDetailComparator());
+      
         Intent i = new Intent(Intent.ACTION_MAIN, null);
         i.addCategory(Intent.CATEGORY_LAUNCHER);
 
@@ -117,13 +120,8 @@ public class Settings {
         return this.contexts.get(c);
     }
 
-    public void addAppToContext(String c, AppDetail app) {
-        this.contexts.get(c).addApp(app);
-    }
 
-    public void removeAppfromContext(String c, AppDetail app) {
-        this.contexts.get(c).removeApp(app);
-    }
+    public Set<AppDetail> getAllApps() {return this.allApps;}
 }
 
 
