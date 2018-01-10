@@ -16,12 +16,13 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
+import corp.kairos.adamastor.AnimActivity;
+import corp.kairos.adamastor.HomeActivity;
 import corp.kairos.adamastor.R;
 
 import static corp.kairos.adamastor.Util.getObjectByIndex;
 
-
-public class AllAppsActivity extends Activity {
+public class AllAppsActivity extends AnimActivity {
     private PackageManager packageManager;
     private Set<AppDetail> allApps;
     private GridView allAppsMenuView;
@@ -30,6 +31,8 @@ public class AllAppsActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.allapps_menu);
+
+        this.setLeftActivity(HomeActivity.class);
 
         loadApps();
         loadListView();
@@ -69,54 +72,5 @@ public class AllAppsActivity extends Activity {
                 AllAppsActivity.this.startActivity(i);
             }
         });
-    }
-
-
-    @Override
-    public void finish() {
-        super.finish();
-        overridePendingTransitionExit();
-    }
-
-    @Override
-    public void startActivity(Intent intent) {
-        super.startActivity(intent);
-        overridePendingTransitionEnter();
-    }
-
-    protected void overridePendingTransitionEnter() {
-        overridePendingTransition(R.anim.slide_from_right, R.anim.slide_to_left);
-    }
-
-    protected void overridePendingTransitionExit() {
-        overridePendingTransition(R.anim.slide_from_left, R.anim.slide_to_right);
-    }
-
-    private float x1;
-    private float x2;
-    private float MIN_DISTANCE = 200;
-    @Override
-    public boolean onTouchEvent(MotionEvent event)
-    {
-        switch(event.getAction())
-        {
-            case MotionEvent.ACTION_DOWN:
-                x1 = event.getX();
-                break;
-            case MotionEvent.ACTION_UP:
-                x2 = event.getX();
-                float deltaX = x2 - x1;
-                if (deltaX > MIN_DISTANCE) {
-                    onBackPressed();
-                }
-                break;
-        }
-        return super.onTouchEvent(event);
-    }
-
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        overridePendingTransitionExit();
     }
 }

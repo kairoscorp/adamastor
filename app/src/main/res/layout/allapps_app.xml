@@ -23,5 +23,8 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:gravity="center"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:textSize="11dp"
         android:textColor="@color/appLabelText" />
 </LinearLayout>
