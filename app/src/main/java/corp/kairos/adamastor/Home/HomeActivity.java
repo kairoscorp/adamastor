@@ -27,6 +27,10 @@ import corp.kairos.adamastor.AppDetail;
 import corp.kairos.adamastor.Onboarding.OnboardingActivity;
 import corp.kairos.adamastor.R;
 import corp.kairos.adamastor.UserContext;
+
+import corp.kairos.adamastor.Onboarding.Onboard1Activity;
+import corp.kairos.adamastor.Settings.Onboarding.OnboardingActivity;
+import corp.kairos.adamastor.Settings.Settings;
 import corp.kairos.adamastor.collector.CollectorService;
 
 public class HomeActivity extends AnimActivity {
@@ -44,15 +48,22 @@ public class HomeActivity extends AnimActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_home);
+        super.onCreate(savedInstanceState);     
+        Settings sets = new Settings(this);
+        if(!sets.isOnboardingDone()){
+            Intent i = new Intent(this, Onboard1Activity.class);
+            startActivity(i);
+            finish();
+        } else {
+            setContentView(R.layout.activity_home);
 
-        setContexts();
-        this.currentContext = this.contexts[0];
-        this.currentContextIndex = 0;
-        this.setRightActivity(AllAppsActivity.class);
+            setContexts();
+            this.currentContext = this.contexts[0];
+            this.currentContextIndex = 0;
+            this.setRightActivity(AllAppsActivity.class);
 
-        addClickListener();
+            addClickListener();
+        }
     }
 
     private void addClickListener(){
@@ -152,13 +163,11 @@ public class HomeActivity extends AnimActivity {
         startActivity(i);
     }
 
-
     public void showSettings(View v){
         Intent i = new Intent(this, OnboardingActivity.class);
         startActivity(i);
     }
-  
-  
+
     /*
     * The mechanism for manual context change is pressing the context label.
     * This method is called when the context label is pressed.

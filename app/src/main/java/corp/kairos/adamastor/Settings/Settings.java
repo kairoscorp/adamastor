@@ -1,13 +1,18 @@
-package corp.kairos.adamastor;
+package corp.kairos.adamastor.Settings;
 
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
+import android.os.Build;
+import android.os.Parcel;
+import android.os.Parcelable;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
@@ -16,8 +21,13 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
+import corp.kairos.adamastor.AllApps.AppDetail;
+import corp.kairos.adamastor.AllApps.AppDetailComparator;
+import corp.kairos.adamastor.UserContext;
 
-public class Settings {
+
+
+public class Settings{
     private Context ctx;
     private PackageManager packageManager;
 
@@ -40,6 +50,17 @@ public class Settings {
         this.contexts.put("Leisure",loadContextSettings("Leisure"));
         this.contexts.put("Travel",loadContextSettings("Travel"));
 
+    }
+
+    public boolean isOnboardingDone() {
+        SharedPreferences sharedPref = ctx.getSharedPreferences("GENERAL",Context.MODE_PRIVATE);
+        return sharedPref.getBoolean("OnboardingDone",false);
+    }
+    public void setOnboardingDone() {
+        SharedPreferences sharedPref = ctx.getSharedPreferences("GENERAL",Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putBoolean("OnboardingDone",true);
+        editor.apply();
     }
 
     public UserContext loadContextSettings(String context) {
@@ -88,7 +109,6 @@ public class Settings {
     }
 
 
-
     public Set<AppDetail> loadApps() {
         Set<AppDetail> apps = new TreeSet<>(new AppDetailComparator());
       
@@ -116,6 +136,14 @@ public class Settings {
 
 
     public Set<AppDetail> getAllApps() {return this.allApps;}
+
+    public void resetSettings() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            ctx.deleteSharedPreferences("Prefs_Work");
+            ctx.deleteSharedPreferences("Prefs_Leisure");
+            ctx.deleteSharedPreferences("Prefs_Travel");
+        }
+    }
 }
 
 
