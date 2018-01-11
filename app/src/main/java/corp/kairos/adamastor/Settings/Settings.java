@@ -5,14 +5,10 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.Build;
-import android.os.Parcel;
-import android.os.Parcelable;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
@@ -21,8 +17,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
-import corp.kairos.adamastor.AllApps.AppDetail;
-import corp.kairos.adamastor.AllApps.AppDetailComparator;
+
+import corp.kairos.adamastor.AppDetail;
+import corp.kairos.adamastor.AppDetailComparator;
 import corp.kairos.adamastor.UserContext;
 
 

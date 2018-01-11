@@ -24,12 +24,11 @@ import java.util.List;
 import corp.kairos.adamastor.AllApps.AllAppsActivity;
 import corp.kairos.adamastor.AnimActivity;
 import corp.kairos.adamastor.AppDetail;
-import corp.kairos.adamastor.Onboarding.OnboardingActivity;
 import corp.kairos.adamastor.R;
+import corp.kairos.adamastor.Settings.Onboarding.OnboardingActivity;
 import corp.kairos.adamastor.UserContext;
 
 import corp.kairos.adamastor.Onboarding.Onboard1Activity;
-import corp.kairos.adamastor.Settings.Onboarding.OnboardingActivity;
 import corp.kairos.adamastor.Settings.Settings;
 import corp.kairos.adamastor.collector.CollectorService;
 

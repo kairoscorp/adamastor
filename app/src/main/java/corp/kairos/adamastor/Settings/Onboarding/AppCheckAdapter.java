@@ -10,11 +10,9 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 
-import org.apache.commons.lang3.ObjectUtils;
-
 import java.util.Set;
 
-import corp.kairos.adamastor.AllApps.AppDetail;
+import corp.kairos.adamastor.AppDetail;
 import corp.kairos.adamastor.R;
 import corp.kairos.adamastor.UserContext;
 

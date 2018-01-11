@@ -8,11 +8,10 @@ import android.view.View;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
-import corp.kairos.adamastor.AllApps.AppDetail;
+import corp.kairos.adamastor.AppDetail;
 import corp.kairos.adamastor.R;
 import corp.kairos.adamastor.Settings.Onboarding.AppCheckAdapter;
 import corp.kairos.adamastor.Settings.Settings;
