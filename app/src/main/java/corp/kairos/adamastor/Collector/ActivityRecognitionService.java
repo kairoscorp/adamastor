@@ -1,4 +1,4 @@
-package corp.kairos.adamastor.collector;
+package corp.kairos.adamastor.Collector;
 
 import android.app.IntentService;
 import android.content.Intent;

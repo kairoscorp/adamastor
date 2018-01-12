@@ -1,4 +1,4 @@
-package corp.kairos.adamastor.collector;
+package corp.kairos.adamastor.Collector;
 
 import android.Manifest;
 import android.accounts.Account;

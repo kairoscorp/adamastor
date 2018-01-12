@@ -70,6 +70,14 @@
                 android:value=".Settings.ContextRelated.ContextRelatedSettingsActivity" />
         </activity>
 
+        <service
+            android:name=".Collector.CollectorService"
+            android:label="@string/app_name">
+            <intent-filter>
+                <action android:name="android.service.notification.CollectorService" />
+            </intent-filter>
+        </service>
+
         <activity
             android:name=".Onboarding.Onboard1WelcomeActivity"
             android:label="Onboarding"
@@ -127,6 +135,11 @@
             </intent-filter>
         </service>
 
+        <activity        
+            android:name=".Statistics.StatisticsActivity"
+            android:label="@string/title_activity_statistics"
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
     </application>
 
 </manifest>

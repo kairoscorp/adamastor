@@ -25,6 +25,9 @@ import corp.kairos.adamastor.Settings.ContextRelated.ContextRelatedSettingsActiv
 import corp.kairos.adamastor.Settings.Settings;
 import corp.kairos.adamastor.UserContext;
 import corp.kairos.adamastor.collector.CollectorService;
+import corp.kairos.adamastor.Statistics.StatisticsActivity;
+import corp.kairos.adamastor.UserContext;
+import corp.kairos.adamastor.Collector.CollectorService;
 
 public class HomeActivity extends AnimActivity {
 
@@ -128,6 +131,12 @@ public class HomeActivity extends AnimActivity {
         startActivity(i);
     }
 
+    public void showStatistics(View v){
+        Intent i = new Intent(this, StatisticsActivity.class);
+        startActivity(i);
+    }
+  
+  
     /*
     * The mechanism for manual context change is pressing the context label.
     * This method is called when the context label is pressed.
