@@ -75,6 +75,7 @@
             </intent-filter>
         </service>
 
+
         <activity
             android:name=".Onboarding.Onboard1Activity"
             android:label="Onboarding"

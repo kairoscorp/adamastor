@@ -107,7 +107,7 @@ public class Settings{
 
 
     public Set<AppDetail> loadApps() {
-        Set<AppDetail> apps = new TreeSet<>(new AppDetailComparator());
+        Set<AppDetail> apps = new TreeSet<>();
       
         Intent i = new Intent(Intent.ACTION_MAIN, null);
         i.addCategory(Intent.CATEGORY_LAUNCHER);

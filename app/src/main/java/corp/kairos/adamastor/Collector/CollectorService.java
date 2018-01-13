@@ -33,17 +33,27 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.ActivityRecognition;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.Random;
 import java.util.SortedMap;
 import java.util.TreeMap;
+import java.util.concurrent.ThreadLocalRandom;
+import java.util.concurrent.TimeUnit;
+
+import corp.kairos.adamastor.Util;
 
 public class CollectorService extends Service implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
     private static final String NULL_APP = "NULL";
+    private static CollectorService sInstance;
 
     private CollectorServiceBinder mCollectorServiceBinder = new CollectorServiceBinder();;
     private LocationManager locationManager;
@@ -56,9 +66,9 @@ public class CollectorService extends Service implements GoogleApiClient.Connect
     private int userActivityNow = 4; // 4 is Detected activity UNKNOWN
 
 
-
     public void onCreate(){
         Log.i("CollectorServiceLog", "ServiceCreated");
+        sInstance = this;
         locationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
         packageManager = this.getPackageManager();
         createLocationListener();
@@ -86,6 +96,27 @@ public class CollectorService extends Service implements GoogleApiClient.Connect
 
     }
 
+    public static CollectorService getInstance() {
+        return sInstance;
+    }
+
+    public Map<String, Long> getContextStatistics() {
+        // Random Values
+        Map<String, Long> stats = new TreeMap<>();
+        long min = TimeUnit.HOURS.toMillis(2);
+        long max = TimeUnit.HOURS.toMillis(100);
+        long randomTime = 0;
+        for(int i = 0; i < 5; i++) {
+            randomTime =  ThreadLocalRandom.current().nextLong(min, max);
+            stats.put(Util.getContextNameById(i), randomTime);
+        }
+
+        // Real values
+        stats = logDatabaseHelper.getContextStatistics();
+
+        return stats;
+    }
+
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         return Service.START_STICKY;
@@ -95,16 +126,15 @@ public class CollectorService extends Service implements GoogleApiClient.Connect
         Log.i("CollectorServiceLog", "MainLoopStarted");
         while(true){
             try {
-                double latitude = 0;
-                double longitude = 0;
-                String provider = "";
-                int phoneActivity;
-                int playingMusic;
+                double latitude, longitude;
+                int phoneActivity, playingMusic;
+                int context = ThreadLocalRandom.current().nextInt(0, 4);
+                int callActivity = getPhoneCallState();
+                int ringMode = getRingtoneMode();
+                String provider;
+                String account = getUsername();
                 String time = getTimeNow();
                 String appForeground = getForegroundTask();
-                int callActivity = getPhoneCallState();
-                String account = getUsername();
-                int ringMode = getRingtoneMode();
 
                 if(isPhoneActive()){
                     phoneActivity = 1;
@@ -140,8 +170,9 @@ public class CollectorService extends Service implements GoogleApiClient.Connect
                                 + latitude + "::"
                                 + longitude + "::"
                                 + provider + "::"
-                                + account);
-                logDatabaseHelper.addLogEntry(time,appForeground,userActivityNow,phoneActivity,callActivity,playingMusic,ringMode,latitude,longitude,provider,account);
+                                + account + "::"
+                                + context);
+                logDatabaseHelper.addLogEntry(time, appForeground, userActivityNow,phoneActivity, callActivity, playingMusic, ringMode, latitude, longitude, provider, account, context);
 
                 Thread.sleep(10000);
             }catch(InterruptedException ex){

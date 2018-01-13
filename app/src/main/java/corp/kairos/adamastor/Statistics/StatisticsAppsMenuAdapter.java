@@ -11,6 +11,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 import corp.kairos.adamastor.AppDetail;
 import corp.kairos.adamastor.R;
@@ -68,7 +69,8 @@ public class StatisticsAppsMenuAdapter extends ArrayAdapter {
         appProgressBar.setProgress((int) percentage);
 
         TextView appTimeUsage = (TextView)convertView.findViewById(R.id.app_stats_usage_time);
-        appTimeUsage.setText(Math.round(app.getTotalTime() * ((10 / 6) * Math.pow(10, -5))) + " minutes");
+
+        appTimeUsage.setText(TimeUnit.MILLISECONDS.toMinutes(app.getTotalTime()) + " minutes");
 
         TextView appPercentage = (TextView)convertView.findViewById(R.id.app_stats_percentage);
         String percentageText = percentage + " %";

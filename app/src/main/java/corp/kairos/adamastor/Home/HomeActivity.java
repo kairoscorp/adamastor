@@ -51,6 +51,7 @@ public class HomeActivity extends AnimActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+<<<<<<< HEAD
         Settings sets = new Settings(this);
         if(!sets.isOnboardingDone()){
             Intent i = new Intent(this, Onboard1Activity.class);
@@ -66,6 +67,18 @@ public class HomeActivity extends AnimActivity {
 
             addClickListener();
         }
+=======
+        setContentView(R.layout.activity_home);
+
+        setContexts();
+        this.currentContext = this.contexts[0];
+        this.currentContextIndex = 0;
+
+        this.setRightActivity(AllAppsActivity.class);
+        this.setLeftActivity(StatisticsActivity.class);
+
+        addClickListener();
+>>>>>>> d93d3ea... Add a context stats menu
     }
 
     private void addClickListener(){
