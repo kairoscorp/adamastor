@@ -47,7 +47,7 @@ public class HomeActivity extends AnimActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);     
+        super.onCreate(savedInstanceState);
         Settings sets = new Settings(this);
         if(!sets.isOnboardingDone()){
             Intent i = new Intent(this, Onboard1Activity.class);

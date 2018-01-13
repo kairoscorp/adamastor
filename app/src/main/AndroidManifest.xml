@@ -53,10 +53,10 @@
         <activity
             android:name=".Settings.Onboarding.OnboardingActivity"
             android:label="Onboarding"
-            android:parentActivityName=".HomeActivity">
+            android:parentActivityName=".Home.HomeActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="corp.kairos.adamastor.HomeActivity" />
+                android:value="corp.kairos.adamastor.Home.HomeActivity" />
         </activity>
         <activity
             android:name=".Settings.Onboarding.ContextRelatedAppsActivity"
@@ -77,16 +77,25 @@
 
         <activity
             android:name=".Onboarding.Onboard1Activity"
-            android:label="Onboarding 1"
-            android:parentActivityName=".HomeActivity">
+            android:label="Onboarding"
+            android:parentActivityName=".Home.HomeActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="corp.kairos.adamastor.HomeActivity" />
+                android:value="corp.kairos.adamastor.Home.HomeActivity" />
+        </activity>
+
+        <activity
+            android:name=".Onboarding.OnboardUsageSettings"
+            android:label="Onboarding"
+            android:parentActivityName=".Onboarding.Onboard1Activity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="corp.kairos.adamastor.Home.HomeActivity" />
         </activity>
 
         <activity
             android:name=".Onboarding.Onboard2Activity"
-            android:label="Onboarding 2"
+            android:label="Onboarding"
             android:parentActivityName=".Onboarding.Onboard1Activity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -95,7 +104,7 @@
 
         <activity
             android:name=".Onboarding.Onboard3Activity"
-            android:label="Onboarding 3"
+            android:label="Onboarding"
             android:parentActivityName=".Onboarding.Onboard2Activity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -104,7 +113,7 @@
 
         <activity
             android:name=".Onboarding.Onboard4Activity"
-            android:label="Onboarding 2"
+            android:label="Onboarding"
             android:parentActivityName=".Onboarding.Onboard3Activity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

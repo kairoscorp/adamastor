@@ -31,6 +31,75 @@
                 android:layout_height="wrap_content">
 
                 <LinearLayout
+                    android:id="@+id/tab2"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginStart="10dp"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/textView4"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:paddingTop="20dp"
+                        android:text="@string/onboarding_house"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <Button
+                            android:id="@+id/btn_pickHome"
+                            android:layout_width="60dp"
+                            android:layout_height="40dp"
+                            android:layout_alignBottom="@+id/mapHome"
+                            android:layout_alignStart="@+id/mapHome"
+                            android:layout_marginBottom="10dp"
+                            android:layout_marginStart="10dp"
+                            android:text="Pick"
+                            android:textSize="12sp"
+                            android:visibility="invisible" />
+
+                        <com.google.android.gms.maps.MapView
+                            android:id="@+id/mapHome"
+                            android:layout_width="match_parent"
+                            android:layout_height="214dp"
+                            android:layout_marginEnd="15dp"
+                            android:layout_marginStart="15dp" />
+                    </RelativeLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginTop="15dp"
+                        android:background="@color/common_google_signin_btn_text_dark_disabled" />
+
+                    <Button
+                        android:id="@+id/leisure_apps"
+                        style="@style/Widget.AppCompat.Button"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:onClick="ShowLeisureApps"
+                        android:text="Define Leisure Applications"
+                        android:textSize="18sp" />
+
+                    <Button
+                        android:id="@+id/travel_apps"
+                        style="@style/Widget.AppCompat.Button"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:onClick="showTravelApps"
+                        android:text="Define Travel Applications"
+                        android:textSize="18sp" />
+
+                </LinearLayout>
+
+                <LinearLayout
                     android:id="@+id/tab1"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -47,12 +116,29 @@
                         android:text="@string/onboarding_work_place"
                         android:textAppearance="@style/TextAppearance.AppCompat.Large" />
 
-                    <com.google.android.gms.maps.MapView
-                        android:id="@+id/mapWork"
+                    <RelativeLayout
                         android:layout_width="match_parent"
-                        android:layout_height="202dp"
-                        android:layout_marginEnd="15dp"
-                        android:layout_marginStart="15dp" />
+                        android:layout_height="match_parent">
+
+                        <Button
+                            android:id="@+id/btn_pickWork"
+                            android:layout_width="60dp"
+                            android:layout_height="40dp"
+                            android:layout_alignBottom="@+id/mapWork"
+                            android:layout_alignStart="@+id/mapWork"
+                            android:layout_marginBottom="10dp"
+                            android:layout_marginStart="10dp"
+                            android:text="Pick"
+                            android:textSize="12sp"
+                            android:visibility="invisible" />
+
+                        <com.google.android.gms.maps.MapView
+                            android:id="@+id/mapWork"
+                            android:layout_width="match_parent"
+                            android:layout_height="202dp"
+                            android:layout_marginEnd="15dp"
+                            android:layout_marginStart="15dp" />
+                    </RelativeLayout>
 
                     <View
                         android:layout_width="match_parent"
@@ -154,58 +240,6 @@
                         android:onClick="ShowWorkRelatedApps"
                         android:text="Work related Applications"
                         android:textAppearance="@style/TextAppearance.AppCompat.Headline" />
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/tab2"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginEnd="10dp"
-                    android:layout_marginStart="10dp"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:id="@+id/textView4"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:paddingTop="20dp"
-                        android:text="@string/onboarding_house"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Large" />
-
-                    <com.google.android.gms.maps.MapView
-                        android:id="@+id/mapHome"
-                        android:layout_width="match_parent"
-                        android:layout_height="214dp"
-                        android:layout_marginEnd="15dp"
-                        android:layout_marginStart="15dp" />
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:layout_marginTop="15dp"
-                        android:background="@color/common_google_signin_btn_text_dark_disabled" />
-
-                    <Button
-                        android:id="@+id/leisure_apps"
-                        style="@style/Widget.AppCompat.Button"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
-                        android:onClick="ShowLeisureApps"
-                        android:text="Define Leisure Applications"
-                        android:textSize="18sp" />
-
-                    <Button
-                        android:id="@+id/travel_apps"
-                        style="@style/Widget.AppCompat.Button"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
-                        android:onClick="showTravelApps"
-                        android:text="Define Travel Applications"
-                        android:textSize="18sp" />
 
                 </LinearLayout>
 

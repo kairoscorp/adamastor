@@ -5,6 +5,7 @@ import android.location.Location;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TabHost;
 import android.widget.TextView;
 
@@ -200,7 +201,15 @@ public class OnboardingActivity extends AppCompatActivity implements TimePickerD
                         workLoc = new Location("provider");
                         workLoc.setLatitude(latLng.latitude);
                         workLoc.setLongitude(latLng.longitude);
-                        sets.getUserContext("Work").setLocation(workLoc);
+                        Button btn = findViewById(R.id.btn_pickWork);
+                        btn.setVisibility(View.VISIBLE);
+
+                        btn.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                sets.getUserContext("Work").setLocation(workLoc);
+                            }
+                        });
                     }
                 });
             }
@@ -228,7 +237,15 @@ public class OnboardingActivity extends AppCompatActivity implements TimePickerD
                         homeLoc = new Location("provider");
                         homeLoc.setLatitude(latLng.latitude);
                         homeLoc.setLongitude(latLng.longitude);
-                        sets.getUserContext("Leisure").setLocation(homeLoc);
+                        Button btn = findViewById(R.id.btn_pickHome);
+                        btn.setVisibility(View.VISIBLE);
+
+                        btn.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                sets.getUserContext("Leisure").setLocation(homeLoc);
+                            }
+                        });
                     }
                 });
             }

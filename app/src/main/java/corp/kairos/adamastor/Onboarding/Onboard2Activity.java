@@ -13,6 +13,7 @@ import android.os.Parcelable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.Button;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -126,9 +127,6 @@ public class Onboard2Activity extends AppCompatActivity{
     }
 
     public void loadMapsSettings(Bundle savedInstanceState) {
-        //TODO: Add listeners to collect location and save in sharedPreferences
-        //TODO: Add marker to the map
-
         workplaceView = findViewById(R.id.mapWork);
         workplaceView.onCreate(savedInstanceState);
         workplaceView.getMapAsync(new OnMapReadyCallback() {
@@ -148,8 +146,17 @@ public class Onboard2Activity extends AppCompatActivity{
                         workLoc = new Location(lastLocation.getProvider());
                         workLoc.setLatitude(latLng.latitude);
                         workLoc.setLongitude(latLng.longitude);
-                        sets.getUserContext("Work").setLocation(workLoc);
-                        showNext();
+                        Button btn = findViewById(R.id.btn_pickWork);
+                        btn.setVisibility(View.VISIBLE);
+
+                        btn.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                sets.getUserContext("Work").setLocation(workLoc);
+                                showNext();
+                            }
+                        });
+
                     }
                 });
             }
@@ -175,8 +182,17 @@ public class Onboard2Activity extends AppCompatActivity{
                         homeLoc = new Location(lastLocation.getProvider());
                         homeLoc.setLatitude(latLng.latitude);
                         homeLoc.setLongitude(latLng.longitude);
-                        sets.getUserContext("Leisure").setLocation(homeLoc);
-                        showNext();
+                        Button btn = findViewById(R.id.btn_pickHome);
+                        btn.setVisibility(View.VISIBLE);
+
+                        btn.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                sets.getUserContext("Leisure").setLocation(homeLoc);
+                                showNext();
+                            }
+                        });
+
                     }
                 });
             }

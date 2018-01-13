@@ -42,12 +42,28 @@
             android:textAppearance="@style/TextAppearance.AppCompat.Body2"
             android:textSize="18sp" />
 
-        <com.google.android.gms.maps.MapView
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.google.android.gms.maps.MapView
                 android:id="@+id/mapHome"
                 android:layout_width="match_parent"
                 android:layout_height="180dp"
                 android:layout_marginEnd="15dp"
                 android:layout_marginStart="15dp" />
+
+            <Button
+                android:id="@+id/btn_pickHome"
+                android:layout_width="60dp"
+                android:layout_height="40dp"
+                android:layout_alignBottom="@+id/mapHome"
+                android:layout_alignStart="@+id/mapHome"
+                android:layout_marginBottom="10dp"
+                android:layout_marginStart="10dp"
+                android:text="Pick"
+                android:textSize="12sp" />
+        </RelativeLayout>
 
         <View
                 android:layout_width="match_parent"
@@ -65,12 +81,31 @@
             android:textAppearance="@style/TextAppearance.AppCompat.Body2"
             android:textSize="18sp" />
 
-        <com.google.android.gms.maps.MapView
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.google.android.gms.maps.MapView
                 android:id="@+id/mapWork"
                 android:layout_width="match_parent"
                 android:layout_height="180dp"
                 android:layout_marginEnd="15dp"
                 android:layout_marginStart="15dp" />
+
+            <Button
+                android:id="@+id/btn_pickWork"
+                android:layout_width="60dp"
+                android:layout_height="40dp"
+                android:layout_alignBottom="@+id/mapWork"
+                android:layout_alignStart="@+id/mapWork"
+                android:layout_marginBottom="10dp"
+                android:layout_marginStart="10dp"
+                android:text="Pick"
+                android:textSize="12sp" />
+
+        </RelativeLayout>
+
+
 
     </LinearLayout>
 
