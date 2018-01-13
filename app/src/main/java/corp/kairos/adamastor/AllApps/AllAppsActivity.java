@@ -17,6 +17,7 @@ import corp.kairos.adamastor.AnimActivity;
 import corp.kairos.adamastor.AppDetail;
 import corp.kairos.adamastor.AppDetailComparator;
 import corp.kairos.adamastor.ContextList.ContextListActivity;
+import corp.kairos.adamastor.Home.HomeActivity;
 import corp.kairos.adamastor.R;
 
 import static corp.kairos.adamastor.Util.getObjectByIndex;
@@ -38,21 +39,26 @@ public class AllAppsActivity extends AnimActivity {
         addClickListener();
     }
 
-    private void loadApps(){
-        this.packageManager = getPackageManager();
-        this.allApps = new TreeSet<>(new AppDetailComparator());
-
+    public static Set<AppDetail> getAllApps(PackageManager packageManager) {
+        Set<AppDetail> allApps = new TreeSet<>();
         Intent i = new Intent(Intent.ACTION_MAIN, null);
         i.addCategory(Intent.CATEGORY_LAUNCHER);
 
-        List<ResolveInfo> availableActivities = this.packageManager.queryIntentActivities(i, 0);
+        List<ResolveInfo> availableActivities = packageManager.queryIntentActivities(i, 0);
         for(ResolveInfo ri:availableActivities){
-            String label = ri.loadLabel(this.packageManager).toString();
+            String label = ri.loadLabel(packageManager).toString();
             String name = ri.activityInfo.packageName.toString();
-            Drawable icon = ri.activityInfo.loadIcon(this.packageManager);
+            Drawable icon = ri.activityInfo.loadIcon(packageManager);
             AppDetail app = new AppDetail(label, name, icon);
-            this.allApps.add(app);
+            allApps.add(app);
         }
+
+        return allApps;
+    }
+
+    private void loadApps(){
+        this.packageManager = getPackageManager();
+        this.allApps = this.getAllApps(this.packageManager);
     }
 
     private void loadListView(){

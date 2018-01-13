@@ -45,7 +45,6 @@ public class HomeActivity extends AnimActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         Settings sets = new Settings(this);
         if(!sets.isOnboardingDone()){
             Intent i = new Intent(this, Onboard1WelcomeActivity.class);
@@ -55,12 +54,15 @@ public class HomeActivity extends AnimActivity {
             setContentView(R.layout.activity_home);
             pm = getPackageManager();
 
-            // Set navigation activity
-            this.setRightActivity(ContextListActivity.class);
+            // Set animtations
+            this.setRightActivity(AllAppsActivity.class);
+            this.setLeftActivity(StatisticsActivity.class);
+
 
             // Setup contexts
             Settings settings = new Settings(getApplicationContext());
             contexts = settings.getUserContextsAsArray();
+            setContexts();        
             this.currentContextIndex = 0;
             this.currentContext = this.contexts[0];
             addClickListener();

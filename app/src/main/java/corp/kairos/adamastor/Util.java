@@ -57,4 +57,23 @@ public class Util {
         }
         return staticContexts;
     }
+
+    public static String getContextNameById(int id) {
+        switch (id) {
+            case 0:
+                return "Home";
+
+            case 1:
+                return "Work";
+
+            case 2:
+                return "Travel";
+
+            case 3:
+                return "Fitness";
+
+            default:
+                return "Other";
+        }
+    }
 }
