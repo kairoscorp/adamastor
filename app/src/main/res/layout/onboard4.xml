@@ -19,7 +19,7 @@
             android:id="@+id/textView2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Here set your working hours"
+            android:text="Now tell us your work schedule"
             android:textAlignment="center"
             android:textAppearance="@style/TextAppearance.AppCompat.Display1"
             android:textSize="24sp" />
@@ -28,15 +28,14 @@
             android:id="@+id/time_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
-            android:visibility="invisible">
+            android:layout_marginTop="20dp">
 
             <TextView
                 android:id="@+id/textViewFrom"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="16dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="20dp"
                 android:text="From"
                 android:textAppearance="@style/TextAppearance.AppCompat.Display1"
                 app:layout_constraintStart_toStartOf="parent"
@@ -47,10 +46,10 @@
                 android:layout_width="90dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="20dp"
                 android:ems="20"
                 android:maxLength="5"
-                android:text="10:00"
+                android:text="9:00"
                 android:textAppearance="@style/TextAppearance.AppCompat.Display1"
                 app:layout_constraintStart_toEndOf="@id/textViewFrom"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -74,52 +73,37 @@
                 android:layout_marginTop="16dp"
                 android:ems="10"
                 android:maxLength="5"
-                android:text="18:00"
+                android:text="17:00"
                 android:textAppearance="@style/TextAppearance.AppCompat.Display1"
                 app:layout_constraintStart_toEndOf="@id/textViewTo"
                 app:layout_constraintTop_toTopOf="parent" />
 
         </android.support.constraint.ConstraintLayout>
 
-        <ImageButton
-            android:id="@+id/imageButton"
-            style="@android:style/Widget.Material.ImageButton"
+        <ImageView
+            android:id="@+id/imageView6"
             android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:layout_marginEnd="60dp"
-            android:layout_marginStart="60dp"
-            android:layout_marginTop="30dp"
-            android:contentDescription="Pick time"
+            android:layout_height="100dp"
+            android:layout_marginTop="60dp"
             android:onClick="showTimePicker"
-            android:src="@android:drawable/ic_lock_idle_alarm" />
-
-        <TextView
-            android:id="@+id/textFinal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:text="You Have Completed the Onboarding, hope you make good use of Kairos :-)"
-            android:textAlignment="center"
-            android:textAppearance="@style/TextAppearance.AppCompat.Display1"
-            android:visibility="invisible" />
+            app:srcCompat="@drawable/ic_clock2" />
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
             <Button
-                android:id="@+id/next4"
+                android:id="@+id/next3"
                 style="@style/Widget.AppCompat.Button.Colored"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
                 android:layout_alignParentEnd="true"
                 android:layout_marginBottom="10dp"
-                android:layout_marginEnd="40dp"
-                android:layout_marginStart="40dp"
+                android:layout_marginEnd="10dp"
                 android:onClick="goNext"
-                android:text="Finish"
-                android:visibility="invisible" />
+                android:text="Next"
+                android:visibility="visible" />
         </RelativeLayout>
 
     </LinearLayout>

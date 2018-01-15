@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -17,9 +18,6 @@ import corp.kairos.adamastor.Settings.Onboarding.AppCheckAdapter;
 import corp.kairos.adamastor.Settings.Settings;
 import corp.kairos.adamastor.UserContext;
 
-/**
- * Created by jlsilva94 on 10/01/18.
- */
 
 public class Onboard3Activity extends AppCompatActivity {
     private ListView checkAppsMenuView;

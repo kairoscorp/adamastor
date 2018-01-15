@@ -32,9 +32,6 @@ import corp.kairos.adamastor.Settings.Settings;
 
 import static android.location.Criteria.ACCURACY_HIGH;
 
-/**
- * Created by jlsilva94 on 10/01/18.
- */
 
 public class Onboard2Activity extends AppCompatActivity{
     private Settings sets;
@@ -51,6 +48,11 @@ public class Onboard2Activity extends AppCompatActivity{
 
     private Location homeLoc;
     private Location workLoc;
+    //UMinho coordinates, if no location provider is available, this will center the map in this location, because UMinho is amazing!
+    private LatLng pos = new LatLng(41.56131,-8.393804);
+    private boolean pickWork = false;
+    private boolean pickHome = false;
+
 
 
     @Override
@@ -127,14 +129,18 @@ public class Onboard2Activity extends AppCompatActivity{
     }
 
     public void loadMapsSettings(Bundle savedInstanceState) {
+        findViewById(R.id.btn_pickHome).setVisibility(View.INVISIBLE);
+        findViewById(R.id.btn_pickWork).setVisibility(View.INVISIBLE);
         workplaceView = findViewById(R.id.mapWork);
         workplaceView.onCreate(savedInstanceState);
         workplaceView.getMapAsync(new OnMapReadyCallback() {
             public void onMapReady(GoogleMap googleMap) {
                 workMap = googleMap;
                 workMap.setMinZoomPreference(10);
-                LatLng ny = new LatLng(lastLocation.getLatitude(), lastLocation.getLongitude());
-                workMap.moveCamera(CameraUpdateFactory.newLatLng(ny));
+                if(checkLocation) {
+                     pos = new LatLng(lastLocation.getLatitude(), lastLocation.getLongitude());
+                }
+                workMap.moveCamera(CameraUpdateFactory.newLatLng(pos));
 
                 workMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
                     @Override
@@ -143,7 +149,7 @@ public class Onboard2Activity extends AppCompatActivity{
                         MarkerOptions opts = new MarkerOptions();
                         opts.position(latLng);
                         workMap.addMarker(opts);
-                        workLoc = new Location(lastLocation.getProvider());
+                        workLoc = new Location("provider");
                         workLoc.setLatitude(latLng.latitude);
                         workLoc.setLongitude(latLng.longitude);
                         Button btn = findViewById(R.id.btn_pickWork);
@@ -152,6 +158,7 @@ public class Onboard2Activity extends AppCompatActivity{
                         btn.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
+                                pickWork = true;
                                 sets.getUserContext("Work").setLocation(workLoc);
                                 showNext();
                             }
@@ -168,9 +175,10 @@ public class Onboard2Activity extends AppCompatActivity{
             public void onMapReady(GoogleMap googleMap) {
                 homeMap = googleMap;
                 homeMap.setMinZoomPreference(10);
-                LatLng pt = new LatLng(lastLocation.getLatitude(),lastLocation.getLongitude());
-                homeMap.moveCamera(CameraUpdateFactory.newLatLng(pt));
-                MarkerOptions opts = new MarkerOptions();
+                if(checkLocation) {
+                    pos = new LatLng(lastLocation.getLatitude(), lastLocation.getLongitude());
+                }
+                homeMap.moveCamera(CameraUpdateFactory.newLatLng(pos));
 
                 homeMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
                     @Override
@@ -179,7 +187,7 @@ public class Onboard2Activity extends AppCompatActivity{
                         MarkerOptions opts = new MarkerOptions();
                         opts.position(latLng);
                         homeMap.addMarker(opts);
-                        homeLoc = new Location(lastLocation.getProvider());
+                        homeLoc = new Location("provider");
                         homeLoc.setLatitude(latLng.latitude);
                         homeLoc.setLongitude(latLng.longitude);
                         Button btn = findViewById(R.id.btn_pickHome);
@@ -188,6 +196,7 @@ public class Onboard2Activity extends AppCompatActivity{
                         btn.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
+                                pickHome = true;
                                 sets.getUserContext("Leisure").setLocation(homeLoc);
                                 showNext();
                             }
@@ -218,14 +227,12 @@ public class Onboard2Activity extends AppCompatActivity{
     }
 
     private void showNext() {
-        if ((homeLoc != null) && (workLoc != null)) {
+        if (pickHome && pickWork) {
             findViewById(R.id.next2).setVisibility(View.VISIBLE);
         }
     }
 
     public void goNext(View v) {
-
-        //sets.getUserContext("Home").setLocation(homeLoc);
         sets.saveContextSettings("Work");
         sets.saveContextSettings("Leisure");
         Intent i = new Intent(this,Onboard3Activity.class);

@@ -18,9 +18,6 @@ import corp.kairos.adamastor.UserContext;
 
 import static corp.kairos.adamastor.Util.getObjectByIndex;
 
-/**
- * Created by jlsilva94 on 28/12/2017.
- */
 
 public class AppCheckAdapter extends ArrayAdapter {
     private Context context;
