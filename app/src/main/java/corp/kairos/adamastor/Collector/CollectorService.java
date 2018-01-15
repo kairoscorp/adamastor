@@ -48,6 +48,7 @@ import java.util.TreeMap;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 
+import corp.kairos.adamastor.UserContext;
 import corp.kairos.adamastor.Util;
 
 public class CollectorService extends Service implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
@@ -108,7 +109,7 @@ public class CollectorService extends Service implements GoogleApiClient.Connect
         long randomTime = 0;
         for(int i = 0; i < 5; i++) {
             randomTime =  ThreadLocalRandom.current().nextLong(min, max);
-            stats.put(Util.getContextNameById(i), randomTime);
+            stats.put(UserContext.getContextNameById(i), randomTime);
         }
 
         // Real values
