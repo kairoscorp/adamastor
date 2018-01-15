@@ -13,8 +13,8 @@ import java.util.Set;
 public class Util {
     public static Object getObjectByIndex(int position, Set set) {
         int i = 0;
-        for(Object object: set) {
-            if(i == position) {
+        for (Object object : set) {
+            if (i == position) {
                 return object;
             }
             i++;

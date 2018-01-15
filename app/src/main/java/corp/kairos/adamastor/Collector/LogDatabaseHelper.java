@@ -20,6 +20,7 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.concurrent.TimeUnit;
 
+import corp.kairos.adamastor.UserContext;
 import corp.kairos.adamastor.Util;
 
 public class LogDatabaseHelper extends SQLiteOpenHelper {
@@ -93,7 +94,7 @@ public class LogDatabaseHelper extends SQLiteOpenHelper {
             // Each record means approximately 10 seconds in the context
             int timeSeconds = res.getInt(res.getColumnIndex("Times")) * 10;
 
-            result.put(Util.getContextNameById(context), TimeUnit.SECONDS.toMillis(timeSeconds));
+            result.put(UserContext.getContextNameById(context), TimeUnit.SECONDS.toMillis(timeSeconds));
             res.moveToNext();
         }
 
@@ -193,7 +194,7 @@ public class LogDatabaseHelper extends SQLiteOpenHelper {
                 + "latitude REAL, "
                 + "longitude REAL, "
                 + "provider TEXT, "
-                + "account TEXT"
+                + "account TEXT,"
                 + "context INTEGER"
                 + ");";
 
