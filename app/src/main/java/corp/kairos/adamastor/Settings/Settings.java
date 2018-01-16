@@ -127,6 +127,12 @@ public class Settings{
         return this.contexts;
     }
 
+    public List<String> getContextNames() {
+        List<String> names = new ArrayList<>();
+        names.addAll(contexts.keySet());
+        return names;
+    }
+
     public UserContext getUserContext(String c) {
         return this.contexts.get(c);
     }

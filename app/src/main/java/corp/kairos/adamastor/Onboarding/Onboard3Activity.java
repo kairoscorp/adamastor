@@ -4,12 +4,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 import corp.kairos.adamastor.AppDetail;
@@ -26,7 +29,7 @@ public class Onboard3Activity extends AppCompatActivity {
 
     private Settings sets;
     private Set<AppDetail> allApps;
-    public Set<String> contexts;
+    private List<String> contexts;
     private UserContext uc;
     private String ctx;
 
@@ -34,32 +37,20 @@ public class Onboard3Activity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.onboard3);
-        findViewById(R.id.next3).setVisibility(View.INVISIBLE);
-        loadSettings(savedInstanceState);
-        loadListView();
+        this.sets = new Settings(this);
+        this.contexts = sets.getContextNames();
+        this.allApps = sets.getAllApps();
+        loadSettings();
     }
 
-    private void loadSettings(Bundle savedInstanceState) {
-        Object[] array;
-        if (savedInstanceState == null) {
-            Bundle extras = getIntent().getExtras();
-
-            array = (Object[]) extras.get("CONTEXTS");
-        } else {
-            array = (Object[]) savedInstanceState.get("CONTEXTS");
-        }
-        Set<String> ss = new HashSet<>();
-        for (int i=0;  i < (array.length); i++ ) {
-            ss.add((String)array[i]);
-        }
-        this.sets = new Settings(this);
-        this.contexts = ss;
-        this.allApps = sets.getAllApps();
-        this.ctx = contexts.iterator().next();
-        this.contexts.remove(ctx);
+    private void loadSettings() {
+        this.ctx = contexts.listIterator().next();
         this.uc = sets.getUserContext(ctx);
 
         ((TextView)findViewById(R.id.description)).setText("Please select the apps related to your "+ctx+" context");
+        findViewById(R.id.next3).setVisibility(View.INVISIBLE);
+        loadListView();
+        contexts.remove(ctx);
     }
 
     private void loadListView() {
@@ -70,16 +61,14 @@ public class Onboard3Activity extends AppCompatActivity {
 
     public void goNext(View v) {
         sets.saveContextSettings(ctx);
-        if(contexts.size() > 0) {
-            Intent i = new Intent(this,Onboard3Activity.class);
-            i.putExtra("CONTEXTS", contexts.toArray());
-            startActivity(i);
+        if(contexts.listIterator().hasNext()) {
+            loadSettings();
         }
         else {
             Intent i = new Intent(this,Onboard4Activity.class);
             startActivity(i);
+            finish();
         }
-        finish();
     }
 
 }
