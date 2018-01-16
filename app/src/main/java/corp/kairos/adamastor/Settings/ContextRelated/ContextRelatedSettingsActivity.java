@@ -1,4 +1,4 @@
-package corp.kairos.adamastor.Settings.Onboarding;
+package corp.kairos.adamastor.Settings.ContextRelated;
 
 import android.content.Intent;
 import android.location.Location;
@@ -26,7 +26,7 @@ import corp.kairos.adamastor.Home.HomeActivity;
 import corp.kairos.adamastor.R;
 import corp.kairos.adamastor.Settings.Settings;
 
-public class OnboardingActivity extends AppCompatActivity implements TimePickerDialog.OnTimeSetListener{
+public class ContextRelatedSettingsActivity extends AppCompatActivity implements TimePickerDialog.OnTimeSetListener{
     private GoogleMap workMap;
     private GoogleMap homeMap;
     private MapView workplaceView;

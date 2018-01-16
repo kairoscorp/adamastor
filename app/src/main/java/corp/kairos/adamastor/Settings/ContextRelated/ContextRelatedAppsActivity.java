@@ -1,4 +1,4 @@
-package corp.kairos.adamastor.Settings.Onboarding;
+package corp.kairos.adamastor.Settings.ContextRelated;
 
 import android.app.Activity;
 import android.content.Context;

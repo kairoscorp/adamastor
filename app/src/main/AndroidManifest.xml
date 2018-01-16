@@ -51,7 +51,7 @@
             android:name=".AllApps.AllAppsActivity"
             android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen" />
         <activity
-            android:name=".Settings.Onboarding.OnboardingActivity"
+            android:name=".Settings.ContextRelated.ContextRelatedSettingsActivity"
             android:label="Onboarding"
             android:parentActivityName=".Home.HomeActivity">
             <meta-data
@@ -59,12 +59,12 @@
                 android:value="corp.kairos.adamastor.Home.HomeActivity" />
         </activity>
         <activity
-            android:name=".Settings.Onboarding.ContextRelatedAppsActivity"
+            android:name=".Settings.ContextRelated.ContextRelatedAppsActivity"
             android:label="Context Related Apps"
-            android:parentActivityName=".Settings.Onboarding.OnboardingActivity">
+            android:parentActivityName=".Settings.ContextRelated.ContextRelatedSettingsActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".Settings.Onboarding.OnboardingActivity" />
+                android:value=".Settings.ContextRelated.ContextRelatedSettingsActivity" />
         </activity>
 
         <service

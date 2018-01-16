@@ -25,6 +25,14 @@ public class Onboard4Activity extends AppCompatActivity implements TimePickerDia
         super.onCreate(savedInstanceState);
         setContentView(R.layout.onboard4);
         this.sets = new Settings(this);
+        
+        GregorianCalendar from = new GregorianCalendar();
+        GregorianCalendar to = new GregorianCalendar();
+        from.set(GregorianCalendar.HOUR_OF_DAY,9);
+        from.set(GregorianCalendar.MINUTE,0);
+        to.set(GregorianCalendar.HOUR_OF_DAY,17);
+        to.set(GregorianCalendar.MINUTE,0);
+        sets.getUserContext("Work").setTimes(from, to);
     }
 
 

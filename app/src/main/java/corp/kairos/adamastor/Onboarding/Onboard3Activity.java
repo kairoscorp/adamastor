@@ -4,20 +4,16 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
 import corp.kairos.adamastor.AppDetail;
 import corp.kairos.adamastor.R;
-import corp.kairos.adamastor.Settings.Onboarding.AppCheckAdapter;
+import corp.kairos.adamastor.Settings.ContextRelated.AppCheckAdapter;
 import corp.kairos.adamastor.Settings.Settings;
 import corp.kairos.adamastor.UserContext;
 
