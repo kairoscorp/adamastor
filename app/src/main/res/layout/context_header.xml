@@ -1,11 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<TextView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/context_title"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:textSize="26sp"
-    android:text="@string/dummy_context_name"
-    android:padding="10dp"
-    android:paddingStart="30dp"
-    android:textColor="#000" />
+    android:layout_height="50dp"
+    android:paddingTop="5dp"
+    android:paddingBottom="5dp">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="15dp"
+        android:textColor="#FFF"
+        android:textStyle="bold"
+        android:textSize="24sp"
+        android:id="@+id/context_title" />
+
+    <ImageView
+        android:id="@+id/expand_arrow"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_centerVertical="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="15dp"
+        android:src="@drawable/ic_keyboard_arrow_up_black_24dp"
+        android:tint="#FFF"
+        />
+</RelativeLayout>

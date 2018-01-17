@@ -18,7 +18,7 @@ public class ContextListActivity extends AnimActivity {
     public static int NUMBER_OF_COLUMNS = 4;
     private UserContext[] userContexts;
     private RecyclerView mRecyclerView;
-    private SectionedRecyclerViewAdapter mAdapter;
+    public SectionedRecyclerViewAdapter mAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,7 +43,12 @@ public class ContextListActivity extends AnimActivity {
         for (UserContext aContext: userContexts) {
             if (aContext.getContextApps().size() > 0)
                 mAdapter.addSection(
-                        new ContextSection(this, aContext.getContextName(), aContext.getContextApps())
+                    new ContextSection(
+                        this,
+                        this.mAdapter,
+                        aContext.getContextName(),
+                        aContext.getContextApps()
+                    )
                 );
         }
 

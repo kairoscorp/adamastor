@@ -13,36 +13,41 @@ import java.util.List;
 import corp.kairos.adamastor.AppDetail;
 import corp.kairos.adamastor.R;
 import io.github.luizgrp.sectionedrecyclerviewadapter.SectionParameters;
+import io.github.luizgrp.sectionedrecyclerviewadapter.SectionedRecyclerViewAdapter;
 import io.github.luizgrp.sectionedrecyclerviewadapter.StatelessSection;
 
 
 public class ContextSection extends StatelessSection {
-    String contextName;
-    List<AppDetail> contextApps;
-    Context appContext;
+    // TODO: Make this a metric with the screen height and the number of sections
+    public static int MAX_NUMBER_OF_APPS_COMPRESSED = 8;
+    public static boolean INITIAL_EXPANDED_STATE = true;
 
-    public ContextSection(Context appContext, String contextName, List<AppDetail> contextApps) {
-        super(new SectionParameters.Builder(R.layout.allapps_app)
+    private Context appContext;
+    private SectionedRecyclerViewAdapter mAdapter;
+    private String contextName;
+    private List<AppDetail> contextApps;
+    private boolean isExpanded = INITIAL_EXPANDED_STATE;
+
+
+    public ContextSection(Context appContext, SectionedRecyclerViewAdapter adapter,
+                          String contextName, List<AppDetail> contextApps) {
+    super(new SectionParameters.Builder(R.layout.allapps_app)
                 .headerResourceId(R.layout.context_header)
                 .build());
         this.appContext = appContext;
+        this.mAdapter = adapter;
         this.contextName = contextName;
         this.contextApps = contextApps;
     }
 
     @Override
     public int getContentItemsTotal() {
-        return contextApps.size();
+        return this.isExpanded ? contextApps.size() : 0;
     }
 
     @Override
     public RecyclerView.ViewHolder getItemViewHolder(View view) {
         return new AppViewHolder(view);
-    }
-
-    @Override
-    public RecyclerView.ViewHolder getHeaderViewHolder(View view) {
-        return new HeaderViewHolder(view);
     }
 
     @Override
@@ -62,21 +67,24 @@ public class ContextSection extends StatelessSection {
     }
 
     @Override
+    public RecyclerView.ViewHolder getHeaderViewHolder(View view) {
+        return new HeaderViewHolder(view);
+    }
+
+    @Override
     public void onBindHeaderViewHolder(RecyclerView.ViewHolder holder){
         HeaderViewHolder headerHolder = (HeaderViewHolder) holder;
 
         headerHolder.contextTitleView.setText(this.contextName);
+        headerHolder.rootView.setOnClickListener((View v) -> {
+            isExpanded = !isExpanded;
+            headerHolder.expandArrowView.setImageResource(
+                    isExpanded ? R.drawable.ic_keyboard_arrow_up_black_24dp : R.drawable.ic_keyboard_arrow_down_black_24dp
+            );
+            mAdapter.notifyDataSetChanged();
+        });
     }
 
-
-    private class HeaderViewHolder extends RecyclerView.ViewHolder {
-        TextView contextTitleView;
-
-        HeaderViewHolder(View view) {
-            super(view);
-            contextTitleView = (TextView) view.findViewById(R.id.context_title);
-        }
-    }
 
     private class AppViewHolder extends RecyclerView.ViewHolder {
         View rootView;
@@ -94,4 +102,17 @@ public class ContextSection extends StatelessSection {
         }
     }
 
+    private class HeaderViewHolder extends RecyclerView.ViewHolder {
+        View rootView;
+        TextView contextTitleView;
+        ImageView expandArrowView;
+
+        HeaderViewHolder(View view) {
+            super(view);
+
+            rootView = view;
+            contextTitleView = (TextView) view.findViewById(R.id.context_title);
+            expandArrowView = (ImageView) view.findViewById(R.id.expand_arrow);
+        }
+    }
 }
