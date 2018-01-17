@@ -1,7 +1,6 @@
 package corp.kairos.adamastor;
 
 import android.location.Location;
-
 import java.util.GregorianCalendar;
 import java.util.List;
 
@@ -48,7 +47,7 @@ public class UserContext {
     }
 
     public Location getLocation() {
-        return location;
+        return this.location;
     }
 
     public void setLocation(Location location){

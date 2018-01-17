@@ -1,9 +1,11 @@
-package corp.kairos.adamastor.Onboarding;
+package corp.kairos.adamastor.Settings.ContextRelated;
 
 import android.content.Intent;
+import android.location.Location;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TabHost;
 import android.widget.TextView;
 
@@ -14,6 +16,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -21,14 +24,15 @@ import java.util.GregorianCalendar;
 
 import corp.kairos.adamastor.Home.HomeActivity;
 import corp.kairos.adamastor.R;
-import corp.kairos.adamastor.Settings;
+import corp.kairos.adamastor.Settings.Settings;
 
-public class OnboardingActivity extends AppCompatActivity implements TimePickerDialog.OnTimeSetListener{
-
+public class ContextRelatedSettingsActivity extends AppCompatActivity implements TimePickerDialog.OnTimeSetListener{
     private GoogleMap workMap;
     private GoogleMap homeMap;
     private MapView workplaceView;
     private MapView homeplaceView;
+    private Location homeLoc;
+    private Location workLoc;
     private static final String MAP_VIEW_BUNDLE_WORK_KEY = "MapViewBundleWorkKey";
     private static final String MAP_VIEW_BUNDLE_HOME_KEY = "MapViewBundleHomeKey";
     private Settings sets;
@@ -39,7 +43,7 @@ public class OnboardingActivity extends AppCompatActivity implements TimePickerD
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.onboarding);
+        setContentView(R.layout.settings_onboarding);
 
         this.sets = new Settings(this);
         loadTabViewSettings();
@@ -124,6 +128,12 @@ public class OnboardingActivity extends AppCompatActivity implements TimePickerD
         i.putExtra("CONTEXT", ctx);
         startActivity(i);
     }
+    public void showTravelApps(View v) {
+        Intent i = new Intent(this, ContextRelatedAppsActivity.class);
+        String ctx = "Travel";
+        i.putExtra("CONTEXT", ctx);
+        startActivity(i);
+    }
 
     public void loadWorkTimeSettings() {
         TextView timeFrom = findViewById(R.id.work_from);
@@ -174,9 +184,34 @@ public class OnboardingActivity extends AppCompatActivity implements TimePickerD
         workplaceView.getMapAsync(new OnMapReadyCallback() {
             public void onMapReady(GoogleMap googleMap) {
                 workMap = googleMap;
-                workMap.setMinZoomPreference(12);
-                LatLng ny = new LatLng(40.7143528, -74.0059731);
-                workMap.moveCamera(CameraUpdateFactory.newLatLng(ny));
+                workMap.setMinZoomPreference(10);
+                Location l = sets.getUserContext("Work").getLocation();
+                LatLng ps = new LatLng(l.getLatitude(),l.getLongitude());
+                workMap.moveCamera(CameraUpdateFactory.newLatLng(ps));
+                MarkerOptions opts = new MarkerOptions();
+                workMap.addMarker(opts.position(ps));
+
+                workMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+                    @Override
+                    public void onMapClick(LatLng latLng) {
+                        workMap.clear();
+                        MarkerOptions opts = new MarkerOptions();
+                        opts.position(latLng);
+                        workMap.addMarker(opts);
+                        workLoc = new Location("provider");
+                        workLoc.setLatitude(latLng.latitude);
+                        workLoc.setLongitude(latLng.longitude);
+                        Button btn = findViewById(R.id.btn_pickWork);
+                        btn.setVisibility(View.VISIBLE);
+
+                        btn.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                sets.getUserContext("Work").setLocation(workLoc);
+                            }
+                        });
+                    }
+                });
             }
         });
 
@@ -185,9 +220,34 @@ public class OnboardingActivity extends AppCompatActivity implements TimePickerD
         homeplaceView.getMapAsync(new OnMapReadyCallback() {
             public void onMapReady(GoogleMap googleMap) {
                 homeMap = googleMap;
-                homeMap.setMinZoomPreference(12);
-                LatLng pt = new LatLng(41.5503200, -8.4200500);
-                homeMap.moveCamera(CameraUpdateFactory.newLatLng(pt));
+                homeMap.setMinZoomPreference(10);
+                Location l = sets.getUserContext("Leisure").getLocation();
+                LatLng ps = new LatLng(l.getLatitude(),l.getLongitude());
+                homeMap.moveCamera(CameraUpdateFactory.newLatLng(ps));
+                MarkerOptions opts = new MarkerOptions();
+                homeMap.addMarker(opts.position(ps));
+
+                homeMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+                    @Override
+                    public void onMapClick(LatLng latLng) {
+                        homeMap.clear();
+                        MarkerOptions opts = new MarkerOptions();
+                        opts.position(latLng);
+                        homeMap.addMarker(opts);
+                        homeLoc = new Location("provider");
+                        homeLoc.setLatitude(latLng.latitude);
+                        homeLoc.setLongitude(latLng.longitude);
+                        Button btn = findViewById(R.id.btn_pickHome);
+                        btn.setVisibility(View.VISIBLE);
+
+                        btn.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                sets.getUserContext("Leisure").setLocation(homeLoc);
+                            }
+                        });
+                    }
+                });
             }
         });
 
@@ -210,6 +270,8 @@ public class OnboardingActivity extends AppCompatActivity implements TimePickerD
 
     public void saveChanges(View v) {
         this.sets.saveContextSettings("Work");
+        this.sets.saveContextSettings("Leisure");
+        this.sets.saveContextSettings("Travel");
         Intent i = new Intent(this, HomeActivity.class);
         startActivity(i);
         finish();

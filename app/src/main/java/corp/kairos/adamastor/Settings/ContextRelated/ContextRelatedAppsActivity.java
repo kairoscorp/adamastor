@@ -1,4 +1,4 @@
-package corp.kairos.adamastor.Onboarding;
+package corp.kairos.adamastor.Settings.ContextRelated;
 
 import android.app.Activity;
 import android.content.Context;
@@ -6,12 +6,10 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
-
 import java.util.Set;
-
 import corp.kairos.adamastor.AppDetail;
 import corp.kairos.adamastor.R;
-import corp.kairos.adamastor.Settings;
+import corp.kairos.adamastor.Settings.Settings;
 import corp.kairos.adamastor.UserContext;
 
 public class ContextRelatedAppsActivity extends Activity {

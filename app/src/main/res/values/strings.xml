@@ -2,8 +2,8 @@
 
     <string name="app_name">Adamastor</string>
     <string name="google_android_map_api_key">AIzaSyD9GnbGKudeaNFVXWUftSla7Wfr6JGg_BU</string>
-    
-    <!-- Strings related to onboarding -->
+
+    <!-- Strings relatedsettings_onboardingding -->
     <string name="onboarding_summary">we want to know some things about you!</string>
     <string name="onboarding_work_hours">Working hours</string>
     <string name="onboarding_work_place">Workplace Location</string>

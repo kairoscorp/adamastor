@@ -10,7 +10,8 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
-    <uses-permission android:name="android.permission.PACKAGE_USAGE_STATS"
+    <uses-permission
+        android:name="android.permission.PACKAGE_USAGE_STATS"
         tools:ignore="ProtectedPermissions" />
     <uses-permission android:name="com.google.android.gms.permission.ACTIVITY_RECOGNITION" />
 
@@ -36,7 +37,8 @@
             android:label="@string/app_name"
             android:launchMode="singleTask"
             android:stateNotNeeded="true"
-            android:theme="@android:style/Theme.Wallpaper.NoTitleBar.Fullscreen">
+            android:theme="@android:style/Theme.Wallpaper.NoTitleBar.Fullscreen"
+            tools:targetApi="eclair">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -49,28 +51,74 @@
             android:name=".AllApps.AllAppsActivity"
             android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen" />
         <activity
-            android:name=".Onboarding.OnboardingActivity"
+            android:name=".Settings.ContextRelated.ContextRelatedSettingsActivity"
             android:label="Onboarding"
-            android:parentActivityName=".HomeActivity">
+            android:parentActivityName=".Home.HomeActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="corp.kairos.adamastor.HomeActivity" />
+                android:value="corp.kairos.adamastor.Home.HomeActivity" />
         </activity>
         <activity
-            android:name=".Onboarding.ContextRelatedAppsActivity"
-            android:parentActivityName=".Onboarding.OnboardingActivity">
+            android:name=".Settings.ContextRelated.ContextRelatedAppsActivity"
+            android:label="Context Related Apps"
+            android:parentActivityName=".Settings.ContextRelated.ContextRelatedSettingsActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="corp.kairos.adamastor.Onboarding.OnboardingActivity" />
+                android:value=".Settings.ContextRelated.ContextRelatedSettingsActivity" />
         </activity>
 
-        <service android:name="corp.kairos.adamastor.collector.CollectorService"
+        <service
+            android:name=".collector.CollectorService"
             android:label="@string/app_name">
-
             <intent-filter>
                 <action android:name="android.service.notification.CollectorService" />
             </intent-filter>
         </service>
+
+        <activity
+            android:name=".Onboarding.Onboard1Activity"
+            android:label="Onboarding"
+            android:parentActivityName=".Home.HomeActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="corp.kairos.adamastor.Home.HomeActivity" />
+        </activity>
+
+        <activity
+            android:name=".Onboarding.OnboardUsageSettings"
+            android:label="Onboarding"
+            android:parentActivityName=".Onboarding.Onboard1Activity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="corp.kairos.adamastor.Home.HomeActivity" />
+        </activity>
+
+        <activity
+            android:name=".Onboarding.Onboard2Activity"
+            android:label="Onboarding"
+            android:parentActivityName=".Onboarding.Onboard1Activity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="corp.kairos.adamastor.Onboarding.Onboard1Activity" />
+        </activity>
+
+        <activity
+            android:name=".Onboarding.Onboard3Activity"
+            android:label="Onboarding"
+            android:parentActivityName=".Onboarding.Onboard2Activity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="corp.kairos.adamastor.Onboarding.Onboard2Activity" />
+        </activity>
+
+        <activity
+            android:name=".Onboarding.Onboard4Activity"
+            android:label="Onboarding"
+            android:parentActivityName=".Onboarding.Onboard3Activity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="corp.kairos.adamastor.Onboarding.Onboard3Activity" />
+        </activity>
     </application>
 
 </manifest>

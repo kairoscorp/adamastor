@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.widget.RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:layout_marginStart="8dp"
+    android:layout_marginEnd="8dp">
+
+    <Button
+        android:id="@+id/next2"
+        style="@style/Widget.AppCompat.Button.Colored"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginBottom="10dp"
+        android:layout_marginEnd="10dp"
+        android:onClick="goNext"
+        android:text="Next"
+        android:visibility="invisible" />
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/imageView4"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                app:srcCompat="@drawable/ic_maps" />
+
+            <TextView
+                android:id="@+id/tv1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_weight="1"
+                android:text="We need to know your work location and home location to help us better define your context at the right place"
+                android:textAlignment="center"
+                android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+                android:textSize="16sp" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tv5"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Set Home Location"
+            android:textAlignment="center"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+            android:layout_marginTop="16dp"
+            android:textSize="18sp" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.google.android.gms.maps.MapView
+                android:id="@+id/mapHome"
+                android:layout_width="match_parent"
+                android:layout_height="160dp"
+                android:layout_marginEnd="15dp"
+                android:layout_marginStart="15dp" />
+
+            <Button
+                android:id="@+id/btn_pickHome"
+                android:layout_width="60dp"
+                android:layout_height="40dp"
+                android:layout_alignBottom="@+id/mapHome"
+                android:layout_alignStart="@+id/mapHome"
+                android:layout_marginBottom="10dp"
+                android:layout_marginStart="10dp"
+                android:text="Pick"
+                android:textSize="12sp" />
+        </RelativeLayout>
+
+        <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="10dp"
+                android:background="@color/common_google_signin_btn_text_dark_disabled" />
+
+        <TextView
+            android:id="@+id/tv3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="Set Work Location"
+            android:textAlignment="center"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+            android:textSize="18sp" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.google.android.gms.maps.MapView
+                android:id="@+id/mapWork"
+                android:layout_width="match_parent"
+                android:layout_height="160dp"
+                android:layout_marginEnd="15dp"
+                android:layout_marginStart="15dp" />
+
+            <Button
+                android:id="@+id/btn_pickWork"
+                android:layout_width="60dp"
+                android:layout_height="40dp"
+                android:layout_alignBottom="@+id/mapWork"
+                android:layout_alignStart="@+id/mapWork"
+                android:layout_marginBottom="10dp"
+                android:layout_marginStart="10dp"
+                android:text="Pick"
+                android:textSize="12sp" />
+
+        </RelativeLayout>
+
+
+
+    </LinearLayout>
+
+
+</android.widget.RelativeLayout>

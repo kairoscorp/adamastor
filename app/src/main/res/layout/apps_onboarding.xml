@@ -4,27 +4,39 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="corp.kairos.adamastor.Onboarding.WorkRelatedAppsActivity">
+    tools:context=".Settings.ContextRelated.ContextRelatedAppsActivity"
+    android:id="@+id/ContextRelatedAppsActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout_editor_absoluteX="0dp"
+        tools:ignore="MissingConstraints">
 
-        <Button
-            android:id="@+id/btn_save_check_apps"
-            style="@style/Widget.AppCompat.Button.Colored"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Save " />
-
-        <ListView
-            android:id="@+id/check_apps_list"
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-        </ListView>
+            <ListView
+                android:id="@+id/check_apps_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true">
+
+            </ListView>
+
+            <Button
+                android:id="@+id/btn_save_check_apps"
+                style="@style/Widget.AppCompat.Button.Colored"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentStart="true"
+                android:text="Save" />
+        </RelativeLayout>
 
     </LinearLayout>
 

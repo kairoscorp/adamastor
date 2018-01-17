@@ -1,4 +1,4 @@
-package corp.kairos.adamastor.Onboarding;
+package corp.kairos.adamastor.Settings.ContextRelated;
 
 import android.app.Activity;
 import android.content.Context;
@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 
@@ -74,10 +75,15 @@ public class AppCheckAdapter extends ArrayAdapter {
                     } else {
                         uc.removeApp(app);
                     }
-
-
+                    Button btn = ((Activity) context).findViewById(R.id.next3);
+                    if (uc.getContextApps().size() > 2) {
+                        if(btn != null) {btn.setVisibility(View.VISIBLE);}
+                    } else {
+                        if(btn != null) {btn.setVisibility(View.INVISIBLE);}
+                    }
                 }
             });
+
         } else {
             holder = (ViewHolder) row.getTag();
         }

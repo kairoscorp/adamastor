@@ -1,4 +1,4 @@
-package corp.kairos.adamastor;
+package corp.kairos.adamastor.Settings;
 
 import android.content.Context;
 import android.content.Intent;
@@ -7,6 +7,7 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
+import android.os.Build;
 
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
@@ -17,7 +18,13 @@ import java.util.Set;
 import java.util.TreeSet;
 
 
-public class Settings {
+import corp.kairos.adamastor.AppDetail;
+import corp.kairos.adamastor.AppDetailComparator;
+import corp.kairos.adamastor.UserContext;
+
+
+
+public class Settings{
     private Context ctx;
     private PackageManager packageManager;
 
@@ -40,6 +47,17 @@ public class Settings {
         this.contexts.put("Leisure",loadContextSettings("Leisure"));
         this.contexts.put("Travel",loadContextSettings("Travel"));
 
+    }
+
+    public boolean isOnboardingDone() {
+        SharedPreferences sharedPref = ctx.getSharedPreferences("GENERAL",Context.MODE_PRIVATE);
+        return sharedPref.getBoolean("OnboardingDone",false);
+    }
+    public void setOnboardingDone() {
+        SharedPreferences sharedPref = ctx.getSharedPreferences("GENERAL",Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putBoolean("OnboardingDone",true);
+        editor.apply();
     }
 
     public UserContext loadContextSettings(String context) {
@@ -88,7 +106,6 @@ public class Settings {
     }
 
 
-
     public Set<AppDetail> loadApps() {
         Set<AppDetail> apps = new TreeSet<>(new AppDetailComparator());
       
@@ -110,12 +127,26 @@ public class Settings {
         return this.contexts;
     }
 
+    public List<String> getContextNames() {
+        List<String> names = new ArrayList<>();
+        names.addAll(contexts.keySet());
+        return names;
+    }
+
     public UserContext getUserContext(String c) {
         return this.contexts.get(c);
     }
 
 
     public Set<AppDetail> getAllApps() {return this.allApps;}
+
+    public void resetSettings() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            ctx.deleteSharedPreferences("Prefs_Work");
+            ctx.deleteSharedPreferences("Prefs_Leisure");
+            ctx.deleteSharedPreferences("Prefs_Travel");
+        }
+    }
 }
 
 
