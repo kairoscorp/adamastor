@@ -5,8 +5,10 @@ import android.animation.AnimatorListenerAdapter;
 import android.app.usage.UsageStats;
 import android.app.usage.UsageStatsManager;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -15,22 +17,15 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.components.Description;
-import com.github.mikephil.charting.components.MarkerView;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.formatter.IValueFormatter;
-import com.github.mikephil.charting.formatter.LargeValueFormatter;
-import com.github.mikephil.charting.formatter.PercentFormatter;
-import com.github.mikephil.charting.highlight.Highlight;
-import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.github.mikephil.charting.utils.ColorTemplate;
-import com.github.mikephil.charting.utils.MPPointF;
 import com.github.mikephil.charting.utils.ViewPortHandler;
 
 import java.util.ArrayList;
@@ -129,10 +124,9 @@ public class StatisticsActivity extends AppCompatActivity {
             }
         }
 
-
-        // Get only the statistics of the installed apps
+        // Get only the statistics of the installed apps and not launchers
         Map<String, AppDetailStats> filteredAppsStats = new TreeMap<>();
-        Set<AppDetail> allApps = AllAppsActivity.getAllApps(getPackageManager());
+        Set<AppDetail> allApps = AllAppsActivity.getAllApps(getPackageManager(), false);
         for(AppDetail app: allApps) {
             if(appsStats.containsKey(app.getLabel())) {
                 filteredAppsStats.put(app.getLabel(), appsStats.get(app.getLabel()));
