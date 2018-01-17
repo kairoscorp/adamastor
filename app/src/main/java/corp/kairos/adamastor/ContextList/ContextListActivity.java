@@ -7,14 +7,14 @@ import android.support.v7.widget.RecyclerView;
 import org.apache.commons.lang3.ArrayUtils;
 
 import corp.kairos.adamastor.AllApps.AllAppsActivity;
-import corp.kairos.adamastor.AnimActivity;
+import corp.kairos.adamastor.Animation.AnimationActivity;
 import corp.kairos.adamastor.Home.HomeActivity;
 import corp.kairos.adamastor.R;
 import corp.kairos.adamastor.Settings.Settings;
 import corp.kairos.adamastor.UserContext;
 import io.github.luizgrp.sectionedrecyclerviewadapter.SectionedRecyclerViewAdapter;
 
-public class ContextListActivity extends AnimActivity {
+public class ContextListActivity extends AnimationActivity {
     public static int NUMBER_OF_COLUMNS = 4;
     private UserContext[] userContexts;
     private RecyclerView mRecyclerView;
@@ -27,7 +27,7 @@ public class ContextListActivity extends AnimActivity {
         mRecyclerView = (RecyclerView) findViewById(R.id.all_contexts_recycler_view);
 
         // Load Contexts from Settings
-        Settings settings = new Settings(getApplicationContext());
+        Settings settings = Settings.getInstance(getApplicationContext());
         userContexts = ArrayUtils.addAll(settings.getUserContextsAsArray(), settings.getZeroContext());
 
         // Set side activities

@@ -13,7 +13,7 @@ import android.widget.TextView;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
-import corp.kairos.adamastor.AppDetail;
+import corp.kairos.adamastor.AppDetails;
 import corp.kairos.adamastor.R;
 
 import static corp.kairos.adamastor.Util.getObjectByIndex;
@@ -21,16 +21,16 @@ import static corp.kairos.adamastor.Util.getObjectByIndex;
 
 public class StatisticsAppsMenuAdapter extends ArrayAdapter {
     private Context context;
-    private Set<AppDetailStats> apps;
+    private Set<AppDetails> apps;
     private long finalTotal;
 
-    public StatisticsAppsMenuAdapter(Context context, Set<AppDetailStats> apps) {
+    public StatisticsAppsMenuAdapter(Context context, Set<AppDetails> apps) {
         super(context, R.layout.allapps_menu);
         this.context = context;
         this.apps = apps;
         finalTotal = 0;
-        for(AppDetailStats app : apps) {
-            finalTotal += app.getTotalTime();
+        for(AppDetails app : apps) {
+            finalTotal += app.getUsageStatistics();
         }
     }
 
@@ -57,7 +57,7 @@ public class StatisticsAppsMenuAdapter extends ArrayAdapter {
             convertView = inflater.inflate(R.layout.statistics_app_layout, parent, false);
         }
 
-        AppDetailStats app = (AppDetailStats) getObjectByIndex(position, apps);
+        AppDetails app = (AppDetails) getObjectByIndex(position, apps);
         ImageView appIcon = (ImageView)convertView.findViewById(R.id.app_stats_image);
         appIcon.setImageDrawable(app.getIcon());
 
@@ -65,12 +65,12 @@ public class StatisticsAppsMenuAdapter extends ArrayAdapter {
         appLabel.setText(app.getLabel());
 
         ProgressBar appProgressBar = (ProgressBar)convertView.findViewById(R.id.app_stats_progress_bar);
-        long percentage = (app.getTotalTime() * 100) / finalTotal;
+        long percentage = (app.getUsageStatistics() * 100) / finalTotal;
         appProgressBar.setProgress((int) percentage);
 
         TextView appTimeUsage = (TextView)convertView.findViewById(R.id.app_stats_usage_time);
 
-        appTimeUsage.setText(TimeUnit.MILLISECONDS.toMinutes(app.getTotalTime()) + " minutes");
+        appTimeUsage.setText(TimeUnit.MILLISECONDS.toMinutes(app.getUsageStatistics()) + " minutes");
 
         TextView appPercentage = (TextView)convertView.findViewById(R.id.app_stats_percentage);
         String percentageText = percentage + " %";

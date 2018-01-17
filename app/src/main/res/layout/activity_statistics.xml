@@ -12,7 +12,6 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/app_bar_height"
         android:fitsSystemWindows="true"
-        android:background="@drawable/statistics"
         android:theme="@style/AppTheme.AppBarOverlay">
 
         <android.support.design.widget.CollapsingToolbarLayout
@@ -34,19 +33,34 @@
         </android.support.design.widget.CollapsingToolbarLayout>
     </android.support.design.widget.AppBarLayout>
 
-    <include layout="@layout/statistics_context" />
+    <include
+        android:id="@+id/contexts_stats"
+        layout="@layout/statistics_context" />
 
-    <include layout="@layout/statistics_apps" />
+    <include
+        android:id="@+id/applications_stats"
+        layout="@layout/statistics_apps" />
 
 
     <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab"
+        android:id="@+id/id_stats_swich_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/fab_margin"
+        android:layout_margin="@dimen/stats_button_margin"
         app:layout_anchor="@id/app_bar"
         app:layout_anchorGravity="bottom|end"
-        app:backgroundTint="@android:color/holo_blue_dark"
+        app:backgroundTint="@color/primaryDarkColor"
         app:srcCompat="@drawable/ic_graph" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/id_stats_refresh_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/stats_button_margin"
+        app:backgroundTint="@color/secondaryColor"
+        app:layout_anchor="@+id/contexts_stats"
+        app:layout_anchorGravity="right|bottom"
+        app:srcCompat="@android:drawable/stat_notify_sync" />
+
 
 </android.support.design.widget.CoordinatorLayout>

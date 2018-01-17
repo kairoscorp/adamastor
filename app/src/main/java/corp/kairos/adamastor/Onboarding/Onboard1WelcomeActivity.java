@@ -13,16 +13,20 @@ import android.view.View;
 import corp.kairos.adamastor.R;
 import corp.kairos.adamastor.Settings.Settings;
 
-
 public class Onboard1WelcomeActivity extends AppCompatActivity {
     private boolean permissionsGranted = false;
     public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
+    private Settings settingsUser;
+
+    private static final String TAG = Onboard1WelcomeActivity.class.getName();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.onboard1_welcome);
-        new Settings(this).resetSettings();
+        this.settingsUser = Settings.getInstance(this);
+        this.settingsUser.resetSettings();
         checkPermissions();
     }
 
@@ -50,8 +54,7 @@ public class Onboard1WelcomeActivity extends AppCompatActivity {
             requestPremissions();
 
         }else{
-            Log.i("CollectorServiceLog", "permissions OK");
-            permissionsGranted = true;
+            Log.i(TAG, "permissions OK");
         }
     }
 

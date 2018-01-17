@@ -36,7 +36,7 @@ public class Util {
         // These loops just associate different apps with different contexts
         int n = 0;
         for(List<String> appsList : apps){
-            List<AppDetail> appDetails = new ArrayList<>();
+            List<AppDetails> appDetails = new ArrayList<>();
             for(String p: appsList){
                 try {
                     ApplicationInfo ai = pm.getApplicationInfo(p,0);
@@ -45,7 +45,7 @@ public class Util {
                     String name = ai.packageName;
                     Drawable icon = pm.getApplicationIcon(ai);
 
-                    AppDetail app = new AppDetail(label, name, icon);
+                    AppDetails app = new AppDetails(label, name, icon);
                     appDetails.add(app);
                 } catch (PackageManager.NameNotFoundException e) {
                     Log.e(ActivityTAG, "App not found");
@@ -56,24 +56,5 @@ public class Util {
             n++;
         }
         return staticContexts;
-    }
-
-    public static String getContextNameById(int id) {
-        switch (id) {
-            case 0:
-                return "Home";
-
-            case 1:
-                return "Work";
-
-            case 2:
-                return "Travel";
-
-            case 3:
-                return "Fitness";
-
-            default:
-                return "Other";
-        }
     }
 }

@@ -3,21 +3,24 @@ package corp.kairos.adamastor;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 
-public class AppDetail implements Comparable{
+public class AppDetails implements Comparable{
     private String label;
     private String name;
     private Drawable icon;
+    private Long usageStatistics;
 
-    public AppDetail(String label, String name, Drawable icon) {
+    public AppDetails(String label, String name, Drawable icon) {
         this.label = label;
         this.name = name;
         this.icon = icon;
+        this.usageStatistics = 0L;
     }
 
-    public AppDetail(AppDetail appDetail) {
+    public AppDetails(AppDetails appDetail) {
         this.label = appDetail.getLabel();
         this.name = appDetail.getPackageName();
         this.icon = appDetail.getIcon();
+        this.usageStatistics = appDetail.getUsageStatistics();
     }
 
     public String getLabel() {
@@ -44,8 +47,17 @@ public class AppDetail implements Comparable{
         this.icon = icon;
     }
 
-    public AppDetail clone() {
-        return new AppDetail(this);
+    public Long getUsageStatistics() {
+        return usageStatistics;
+    }
+
+    public void setUsageStatistics(Long usageStatistics) {
+        this.usageStatistics = usageStatistics;
+    }
+
+
+    public AppDetails clone() {
+        return new AppDetails(this);
     }
 
     @Override
@@ -53,10 +65,11 @@ public class AppDetail implements Comparable{
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        AppDetail appDetail = (AppDetail) o;
+        AppDetails appDetail = (AppDetails) o;
 
         if (label != null ? !label.equals(appDetail.label) : appDetail.label != null) return false;
         if (name != null ? !name.equals(appDetail.name) : appDetail.name != null) return false;
+        if (usageStatistics != null ? !usageStatistics.equals(appDetail.usageStatistics) : appDetail.usageStatistics != null) return false;
         return icon != null ? icon.equals(appDetail.icon) : appDetail.icon == null;
     }
 
@@ -64,6 +77,7 @@ public class AppDetail implements Comparable{
     public int hashCode() {
         int result = label != null ? label.hashCode() : 0;
         result = 31 * result + (name != null ? name.hashCode() : 0);
+        result = 31 * result + (usageStatistics != null ? usageStatistics.hashCode() : 0);
         result = 31 * result + (icon != null ? icon.hashCode() : 0);
         return result;
     }
@@ -73,7 +87,7 @@ public class AppDetail implements Comparable{
         if (this == o) return 0;
         if (getClass() != o.getClass()) return o.hashCode() > this.hashCode() ? 1 : 0;
 
-        AppDetail appDetail = (AppDetail) o;
+        AppDetails appDetail = (AppDetails) o;
 
         return this.getLabel().toLowerCase().compareTo(appDetail.getLabel().toLowerCase());
     }

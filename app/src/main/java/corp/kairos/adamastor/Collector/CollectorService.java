@@ -44,33 +44,36 @@ import java.util.TreeMap;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 
-import corp.kairos.adamastor.DatabaseHelper;
-import corp.kairos.adamastor.UserContext;
+import corp.kairos.adamastor.Settings.Settings;
 
 public class CollectorService extends Service implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
     private static final String NULL_APP = "NULL";
-    private static CollectorService sInstance;
+
+    private static final String TAG = ActivityRecognitionService.class.getName();
 
     private CollectorServiceBinder mCollectorServiceBinder = new CollectorServiceBinder();;
     private LocationManager locationManager;
     private PackageManager packageManager;
+    private static Settings settingsUser;
     private LocationListener locationListener;
     private Location lastLocation;
     private boolean checkLocation = false;
-    private DatabaseHelper logDatabaseHelper;
+    private static LogDatabaseHelper logDatabaseHelper;
     private GoogleApiClient googleApiClient;
     private int userActivityNow = 4; // 4 is Detected activity UNKNOWN
 
-
+    @Override
     public void onCreate(){
-        Log.i("CollectorServiceLog", "ServiceCreated");
-        sInstance = this;
+        Log.i(TAG, "ServiceCreated");
+
+        // Managers and Settings
         locationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
         packageManager = this.getPackageManager();
+        settingsUser = Settings.getInstance(this);
         createLocationListener();
         checkLocationPermissions();
-        logDatabaseHelper = new DatabaseHelper(this);
+        logDatabaseHelper = new LogDatabaseHelper(this);
 
         ActivityMonitorReceiver amr = new ActivityMonitorReceiver();
         IntentFilter filter = new IntentFilter();
@@ -93,19 +96,23 @@ public class CollectorService extends Service implements GoogleApiClient.Connect
 
     }
 
-    public static CollectorService getInstance() {
-        return sInstance;
-    }
-
-    public Map<String, Long> getContextStatistics() {
+    public static Map<String, Long> getContextStatistics() {
         // Random Values
         Map<String, Long> stats = new TreeMap<>();
         long min = TimeUnit.HOURS.toMillis(2);
         long max = TimeUnit.HOURS.toMillis(100);
         long randomTime = 0;
-        for(int i = 0; i < 5; i++) {
+
+        for(int i = 0; i < 4; i++) {
             randomTime =  ThreadLocalRandom.current().nextLong(min, max);
-            stats.put(UserContext.getContextNameById(i), randomTime);
+            if(settingsUser == null) {
+                Log.i("DEBUG", "settings");
+            } else if (settingsUser.getUserContext(i) == null) {
+                Log.i("DEBUG", "getUserContext("+i+")");
+            } else if(settingsUser.getUserContext(i).getContextName() == null) {
+                Log.i("DEBUG", "name");
+            }
+            stats.put(settingsUser.getUserContext(i).getContextName(), randomTime);
         }
 
         // Real values
@@ -120,12 +127,12 @@ public class CollectorService extends Service implements GoogleApiClient.Connect
     }
 
     private void mainLoop(){
-        Log.i("CollectorServiceLog", "MainLoopStarted");
+        Log.i(TAG, "MainLoopStarted");
         while(true){
             try {
                 double latitude, longitude;
                 int phoneActivity, playingMusic;
-                int context = ThreadLocalRandom.current().nextInt(0, 4);
+                String context = settingsUser.getCurrentUserContext().getContextName();
                 int callActivity = getPhoneCallState();
                 int ringMode = getRingtoneMode();
                 String provider;
@@ -156,7 +163,7 @@ public class CollectorService extends Service implements GoogleApiClient.Connect
                     provider = "PROVIDER";
                 }
 
-                Log.i("CollectorServiceLog",
+                Log.i(TAG,
                         time + "::"
                                 + appForeground + "::"
                                 + userActivityNow + "::"
@@ -173,7 +180,7 @@ public class CollectorService extends Service implements GoogleApiClient.Connect
 
                 Thread.sleep(10000);
             }catch(InterruptedException ex){
-                Log.i("CollectorServiceLog", "Exception in Main Loop");
+                Log.i(TAG, "Exception in Main Loop");
             }
         }
     }
@@ -350,7 +357,7 @@ public class CollectorService extends Service implements GoogleApiClient.Connect
 
     @Override
     public IBinder onBind(Intent intent) {
-        Log.i("CollectorServiceLog", "ServiceBound");
+        Log.i(TAG, "ServiceBound");
         return mCollectorServiceBinder;
     }
 
@@ -378,7 +385,7 @@ public class CollectorService extends Service implements GoogleApiClient.Connect
 
     public class CollectorServiceBinder extends Binder {
         public CollectorService getBinder(){
-            Log.i("CollectorServiceLog", "GettingBinder");
+            Log.i(TAG, "GettingBinder");
             return CollectorService.this;
         }
     }

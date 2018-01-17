@@ -10,7 +10,11 @@ import com.google.android.gms.location.DetectedActivity;
 
 import java.util.List;
 
+import corp.kairos.adamastor.AppsManager.AppsManager;
+
 public class ActivityRecognitionService extends IntentService {
+
+    private static final String TAG = ActivityRecognitionService.class.getName();
 
 
     public ActivityRecognitionService() {
@@ -25,7 +29,7 @@ public class ActivityRecognitionService extends IntentService {
     protected void onHandleIntent(@Nullable Intent intent) {
 
         if(ActivityRecognitionResult.hasResult(intent)) {
-            Log.i("CollectorServiceLog", "MonitorReceivesRequest");
+            Log.i(TAG, "MonitorReceivesRequest");
             ActivityRecognitionResult result = ActivityRecognitionResult.extractResult(intent);
             handleDetectedActivities(result.getProbableActivities());
         }

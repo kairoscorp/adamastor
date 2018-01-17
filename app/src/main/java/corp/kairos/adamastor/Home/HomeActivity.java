@@ -2,11 +2,9 @@ package corp.kairos.adamastor.Home;
 
 
 import android.Manifest;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.os.Vibrator;
 import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -16,34 +14,28 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import corp.kairos.adamastor.AllApps.AllAppsActivity;
-import corp.kairos.adamastor.AnimActivity;
-import corp.kairos.adamastor.AppDetail;
-import corp.kairos.adamastor.ContextList.ContextListActivity;
-import corp.kairos.adamastor.Onboarding.Onboard1WelcomeActivity;
-import corp.kairos.adamastor.R;
-import corp.kairos.adamastor.Settings.ContextRelated.ContextRelatedSettingsActivity;
-import corp.kairos.adamastor.Settings.Settings;
-import corp.kairos.adamastor.UserContext;
-import corp.kairos.adamastor.collector.CollectorService;
+import corp.kairos.adamastor.Animation.AnimationActivity;
+import corp.kairos.adamastor.AppDetails;
 import corp.kairos.adamastor.AppsManager.AppsManager;
 import corp.kairos.adamastor.Collector.CollectorService;
-import corp.kairos.adamastor.Onboarding.Onboard1Activity;
+import corp.kairos.adamastor.Onboarding.Onboard1WelcomeActivity;
 import corp.kairos.adamastor.R;
 import corp.kairos.adamastor.Settings.ContextRelated.ContextRelatedSettingsActivity;
 import corp.kairos.adamastor.Settings.Settings;
 import corp.kairos.adamastor.Statistics.StatisticsActivity;
 import corp.kairos.adamastor.UserContext;
 
-public class HomeActivity extends AnimActivity {
+public class HomeActivity extends AnimationActivity {
 
     private static final String TAG = HomeActivity.class.getName();
 
     private UserContext currentContext;
     private int currentContextIndex;
-    private UserContext[] contexts;
     private View.OnClickListener clickHandler;
-    private PackageManager pm;
+    private PackageManager packageManager;
+    private Settings settingsUser;
     private AppsManager appsManager;
+
 
     private boolean permissionsGranted = false;
     public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
@@ -51,48 +43,47 @@ public class HomeActivity extends AnimActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        this.packageManager = getPackageManager();
+        this.settingsUser = Settings.getInstance(this);
         this.appsManager = AppsManager.getInstance();
-        Settings sets = new Settings(this);
-        if(!sets.isOnboardingDone()){
+        this.appsManager.setupApps(packageManager);
+        if (!settingsUser.isOnboardingDone()) {
+            // Set animation
+            super.setAnimation("up");
+
             Intent i = new Intent(this, Onboard1WelcomeActivity.class);
             startActivity(i);
             finish();
+
         } else {
             setContentView(R.layout.activity_home);
-            pm = getPackageManager();
-
-            // Set animtations
-            this.setRightActivity(AllAppsActivity.class);
-            this.setLeftActivity(StatisticsActivity.class);
 
             // Setup contexts
-            Settings settings = new Settings(getApplicationContext());
-            contexts = settings.getUserContextsAsArray();
-            setContexts();        
             this.currentContextIndex = 0;
-            this.currentContext = this.contexts[0];
+            this.currentContext = settingsUser.getCurrentUserContext();
+
             addClickListener();
+            adjustScreenToContext();
+
+            // Set animations
+            this.setDownActivity(AllAppsActivity.class);
+            this.setLeftActivity(StatisticsActivity.class);
+
+            checkPermissions();
+            if (permissionsGranted) {
+                bindCollectorService();
+            }
         }
     }
 
-    private void addClickListener(){
+    private void addClickListener() {
         clickHandler = v -> {
+            super.setAnimation("right");
             HomeApp ha = (HomeApp) v;
-            Intent i = pm.getLaunchIntentForPackage(ha.getPackageName());
-            HomeActivity.this.startActivity(i);
+            Intent i = packageManager.getLaunchIntentForPackage(ha.getPackageName());
+            this.startActivity(i);
         };
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        adjustScreenToContext();
-
-        checkPermissions();
-        if(permissionsGranted){
-            bindCollectorService();
-        }
-
     }
 
     /*
@@ -102,12 +93,12 @@ public class HomeActivity extends AnimActivity {
         TextView contextOnScreen = ((TextView) findViewById(R.id.id_context_label));
 
         //Just refresh the view if the context actually changed
-        if(!(contextOnScreen.getText().equals(currentContext.getContextName()))) {
+        if (!(contextOnScreen.getText().equals(currentContext.getContextName()))) {
             LinearLayout contextAppsList = findViewById(R.id.id_context_apps_list);
             contextAppsList.removeAllViews();
             contextOnScreen.setText(currentContext.getContextName());
 
-            for (AppDetail app : currentContext.getContextApps()) {
+            for (AppDetails app : currentContext.getContextApps()) {
                 LayoutInflater inflater = LayoutInflater.from(this);
                 HomeApp inflatedView = (HomeApp) inflater.inflate(R.layout.home_app, null);
 
@@ -124,57 +115,20 @@ public class HomeActivity extends AnimActivity {
         }
     }
 
-    private void setContexts(){
-        /*
-        * Creating 4 static contexts to simulate the intended behaviour */
-        List<String> homeApps = Arrays.asList("com.google.android.talk", "com.facebook.katana");
-        List<String> workApps = Arrays.asList("com.google.android.gm", "com.Slack", "com.google.android.calendar");
-        List<String> workoutApps = Arrays.asList("com.google.android.apps.fitness");
-        List<String> travellingApps = Arrays.asList("com.google.android.apps.maps");
-
-        List<List<String>> apps = Arrays.asList(homeApps, workApps, workoutApps, travellingApps);
-
-        pm = getPackageManager();
-
-        /*
-        * These loops just associate different apps with different contexts*/
-        int n = 0;
-        for(List<String> appsList : apps){
-            List<AppDetail> appDetails = new ArrayList<>();
-            for(String p: appsList){
-                try {
-                    ApplicationInfo ai = pm.getApplicationInfo(p,0);
-
-                    String label = (String) pm.getApplicationLabel(ai);
-                    String name = ai.packageName;
-                    Drawable icon = pm.getApplicationIcon(ai);
-
-                    AppDetail app = new AppDetail(label, name, icon);
-                    appDetails.add(app);
-                } catch (PackageManager.NameNotFoundException e) {
-                    Log.e(TAG, "App not found");
-                    e.printStackTrace();
-                }
-            }
-            this.contexts[n] = new UserContext("Context " + n, appDetails);
-            n++;
-        }
-    }
-
-
-    public void showAllAppsMenu(View v){
-        Vibrator vibe = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-        vibe.vibrate(50);
+    public void showAllAppsMenu(View v) {
+        super.setAnimation("down");
         Intent i = new Intent(this, AllAppsActivity.class);
         startActivity(i);
     }
 
-    public void showSettings(View v){
+    public void showSettings(View v) {
+        super.setAnimation("up");
         Intent i = new Intent(this, ContextRelatedSettingsActivity.class);
         startActivity(i);
     }
 
-    public void showStatistics(View v){
+    public void showStatistics(View v) {
+        super.setAnimation("left");
         Intent i = new Intent(this, StatisticsActivity.class);
         startActivity(i);
     }
@@ -184,38 +138,38 @@ public class HomeActivity extends AnimActivity {
     * The mechanism for manual context change is pressing the context label.
     * This method is called when the context label is pressed.
     */
-    public void changeContext(View view){
-        this.currentContextIndex = (this.currentContextIndex + 1) % this.contexts.length;
-        this.currentContext = this.contexts[this.currentContextIndex];
+    public void changeContext(View view) {
+        this.currentContextIndex = (this.currentContextIndex + 1) % settingsUser.getContextNames().size();
+        this.currentContext = settingsUser.getUserContext(currentContextIndex);
         adjustScreenToContext();
     }
 
     //KAIROS
-    private void checkPermissions(){
+    private void checkPermissions() {
         if ((ActivityCompat.checkSelfPermission(this,
                 android.Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) ||
                 (ActivityCompat.checkSelfPermission(this,
                         android.Manifest.permission.ACCESS_COARSE_LOCATION)
-                        != PackageManager.PERMISSION_GRANTED)||
+                        != PackageManager.PERMISSION_GRANTED) ||
                 (ActivityCompat.checkSelfPermission(this,
                         Manifest.permission.WRITE_EXTERNAL_STORAGE)
                         != PackageManager.PERMISSION_GRANTED) ||
                 (ActivityCompat.checkSelfPermission(this,
                         Manifest.permission.GET_ACCOUNTS)
-                        != PackageManager.PERMISSION_GRANTED)){
+                        != PackageManager.PERMISSION_GRANTED)) {
 
 
             requestPremissions();
 
-        }else{
-            Log.i("CollectorServiceLog", "permissions OK");
+        } else {
+            Log.i(TAG, "permissions OK");
             permissionsGranted = true;
         }
     }
 
     //KAIROS
-    private void requestPremissions(){
+    private void requestPremissions() {
         ActivityCompat.requestPermissions(this,
                 new String[]{Manifest.permission.ACCESS_COARSE_LOCATION,
                         Manifest.permission.ACCESS_FINE_LOCATION,
@@ -227,15 +181,15 @@ public class HomeActivity extends AnimActivity {
     }
 
     //KAIROS
-    private void bindCollectorService(){
-        Log.i("CollectorServiceLog", "Binding Service");
+    private void bindCollectorService() {
+        Log.i(TAG, "Binding Service");
         Intent intent = new Intent(this, CollectorService.class);
         startService(intent);
 
     }
 
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        if(requestCode == MY_PERMISSIONS_REQUEST_LOCATION) {
+        if (requestCode == MY_PERMISSIONS_REQUEST_LOCATION) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 permissionsGranted = true;
             } else {

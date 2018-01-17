@@ -11,13 +11,12 @@
 
     <com.github.mikephil.charting.charts.PieChart
         android:id="@+id/stats_context"
-        android:layout_width="351dp"
-        android:layout_height="327dp"
+        android:layout_width="362dp"
+        android:layout_height="348dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.203" />
-
+        app:layout_constraintVertical_bias="0.0" />
 </android.support.constraint.ConstraintLayout>
 

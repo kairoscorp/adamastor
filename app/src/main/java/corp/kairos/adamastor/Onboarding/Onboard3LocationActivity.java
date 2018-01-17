@@ -24,10 +24,11 @@ import java.util.Set;
 
 import corp.kairos.adamastor.R;
 import corp.kairos.adamastor.Settings.Settings;
+import corp.kairos.adamastor.UserContext;
 
 
 public class Onboard3LocationActivity extends AppCompatActivity{
-    private Settings sets;
+    private Settings settingsUser;
 
     private LocationManager locationManager;
     private Location lastLocation;
@@ -41,6 +42,7 @@ public class Onboard3LocationActivity extends AppCompatActivity{
 
     private Location homeLoc;
     private Location workLoc;
+
     //UMinho coordinates, if no location provider is available, this will center the map in this location, because UMinho is amazing!
     private LatLng pos = new LatLng(41.56131,-8.393804);
     private boolean pickWork = false;
@@ -51,8 +53,8 @@ public class Onboard3LocationActivity extends AppCompatActivity{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        this.settingsUser = Settings.getInstance(this);
         setContentView(R.layout.onboard3_location);
-        this.sets = new Settings(this);
         locationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
         checkLocationPermissions();
         loadMapsSettings(savedInstanceState);
@@ -148,13 +150,12 @@ public class Onboard3LocationActivity extends AppCompatActivity{
                         Button btn = findViewById(R.id.btn_pickWork);
                         btn.setVisibility(View.VISIBLE);
 
-                        btn.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                pickWork = true;
-                                sets.getUserContext("Work").setLocation(workLoc);
-                                showNext();
-                            }
+                        btn.setOnClickListener(view -> {
+                            pickWork = true;
+                            UserContext context = settingsUser.getUserContext("Work");
+                            context.setLocation(workLoc);
+                            settingsUser.setUserContext(context);
+                            showNext();
                         });
 
                     }
@@ -186,13 +187,12 @@ public class Onboard3LocationActivity extends AppCompatActivity{
                         Button btn = findViewById(R.id.btn_pickHome);
                         btn.setVisibility(View.VISIBLE);
 
-                        btn.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                pickHome = true;
-                                sets.getUserContext("Leisure").setLocation(homeLoc);
-                                showNext();
-                            }
+                        btn.setOnClickListener(view -> {
+                            pickHome = true;
+                            UserContext context = settingsUser.getUserContext("Home");
+                            context.setLocation(homeLoc);
+                            settingsUser.setUserContext(context);
+                            showNext();
                         });
 
                     }
@@ -226,11 +226,8 @@ public class Onboard3LocationActivity extends AppCompatActivity{
     }
 
     public void goNext(View v) {
-        sets.saveContextSettings("Work");
-        sets.saveContextSettings("Leisure");
         Intent i = new Intent(this,Onboard4ContextAppsActivity.class);
-        Set<String> contexts = sets.getContexts().keySet();
-        i.putExtra("CONTEXTS", contexts.toArray());
+        Set<String> contexts = this.settingsUser.getContexts().keySet();
         startActivity(i);
         finish();
     }

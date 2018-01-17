@@ -12,7 +12,7 @@ import android.widget.ImageView;
 
 import java.util.Set;
 
-import corp.kairos.adamastor.AppDetail;
+import corp.kairos.adamastor.AppDetails;
 import corp.kairos.adamastor.R;
 import corp.kairos.adamastor.UserContext;
 
@@ -21,7 +21,7 @@ import static corp.kairos.adamastor.Util.getObjectByIndex;
 
 public class AppCheckAdapter extends ArrayAdapter {
     private Context context;
-    public Set<AppDetail> apps;
+    public Set<AppDetails> apps;
     public UserContext uc;
 
     public AppCheckAdapter(Context context, Set apps, UserContext uc) {
@@ -66,21 +66,19 @@ public class AppCheckAdapter extends ArrayAdapter {
             row.setTag(holder);
 
 
-            holder.nameBox.setOnClickListener(new View.OnClickListener() {
-                public void onClick(View v) {
-                    CheckBox cb = (CheckBox) v;
-                    AppDetail app = (AppDetail) cb.getTag();
-                    if (cb.isChecked()) {
-                        uc.addApp(app);
-                    } else {
-                        uc.removeApp(app);
-                    }
-                    Button btn = ((Activity) context).findViewById(R.id.next3);
-                    if (uc.getContextApps().size() > 2) {
-                        if(btn != null) {btn.setVisibility(View.VISIBLE);}
-                    } else {
-                        if(btn != null) {btn.setVisibility(View.INVISIBLE);}
-                    }
+            holder.nameBox.setOnClickListener(v -> {
+                CheckBox cb = (CheckBox) v;
+                AppDetails app = (AppDetails) cb.getTag();
+                if (cb.isChecked()) {
+                    uc.addApp(app);
+                } else {
+                    uc.removeApp(app);
+                }
+                Button btn = ((Activity) context).findViewById(R.id.next3);
+                if (uc.getContextApps().size() > 2) {
+                    if(btn != null) {btn.setVisibility(View.VISIBLE);}
+                } else {
+                    if(btn != null) {btn.setVisibility(View.INVISIBLE);}
                 }
             });
 
@@ -88,7 +86,7 @@ public class AppCheckAdapter extends ArrayAdapter {
             holder = (ViewHolder) row.getTag();
         }
 
-        AppDetail app = (AppDetail) getObjectByIndex(position, this.apps);
+        AppDetails app = (AppDetails) getObjectByIndex(position, this.apps);
 
         holder.nameBox.setText(app.getLabel());
         holder.icon.setImageDrawable(app.getIcon());

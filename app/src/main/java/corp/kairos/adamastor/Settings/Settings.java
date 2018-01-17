@@ -1,11 +1,8 @@
 package corp.kairos.adamastor.Settings;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
-import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.Build;
 
@@ -16,52 +13,79 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeSet;
+import java.util.concurrent.ThreadLocalRandom;
 
-import corp.kairos.adamastor.AppDetail;
+import corp.kairos.adamastor.AppDetails;
+import corp.kairos.adamastor.AppsManager.AppsManager;
 import corp.kairos.adamastor.UserContext;
 
 
-public class Settings{
-    private Context ctx;
+
+public class Settings {
+    private static Settings instance;
+    private AppsManager appsManager;
     private PackageManager packageManager;
 
-    private Map<String, UserContext> contexts;
-    private Set<AppDetail> allApps;
+    private static final String TAG = Settings.class.getName();
 
+
+    private Map<String,UserContext> contexts;
+    public static int contextsNumber;
+
+    private Context context;
     private static final String TIME_FROM = "_timeFrom";
     private static final String TIME_TO = "_timeTo";
     private static final String LOC_LAT = "_lat";
     private static final String LOC_LNG = "_lng";
     private static final String CONTEXT_NAME = "_name";
 
-    public Settings (Context c) {
-        this.ctx = c;
-        this.packageManager = ctx.getPackageManager();
-        this.allApps = loadApps();
+    private static final String [] contextNames = {
+            "Home",
+            "Work",
+            "Fitness",
+            "Travel"
+    };
 
+    private Settings(Context c) {
+        this.context = c;
+        this.packageManager = c.getPackageManager();
+        this.appsManager = AppsManager.getInstance();
         this.contexts = new HashMap<>();
-        this.contexts.put("Work",loadContextSettings("Work"));
-        this.contexts.put("Leisure",loadContextSettings("Leisure"));
-        this.contexts.put("Travel",loadContextSettings("Travel"));
 
+        setUpContexts();
+
+        this.contextsNumber = this.contexts.size();
+    }
+
+    private void setUpContexts() {
+        for(String contextName: contextNames) {
+            this.contexts.put(contextName, loadContextSettings(contextName));
+        }
+    }
+
+    public static Settings getInstance(Context c) {
+        if(instance == null) {
+            instance = new Settings(c);
+        }
+
+        return instance;
     }
 
     public boolean isOnboardingDone() {
-        SharedPreferences sharedPref = ctx.getSharedPreferences("GENERAL",Context.MODE_PRIVATE);
+        SharedPreferences sharedPref = context.getSharedPreferences("GENERAL",Context.MODE_PRIVATE);
         return sharedPref.getBoolean("OnboardingDone",false);
     }
     public void setOnboardingDone() {
-        SharedPreferences sharedPref = ctx.getSharedPreferences("GENERAL",Context.MODE_PRIVATE);
+        SharedPreferences sharedPref = context.getSharedPreferences("GENERAL",Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putBoolean("OnboardingDone",true);
         editor.apply();
     }
 
-    public UserContext loadContextSettings(String context) {
-        SharedPreferences sharedPref = ctx.getSharedPreferences("Prefs_"+context, Context.MODE_PRIVATE);
+    public UserContext loadContextSettings(String contextName) {
+        SharedPreferences sharedPref = context.getSharedPreferences("Prefs_"+contextName, Context.MODE_PRIVATE);
 
-        List<AppDetail> ctxApps = new ArrayList<>();
+        List<AppDetails> contextApps = new ArrayList<>();
         GregorianCalendar start = new GregorianCalendar();
         GregorianCalendar end = new GregorianCalendar();
         Location pos = new Location("Provider");
@@ -71,96 +95,99 @@ public class Settings{
 
         pos.setLatitude(sharedPref.getFloat(LOC_LAT,0));
         pos.setLongitude(sharedPref.getFloat(LOC_LNG,0));
+        Set<AppDetails> allApps = this.appsManager.getAllApps(context.getPackageManager(), true);
 
-        for (AppDetail app : this.allApps) {
+        for (AppDetails app : allApps) {
             if(sharedPref.getBoolean(app.getPackageName(), false)) {
-                ctxApps.add(app);
+                contextApps.add(app);
             }
         }
 
-        UserContext uc = new UserContext(context,ctxApps);
+        UserContext uc = new UserContext(contextName, contextApps);
         uc.setTimes(start,end);
         uc.setLocation(pos);
         return uc;
     }
 
-    public void saveContextSettings(String context) {
-        SharedPreferences sharedPref = ctx.getSharedPreferences("Prefs_"+context, Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPref.edit();
-        UserContext uc = contexts.get(context);
+    public void saveContextSettings() {
+        for(UserContext userContext : contexts.values()) {
+            this.saveContextSettings(userContext);
+        }
+    }
 
-        editor.putString(CONTEXT_NAME,context);
+
+    public void saveContextSettings(UserContext userContext) {
+        SharedPreferences sharedPref = context.getSharedPreferences("Prefs_"+userContext.getContextName(), Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+
+        editor.putString(CONTEXT_NAME, userContext.getContextName());
+
         //Save time settings
-        editor.putLong(TIME_FROM, uc.getInit().getTimeInMillis());
-        editor.putLong(TIME_TO, uc.getEnd().getTimeInMillis());
+        editor.putLong(TIME_FROM, userContext.getInit().getTimeInMillis());
+        editor.putLong(TIME_TO, userContext.getEnd().getTimeInMillis());
+
         //Save location
-        editor.putFloat(LOC_LAT,(float)uc.getLocation().getLatitude());
-        editor.putFloat(LOC_LNG,(float)uc.getLocation().getLongitude());
+        editor.putFloat(LOC_LAT,(float)userContext.getLocation().getLatitude());
+        editor.putFloat(LOC_LNG,(float)userContext.getLocation().getLongitude());
+
         //Save Apps
-        for (AppDetail app : uc.getContextApps()) {
+        for (AppDetails app : userContext.getContextApps()) {
             editor.putBoolean(app.getPackageName(), true);
         }
+
         editor.apply();
     }
 
 
-    public Set<AppDetail> loadApps() {
-        Set<AppDetail> apps = new TreeSet<>();
-      
-        Intent i = new Intent(Intent.ACTION_MAIN, null);
-        i.addCategory(Intent.CATEGORY_LAUNCHER);
-
-        List<ResolveInfo> availableActivities = this.packageManager.queryIntentActivities(i, 0);
-        for (ResolveInfo ri : availableActivities) {
-            String label = ri.loadLabel(this.packageManager).toString();
-            String name = ri.activityInfo.packageName.toString();
-            Drawable icon = ri.activityInfo.loadIcon(this.packageManager);
-            AppDetail app = new AppDetail(label, name, icon);
-            apps.add(app);
-        }
-        return apps;
-    }
 
     public Map<String, UserContext> getContexts() {
         return this.contexts;
     }
 
     public List<String> getContextNames() {
-        List<String> names = new ArrayList<>();
-        names.addAll(contexts.keySet());
-        return names;
+        return new ArrayList<>(this.contexts.keySet());
     }
 
     public UserContext getUserContext(String c) {
         return this.contexts.get(c);
     }
 
-    public Set<AppDetail> getAllApps() {return this.allApps;}
+    public UserContext getUserContext(int id) {
+        String currentContextName = contextNames[id];
+        return this.contexts.get(currentContextName);
+    }
+
+    public UserContext getCurrentUserContext() {
+        int min = 0;
+        int max = contextNames.length;
+        int currentContextNumber = ThreadLocalRandom.current().nextInt(min, max);
+        String currentContextName = contextNames[currentContextNumber];
+        return this.contexts.get(currentContextName);
+    }
+
+    public void setUserContext(UserContext c) {
+        this.contexts.put(c.getContextName(), c);
+    }
+
 
     public void resetSettings() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            ctx.deleteSharedPreferences("Prefs_Work");
-            ctx.deleteSharedPreferences("Prefs_Leisure");
-            ctx.deleteSharedPreferences("Prefs_Travel");
+            for(String contextName: this.contexts.keySet()) {
+                context.deleteSharedPreferences("Prefs_"+contextName);
+            }
         }
     }
 
     public UserContext[] getUserContextsAsArray() {
-        int numberOfContexts = this.contexts.size();
-        UserContext[] userContextsArray = new UserContext[numberOfContexts];
-        int i = 0;
-        for (UserContext context : this.contexts.values()) {
-            userContextsArray[i] = context;
-            i++;
-        }
-        return userContextsArray;
+        return (UserContext[]) contexts.values().toArray();
     }
 
     public UserContext getZeroContext() {
         Collection<UserContext> contexts = this.contexts.values();
         UserContext zeroContext = new UserContext("Other Apps", new ArrayList<>());
         int i;
-        for (AppDetail app: this.allApps) {
+        Set<AppDetails> allApps = this.appsManager.getAllApps(this.packageManager, false);
+        for (AppDetails app: allApps) {
             i = 0;
             for (UserContext context: contexts) {
                 if (context.appExists(app)) break;

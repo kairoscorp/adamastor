@@ -49,15 +49,4 @@
         android:layout_above="@+id/id_all_apps_button"
         android:orientation="horizontal">
     </LinearLayout>
-
-
-
-    <Button
-        android:id="@+id/id_statistics_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignStart="@+id/config_btn"
-        android:layout_alignTop="@+id/id_context_label"
-        android:background="@android:drawable/ic_menu_info_details"
-        android:onClick="showStatistics" />
 </RelativeLayout>

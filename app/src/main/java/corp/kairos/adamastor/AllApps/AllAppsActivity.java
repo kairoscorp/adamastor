@@ -7,37 +7,42 @@ import android.widget.GridView;
 
 import java.util.Set;
 
-import corp.kairos.adamastor.AnimActivity;
-import corp.kairos.adamastor.AppDetail;
-import corp.kairos.adamastor.AppDetailComparator;
-import corp.kairos.adamastor.ContextList.ContextListActivity;
+import corp.kairos.adamastor.Animation.AnimationActivity;
+import corp.kairos.adamastor.AppDetails;
 import corp.kairos.adamastor.AppsManager.AppsManager;
 import corp.kairos.adamastor.Home.HomeActivity;
 import corp.kairos.adamastor.R;
 
 import static corp.kairos.adamastor.Util.getObjectByIndex;
 
-public class AllAppsActivity extends AnimActivity {
+public class AllAppsActivity extends AnimationActivity {
     private PackageManager packageManager;
-    private Set<AppDetail> allApps;
-    private GridView allAppsMenuView;
     private AppsManager appsManager;
+
+    private Set<AppDetails> allApps;
+
+    private GridView allAppsMenuView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.allapps_menu);
 
+        // Managers
         this.appsManager = AppsManager.getInstance();
-        this.setLeftActivity(HomeActivity.class);
+        this.packageManager = getPackageManager();
 
+        // Set animations
+        super.setAnimation("up");
+        super.setUpActivity(HomeActivity.class);
+
+        // Load apps and views
         loadApps();
         loadListView();
         addClickListener();
     }
 
     private void loadApps(){
-        packageManager = getPackageManager();
         this.allApps = this.appsManager.getAllApps(packageManager, true);
     }
 
@@ -49,9 +54,11 @@ public class AllAppsActivity extends AnimActivity {
 
     private void addClickListener(){
         this.allAppsMenuView.setOnItemClickListener((av, v, pos, id) -> {
-            AppDetail app = (AppDetail) getObjectByIndex(pos, allApps);
-            Intent i = packageManager.getLaunchIntentForPackage(app.getName());
-            AllAppsActivity.this.startActivity(i);
+            super.setAnimation("down");
+            AppDetails app = (AppDetails) getObjectByIndex(pos, allApps);
+            Intent i = packageManager.getLaunchIntentForPackage(app.getPackageName());
+            startActivity(i);
+            super.setAnimation("up");
         });
     }
 }

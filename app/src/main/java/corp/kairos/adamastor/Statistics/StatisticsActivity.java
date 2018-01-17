@@ -2,56 +2,49 @@ package corp.kairos.adamastor.Statistics;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
-import android.app.usage.UsageStats;
 import android.app.usage.UsageStatsManager;
 import android.content.Context;
-import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
-import android.graphics.drawable.Drawable;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ListView;
 
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.components.Description;
-import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
-import com.github.mikephil.charting.formatter.IValueFormatter;
 import com.github.mikephil.charting.utils.ColorTemplate;
-import com.github.mikephil.charting.utils.ViewPortHandler;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeMap;
-import java.util.TreeSet;
 import java.util.concurrent.TimeUnit;
 
-import corp.kairos.adamastor.AppDetail;
+import corp.kairos.adamastor.Animation.AnimationCompactActivity;
+import corp.kairos.adamastor.AppDetails;
 import corp.kairos.adamastor.AppsManager.AppsManager;
-import corp.kairos.adamastor.Collector.CollectorService;
+import corp.kairos.adamastor.Home.HomeActivity;
 import corp.kairos.adamastor.R;
 
-public class StatisticsActivity extends AppCompatActivity {
+public class StatisticsActivity extends AnimationCompactActivity {
 
     private PackageManager packageManager;
 
     private View mFromView;
     private View mToView;
-    private FloatingActionButton mFab;
+    PieChart mChart;
+    private FloatingActionButton mSwitch;
+    private FloatingActionButton mRefresh;
     private int mShortAnimationDuration;
     private boolean isShowingList = true;
     private AppsManager appsManager;
     private int measure = 0; // 0 - HOURS | 1 - MINUTES | 2 - SECONDS | 3 - MILLISECONDS
-
-    private CollectorService collectorService;
 
     private static final String TAG = StatisticsActivity.class.getName();
 
@@ -62,8 +55,10 @@ public class StatisticsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         this.packageManager = this.getPackageManager();
         this.appsManager = AppsManager.getInstance();
-
-        collectorService = CollectorService.getInstance();
+        
+        // Set animations
+        super.setAnimation("right");
+        super.setRightActivity(HomeActivity.class);
 
         setContentView(R.layout.activity_statistics);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -71,7 +66,9 @@ public class StatisticsActivity extends AppCompatActivity {
 
         mToView = findViewById(R.id.stats_context);
         mFromView = findViewById(R.id.stats_apps_list);
-        mFab = (FloatingActionButton) findViewById(R.id.fab);
+        mSwitch = (FloatingActionButton) findViewById(R.id.id_stats_swich_button);
+        mRefresh = (FloatingActionButton) findViewById(R.id.id_stats_refresh_button);
+        mChart = (PieChart) findViewById(R.id.stats_context);
 
         // Initially hide the content view.
         mToView.setVisibility(View.GONE);
@@ -80,8 +77,15 @@ public class StatisticsActivity extends AppCompatActivity {
         mShortAnimationDuration = getResources().getInteger(
                 android.R.integer.config_shortAnimTime);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(view -> crossFade());
+        mSwitch.setOnClickListener(view -> crossFade());
+        mRefresh.setOnClickListener(view -> {
+            loadAppsStatistics();
+            loadContextStatistics();
+
+            if(! isShowingList) {
+                mChart.animate();
+            }
+        });
 
         // Load Application Statistics View
         loadAppsStatistics();
@@ -91,17 +95,20 @@ public class StatisticsActivity extends AppCompatActivity {
     }
 
     private void loadAppsStatistics() {
-        Set<AppDetailStats> stats = this.appsManager.getAppsStatistics(packageManager, (UsageStatsManager) getSystemService(Context.USAGE_STATS_SERVICE));
+        Set<AppDetails> stats = this.appsManager.getAppsStatistics(packageManager, (UsageStatsManager) getSystemService(Context.USAGE_STATS_SERVICE));
 
         // Load view
         loadListView(stats);
     }
 
     private void loadContextStatistics() {
-        contextStats = collectorService.getContextStatistics();
+        contextStats = this.appsManager.getContextStatistics();
 
         // Load view
         loadGraphView();
+
+        // Add refresh button
+
     }
 
     private void crossFade() {
@@ -133,16 +140,16 @@ public class StatisticsActivity extends AppCompatActivity {
                         mToView = mFromView;
                         mFromView = temp;
                         if(isShowingList) {
-                            mFab.setImageResource(R.drawable.ic_list);
+                            mSwitch.setImageResource(R.drawable.ic_list);
                         } else {
-                            mFab.setImageResource(R.drawable.ic_graph);
+                            mSwitch.setImageResource(R.drawable.ic_graph);
                         }
                         isShowingList = !isShowingList;
                     }
                 });
     }
 
-    private void loadListView(Set<AppDetailStats> appsStats){
+    private void loadListView(Set<AppDetails> appsStats){
         ListView list = (ListView)findViewById(R.id.stats_apps_list);
         StatisticsAppsMenuAdapter adapter = new StatisticsAppsMenuAdapter(this, appsStats);
         list.setAdapter(adapter);
@@ -182,19 +189,20 @@ public class StatisticsActivity extends AppCompatActivity {
         pieData.setValueFormatter((value1, entry, dataSetIndex, viewPortHandler) -> Math.round(value1) + " " + getMeasureNameByIndex(measure));
         pieData.setValueTextSize(12f);
 
-        PieChart chart = (PieChart) findViewById(R.id.stats_context);
         Description description = new Description();
         description.setText("Applications usage by context.");
-        chart.setDescription(description);
-        chart.setCenterText("Usage Context");
-        chart.setCenterTextColor(R.color.colorPrimary);
-        chart.setCenterTextSize(17f);
-        chart.animateY(1000);
-        chart.setData(pieData);
+        mChart.setDescription(description);
+        mChart.setCenterText("Usage Context");
+
+        mChart.setEntryLabelColor(Color.DKGRAY);
+        mChart.setCenterTextColor(Color.BLACK);
+        mChart.setCenterTextSize(15f);
+        mChart.animateY(800);
+        mChart.setData(pieData);
 
         // undo all highlights
-        chart.highlightValues(null);
-        chart.invalidate();
+        mChart.highlightValues(null);
+        mChart.invalidate();
     }
 
     private long getMeasureValueByIndex(int measure, long value){

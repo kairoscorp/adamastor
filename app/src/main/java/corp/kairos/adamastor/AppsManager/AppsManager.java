@@ -16,18 +16,18 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
-import corp.kairos.adamastor.AppDetail;
-import corp.kairos.adamastor.Statistics.AppDetailStats;
+import corp.kairos.adamastor.AppDetails;
+import corp.kairos.adamastor.Collector.CollectorService;
+import corp.kairos.adamastor.Statistics.StatisticsAppDetailsComparator;
 
 public class AppsManager {
-    private Map<String, AppDetail> allAppsDetails;
-    private Map<String, AppDetail> appsDetailsWithoutLauncher;
+    private Map<String, AppDetails> allAppsDetails;
+    private Map<String, AppDetails> appsDetailsWithoutLauncher;
     private static AppsManager instance;
     private BroadcastReceiver listener;
     protected Boolean force;
 
     private static final String TAG = AppsManager.class.getName();
-
 
     private AppsManager(){
         this.allAppsDetails = new TreeMap<>();
@@ -44,8 +44,8 @@ public class AppsManager {
     }
 
 
-    public Set<AppDetail> getAllApps(PackageManager packageManager, Boolean withLaunchers) {
-        if(this.isSetup()) {
+    public Set<AppDetails> getAllApps(PackageManager packageManager, Boolean withLaunchers) {
+        if(this.needToLoad()) {
             setupApps(packageManager);
         }
 
@@ -56,7 +56,7 @@ public class AppsManager {
         }
     }
 
-     private void setupApps(PackageManager packageManager){
+     public void setupApps(PackageManager packageManager){
         // Get all apps
         Intent intentApps = new Intent(Intent.ACTION_MAIN, null).addCategory(Intent.CATEGORY_LAUNCHER);
 
@@ -65,7 +65,7 @@ public class AppsManager {
             String label = ri.loadLabel(packageManager).toString();
             String name = ri.activityInfo.packageName;
             Drawable icon = ri.activityInfo.loadIcon(packageManager);
-            AppDetail app = new AppDetail(label, name, icon);
+            AppDetails app = new AppDetails(label, name, icon);
             allAppsDetails.put(name, app);
             appsDetailsWithoutLauncher.put(name, app);
         }
@@ -80,41 +80,54 @@ public class AppsManager {
         this.force = false;
     }
 
-    public Set<AppDetailStats> getAppsStatistics(PackageManager packageManager, UsageStatsManager usm) {
-        if(this.isSetup()) {
+    public Set<AppDetails> getAppsStatistics(PackageManager packageManager, UsageStatsManager usm) {
+        if(this.needToLoad()) {
             setupApps(packageManager);
         }
 
-        Map<String, AppDetailStats> appsStats = new TreeMap<>();
+        Map<String, AppDetails> appStatsMap = new TreeMap<>();
         long time = System.currentTimeMillis();
         List<UsageStats> appList = usm.queryUsageStats(UsageStatsManager.INTERVAL_DAILY,  time - 10000000, time);
-        Log.i(TAG, "AllApps = " + this.allAppsDetails.size());
-        Log.i(TAG, "NotLauncher = " + this.appsDetailsWithoutLauncher.size());
         if (appList != null && appList.size() > 0) {
             for (UsageStats usageStats : appList) {
-                try {
-                    ApplicationInfo appInfo = packageManager.getApplicationInfo(usageStats.getPackageName(), PackageManager.GET_META_DATA);
-                    String appName = usageStats.getPackageName();
-                    String appLabel = packageManager.getApplicationLabel(appInfo).toString();
-                    Drawable appIcon = packageManager.getApplicationIcon(appInfo);
-                    Long appTotalTime = usageStats.getTotalTimeInForeground();
-                    AppDetailStats appDetailStats = new AppDetailStats(appLabel, appName, appIcon, appTotalTime);
+                String appName = usageStats.getPackageName();
+                Long appTotalTime = usageStats.getTotalTimeInForeground();
+
+                // Get the app from all apps
+                if(this.allAppsDetails.containsKey(appName)) {
+                    AppDetails appDetails = this.allAppsDetails.get(appName);
+                    appDetails.setUsageStatistics(appTotalTime);
                     if(appTotalTime > 0 && appsDetailsWithoutLauncher.containsKey(appName)) {
-                        if(appsStats.containsKey(appName)) {
-                            appDetailStats.setTotalTime(appTotalTime + appsStats.get(appName).getTotalTime());
+                        if(appStatsMap.containsKey(appName)) {
+                            appDetails.setUsageStatistics(appTotalTime + appStatsMap.get(appName).getUsageStatistics());
                         }
-                        appsStats.put(appName, appDetailStats);
+                        appStatsMap.put(appName, appDetails);
+
+                        // Update the all apps map to use as cache
+                        allAppsDetails.put(appName, appDetails);
                     }
-                } catch (PackageManager.NameNotFoundException e) {
-                    // This should never happen
-                    Log.e(TAG, "Unknown package name");
                 }
             }
         }
-        return new TreeSet<>(appsStats.values());
+
+        Set<AppDetails> resultSet = new TreeSet<>(new StatisticsAppDetailsComparator());
+        resultSet.addAll(appStatsMap.values());
+        return resultSet;
     }
 
-    private boolean isSetup(){
+    public Map<String, Long> getContextStatistics() {
+         return CollectorService.getContextStatistics();
+    }
+
+    public AppDetails getAppDetails(PackageManager packageManager, String packageName) {
+        if(this.needToLoad()) {
+            setupApps(packageManager);
+        }
+
+        return allAppsDetails.get(packageName);
+    }
+
+    private boolean needToLoad(){
         return this.allAppsDetails.size() == 0 || this.force;
     }
 }
