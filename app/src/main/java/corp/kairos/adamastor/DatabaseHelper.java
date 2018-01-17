@@ -1,4 +1,4 @@
-package corp.kairos.adamastor.Collector;
+package corp.kairos.adamastor;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -16,12 +16,36 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.concurrent.TimeUnit;
 
-import corp.kairos.adamastor.UserContext;
+public class DatabaseHelper extends SQLiteOpenHelper {
 
-public class LogDatabaseHelper extends SQLiteOpenHelper {
-
-    public LogDatabaseHelper(Context context) {
+    public DatabaseHelper(Context context) {
         super(context, "ActivityLog.db", null, 1);
+    }
+
+    @Override
+    public void onCreate(SQLiteDatabase db) {
+        createDB(db);
+    }
+
+    private void createDB (SQLiteDatabase db) {
+
+        String NEWTABLE = "CREATE TABLE IF NOT EXISTS 'ServiceLogs' "
+                + "( _id  INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + "timestamp NUMERIC, "
+                + "foreground TEXT, "
+                + "activity INTEGER,"
+                + "screen_active INTEGER, "
+                + "call_active INTEGER, "
+                + "music_active INTEGER, "
+                + "ring_mode INTEGER, "
+                + "latitude REAL, "
+                + "longitude REAL, "
+                + "provider TEXT, "
+                + "account TEXT,"
+                + "context INTEGER"
+                + ");";
+
+        db.execSQL(NEWTABLE);
     }
 
     public void addLogEntry(String timestamp,
@@ -173,32 +197,6 @@ public class LogDatabaseHelper extends SQLiteOpenHelper {
             Log.e("CollectorServiceLog", sqlEx.getMessage(), sqlEx);
         }
 
-    }
-
-    private void createDB (SQLiteDatabase db) {
-
-        String NEWTABLE = "CREATE TABLE IF NOT EXISTS 'ServiceLogs' "
-                + "( _id  INTEGER PRIMARY KEY AUTOINCREMENT, "
-                + "timestamp NUMERIC, "
-                + "foreground TEXT, "
-                + "activity INTEGER,"
-                + "screen_active INTEGER, "
-                + "call_active INTEGER, "
-                + "music_active INTEGER, "
-                + "ring_mode INTEGER, "
-                + "latitude REAL, "
-                + "longitude REAL, "
-                + "provider TEXT, "
-                + "account TEXT,"
-                + "context INTEGER"
-                + ");";
-
-        db.execSQL(NEWTABLE);
-    }
-
-    @Override
-    public void onCreate(SQLiteDatabase db) {
-        createDB(db);
     }
 
     @Override

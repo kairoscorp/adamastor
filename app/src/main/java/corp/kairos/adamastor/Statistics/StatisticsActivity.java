@@ -5,10 +5,8 @@ import android.animation.AnimatorListenerAdapter;
 import android.app.usage.UsageStats;
 import android.app.usage.UsageStatsManager;
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -36,8 +34,8 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.concurrent.TimeUnit;
 
-import corp.kairos.adamastor.AllApps.AllAppsActivity;
 import corp.kairos.adamastor.AppDetail;
+import corp.kairos.adamastor.AppsManager.AppsManager;
 import corp.kairos.adamastor.Collector.CollectorService;
 import corp.kairos.adamastor.R;
 
@@ -50,6 +48,7 @@ public class StatisticsActivity extends AppCompatActivity {
     private FloatingActionButton mFab;
     private int mShortAnimationDuration;
     private boolean isShowingList = true;
+    private AppsManager appsManager;
     private int measure = 0; // 0 - HOURS | 1 - MINUTES | 2 - SECONDS | 3 - MILLISECONDS
 
     private CollectorService collectorService;
@@ -62,6 +61,7 @@ public class StatisticsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.packageManager = this.getPackageManager();
+        this.appsManager = AppsManager.getInstance();
 
         collectorService = CollectorService.getInstance();
 
@@ -81,12 +81,7 @@ public class StatisticsActivity extends AppCompatActivity {
                 android.R.integer.config_shortAnimTime);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                crossFade();
-            }
-        });
+        fab.setOnClickListener(view -> crossFade());
 
         // Load Application Statistics View
         loadAppsStatistics();
@@ -96,45 +91,10 @@ public class StatisticsActivity extends AppCompatActivity {
     }
 
     private void loadAppsStatistics() {
-        Map<String, AppDetailStats> appsStats = new TreeMap<>();
-        if(android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
-            UsageStatsManager usm = (UsageStatsManager) this.getSystemService(Context.USAGE_STATS_SERVICE);
-            long time = System.currentTimeMillis();
-            List<UsageStats> appList = usm.queryUsageStats(UsageStatsManager.INTERVAL_DAILY,  time - 10000000, time);
-            if (appList != null && appList.size() > 0) {
-                for (UsageStats usageStats : appList) {
-                    try {
-                        ApplicationInfo appInfo = packageManager.getApplicationInfo(usageStats.getPackageName(), PackageManager.GET_META_DATA);
-                        String appName = usageStats.getPackageName();
-                        String appLabel = packageManager.getApplicationLabel(appInfo).toString();
-                        Drawable appIcon = packageManager.getApplicationIcon(appInfo);
-                        Long appTotalTime = usageStats.getTotalTimeInForeground();
-                        AppDetailStats appDetailStats = new AppDetailStats(appLabel, appName, appIcon, appTotalTime);
-                        if(appTotalTime > 0) {
-                            if(appsStats.containsKey(appLabel)) {
-                                appDetailStats.setTotalTime(appTotalTime + appsStats.get(appLabel).getTotalTime());
-                            }
-                            appsStats.put(appLabel, appDetailStats);
-                        }
-                    } catch (PackageManager.NameNotFoundException e) {
-                        // This should never happen
-                        Log.e("STATS", "Unknown package name");
-                    }
-                }
-            }
-        }
-
-        // Get only the statistics of the installed apps and not launchers
-        Map<String, AppDetailStats> filteredAppsStats = new TreeMap<>();
-        Set<AppDetail> allApps = AllAppsActivity.getAllApps(getPackageManager(), false);
-        for(AppDetail app: allApps) {
-            if(appsStats.containsKey(app.getLabel())) {
-                filteredAppsStats.put(app.getLabel(), appsStats.get(app.getLabel()));
-            }
-        }
+        Set<AppDetailStats> stats = this.appsManager.getAppsStatistics(packageManager, (UsageStatsManager) getSystemService(Context.USAGE_STATS_SERVICE));
 
         // Load view
-        loadListView(new TreeSet<>(filteredAppsStats.values()));
+        loadListView(stats);
     }
 
     private void loadContextStatistics() {
@@ -219,12 +179,7 @@ public class StatisticsActivity extends AppCompatActivity {
 
         // Data
         PieData pieData = new PieData(dataSet);
-        pieData.setValueFormatter(new IValueFormatter() {
-            @Override
-            public String getFormattedValue(float value, Entry entry, int dataSetIndex, ViewPortHandler viewPortHandler) {
-                return Math.round(value) + " " + getMeasureNameByIndex(measure);
-            }
-        });
+        pieData.setValueFormatter((value1, entry, dataSetIndex, viewPortHandler) -> Math.round(value1) + " " + getMeasureNameByIndex(measure));
         pieData.setValueTextSize(12f);
 
         PieChart chart = (PieChart) findViewById(R.id.stats_context);

@@ -33,23 +33,19 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.ActivityRecognition;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 
+import corp.kairos.adamastor.DatabaseHelper;
 import corp.kairos.adamastor.UserContext;
-import corp.kairos.adamastor.Util;
 
 public class CollectorService extends Service implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
@@ -62,7 +58,7 @@ public class CollectorService extends Service implements GoogleApiClient.Connect
     private LocationListener locationListener;
     private Location lastLocation;
     private boolean checkLocation = false;
-    private LogDatabaseHelper logDatabaseHelper;
+    private DatabaseHelper logDatabaseHelper;
     private GoogleApiClient googleApiClient;
     private int userActivityNow = 4; // 4 is Detected activity UNKNOWN
 
@@ -74,7 +70,7 @@ public class CollectorService extends Service implements GoogleApiClient.Connect
         packageManager = this.getPackageManager();
         createLocationListener();
         checkLocationPermissions();
-        logDatabaseHelper = new LogDatabaseHelper(this);
+        logDatabaseHelper = new DatabaseHelper(this);
 
         ActivityMonitorReceiver amr = new ActivityMonitorReceiver();
         IntentFilter filter = new IntentFilter();
