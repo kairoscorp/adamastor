@@ -3,6 +3,7 @@ package corp.kairos.adamastor.ContextList;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
@@ -19,8 +20,8 @@ import io.github.luizgrp.sectionedrecyclerviewadapter.StatelessSection;
 
 public class ContextSection extends StatelessSection {
     // TODO: Make this a metric with the screen height and the number of sections
-    public static int MAX_NUMBER_OF_APPS_COMPRESSED = 8;
-    public static boolean INITIAL_EXPANDED_STATE = true;
+    public static int MAX_NUMBER_OF_APPS_COMPRESSED = 4;
+    public static boolean INITIAL_EXPANDED_STATE = false;
 
     private Context appContext;
     private SectionedRecyclerViewAdapter mAdapter;
@@ -42,7 +43,7 @@ public class ContextSection extends StatelessSection {
 
     @Override
     public int getContentItemsTotal() {
-        return this.isExpanded ? contextApps.size() : 0;
+        return this.isExpanded ? contextApps.size() : Math.min(MAX_NUMBER_OF_APPS_COMPRESSED, contextApps.size());
     }
 
     @Override
@@ -76,6 +77,9 @@ public class ContextSection extends StatelessSection {
         HeaderViewHolder headerHolder = (HeaderViewHolder) holder;
 
         headerHolder.contextTitleView.setText(this.contextName);
+        if (contextApps.size() <= MAX_NUMBER_OF_APPS_COMPRESSED)
+            headerHolder.expandArrowView.setVisibility(View.GONE);
+
         headerHolder.rootView.setOnClickListener((View v) -> {
             isExpanded = !isExpanded;
             headerHolder.expandArrowView.setImageResource(
@@ -98,7 +102,12 @@ public class ContextSection extends StatelessSection {
             rootView = itemView;
             iconView = (ImageView) itemView.findViewById(R.id.app_image);
             labelView = (TextView) itemView.findViewById(R.id.app_text);
-            labelView.setTextColor(Color.WHITE);
+            // TODO: Make design default like this
+            labelView.setTextColor(
+                ResourcesCompat.getColor(
+                    appContext.getResources(), R.color.secondaryTextColor, null
+                ));
+            labelView.setTextSize(18);
         }
     }
 

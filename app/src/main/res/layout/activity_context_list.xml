@@ -6,7 +6,8 @@
     android:fitsSystemWindows="true"
     tools:context="corp.kairos.adamastor.ContextList.ContextListActivity"
     android:id="@+id/context_list_main_layout"
-    android:orientation="horizontal">
+    android:orientation="horizontal"
+    android:background="@color/secondaryColor">
 
 
     <android.support.v7.widget.RecyclerView
