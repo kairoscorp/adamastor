@@ -25,6 +25,7 @@ import corp.kairos.adamastor.Settings.ContextRelated.ContextRelatedSettingsActiv
 import corp.kairos.adamastor.Settings.Settings;
 import corp.kairos.adamastor.UserContext;
 import corp.kairos.adamastor.collector.CollectorService;
+import corp.kairos.adamastor.AppsManager.AppsManager;
 import corp.kairos.adamastor.Collector.CollectorService;
 import corp.kairos.adamastor.Onboarding.Onboard1Activity;
 import corp.kairos.adamastor.R;
@@ -42,6 +43,7 @@ public class HomeActivity extends AnimActivity {
     private UserContext[] contexts;
     private View.OnClickListener clickHandler;
     private PackageManager pm;
+    private AppsManager appsManager;
 
     private boolean permissionsGranted = false;
     public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
@@ -49,6 +51,7 @@ public class HomeActivity extends AnimActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        this.appsManager = AppsManager.getInstance();
         Settings sets = new Settings(this);
         if(!sets.isOnboardingDone()){
             Intent i = new Intent(this, Onboard1WelcomeActivity.class);
@@ -73,13 +76,10 @@ public class HomeActivity extends AnimActivity {
     }
 
     private void addClickListener(){
-        clickHandler = new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                HomeApp ha = (HomeApp) v;
-                Intent i = pm.getLaunchIntentForPackage(ha.getPackageName());
-                HomeActivity.this.startActivity(i);
-            }
+        clickHandler = v -> {
+            HomeApp ha = (HomeApp) v;
+            Intent i = pm.getLaunchIntentForPackage(ha.getPackageName());
+            HomeActivity.this.startActivity(i);
         };
     }
 
@@ -89,7 +89,7 @@ public class HomeActivity extends AnimActivity {
         adjustScreenToContext();
 
         checkPermissions();
-        if(permissionsGranted == true){
+        if(permissionsGranted){
             bindCollectorService();
         }
 
@@ -124,6 +124,44 @@ public class HomeActivity extends AnimActivity {
         }
     }
 
+    private void setContexts(){
+        /*
+        * Creating 4 static contexts to simulate the intended behaviour */
+        List<String> homeApps = Arrays.asList("com.google.android.talk", "com.facebook.katana");
+        List<String> workApps = Arrays.asList("com.google.android.gm", "com.Slack", "com.google.android.calendar");
+        List<String> workoutApps = Arrays.asList("com.google.android.apps.fitness");
+        List<String> travellingApps = Arrays.asList("com.google.android.apps.maps");
+
+        List<List<String>> apps = Arrays.asList(homeApps, workApps, workoutApps, travellingApps);
+
+        pm = getPackageManager();
+
+        /*
+        * These loops just associate different apps with different contexts*/
+        int n = 0;
+        for(List<String> appsList : apps){
+            List<AppDetail> appDetails = new ArrayList<>();
+            for(String p: appsList){
+                try {
+                    ApplicationInfo ai = pm.getApplicationInfo(p,0);
+
+                    String label = (String) pm.getApplicationLabel(ai);
+                    String name = ai.packageName;
+                    Drawable icon = pm.getApplicationIcon(ai);
+
+                    AppDetail app = new AppDetail(label, name, icon);
+                    appDetails.add(app);
+                } catch (PackageManager.NameNotFoundException e) {
+                    Log.e(TAG, "App not found");
+                    e.printStackTrace();
+                }
+            }
+            this.contexts[n] = new UserContext("Context " + n, appDetails);
+            n++;
+        }
+    }
+
+
     public void showAllAppsMenu(View v){
         Vibrator vibe = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
         vibe.vibrate(50);
@@ -140,8 +178,8 @@ public class HomeActivity extends AnimActivity {
         Intent i = new Intent(this, StatisticsActivity.class);
         startActivity(i);
     }
-  
-  
+
+
     /*
     * The mechanism for manual context change is pressing the context label.
     * This method is called when the context label is pressed.
@@ -197,17 +235,13 @@ public class HomeActivity extends AnimActivity {
     }
 
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-
         if(requestCode == MY_PERMISSIONS_REQUEST_LOCATION) {
-
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    permissionsGranted = true;
-                } else {
-                    permissionsGranted = false;
-                }
-
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                permissionsGranted = true;
+            } else {
+                permissionsGranted = false;
+            }
         }
-
     }
 
 }
