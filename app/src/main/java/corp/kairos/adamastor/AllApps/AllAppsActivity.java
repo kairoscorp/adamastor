@@ -5,12 +5,15 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.TreeSet;
 
 import corp.kairos.adamastor.AnimActivity;
@@ -37,10 +40,9 @@ public class AllAppsActivity extends AnimActivity {
         addClickListener();
     }
 
-    public static Set<AppDetail> getAllApps(PackageManager packageManager) {
-        Set<AppDetail> allApps = new TreeSet<>();
-        Intent i = new Intent(Intent.ACTION_MAIN, null);
-        i.addCategory(Intent.CATEGORY_LAUNCHER);
+    public static Set<AppDetail> getAllApps(PackageManager packageManager, boolean withLaunchers) {
+        Map<String, AppDetail> allApps = new TreeMap<>();
+        Intent i = new Intent(Intent.ACTION_MAIN, null).addCategory(Intent.CATEGORY_LAUNCHER);
 
         List<ResolveInfo> availableActivities = packageManager.queryIntentActivities(i, 0);
         for(ResolveInfo ri:availableActivities){
@@ -48,15 +50,33 @@ public class AllAppsActivity extends AnimActivity {
             String name = ri.activityInfo.packageName.toString();
             Drawable icon = ri.activityInfo.loadIcon(packageManager);
             AppDetail app = new AppDetail(label, name, icon);
-            allApps.add(app);
+            allApps.put(name, app);
         }
 
-        return allApps;
+        if(!withLaunchers) {
+            Set<String> launchersNames = getLauncherNames(packageManager);
+            for(String launcher: launchersNames) {
+                allApps.remove(launcher);
+            }
+        }
+
+        return new TreeSet<>(allApps.values());
+    }
+
+    private static Set<String> getLauncherNames(PackageManager packageManager) {
+        // Get list of installed launchers
+        Intent i = new Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_HOME);
+        List<ResolveInfo> launchersInfo= packageManager.queryIntentActivities(i, 0);
+        Set<String> launchersList = new TreeSet<>();
+        for(ResolveInfo info: launchersInfo) {
+            launchersList.add(info.activityInfo.packageName);
+        }
+        return launchersList;
     }
 
     private void loadApps(){
         this.packageManager = getPackageManager();
-        this.allApps = this.getAllApps(this.packageManager);
+        this.allApps = this.getAllApps(this.packageManager, true);
     }
 
     private void loadListView(){
