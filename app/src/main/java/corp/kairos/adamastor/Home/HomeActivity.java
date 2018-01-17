@@ -24,16 +24,13 @@ import java.util.List;
 import corp.kairos.adamastor.AllApps.AllAppsActivity;
 import corp.kairos.adamastor.AnimActivity;
 import corp.kairos.adamastor.AppDetail;
+import corp.kairos.adamastor.Collector.CollectorService;
+import corp.kairos.adamastor.Onboarding.Onboard1Activity;
 import corp.kairos.adamastor.R;
 import corp.kairos.adamastor.Settings.ContextRelated.ContextRelatedSettingsActivity;
-import corp.kairos.adamastor.UserContext;
-
-import corp.kairos.adamastor.Onboarding.Onboard1Activity;
 import corp.kairos.adamastor.Settings.Settings;
-import corp.kairos.adamastor.collector.CollectorService;
 import corp.kairos.adamastor.Statistics.StatisticsActivity;
 import corp.kairos.adamastor.UserContext;
-import corp.kairos.adamastor.Collector.CollectorService;
 
 public class HomeActivity extends AnimActivity {
 
@@ -51,7 +48,6 @@ public class HomeActivity extends AnimActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-<<<<<<< HEAD
         Settings sets = new Settings(this);
         if(!sets.isOnboardingDone()){
             Intent i = new Intent(this, Onboard1Activity.class);
@@ -64,21 +60,10 @@ public class HomeActivity extends AnimActivity {
             this.currentContext = this.contexts[0];
             this.currentContextIndex = 0;
             this.setRightActivity(AllAppsActivity.class);
+            this.setLeftActivity(StatisticsActivity.class);
 
             addClickListener();
         }
-=======
-        setContentView(R.layout.activity_home);
-
-        setContexts();
-        this.currentContext = this.contexts[0];
-        this.currentContextIndex = 0;
-
-        this.setRightActivity(AllAppsActivity.class);
-        this.setLeftActivity(StatisticsActivity.class);
-
-        addClickListener();
->>>>>>> d93d3ea... Add a context stats menu
     }
 
     private void addClickListener(){

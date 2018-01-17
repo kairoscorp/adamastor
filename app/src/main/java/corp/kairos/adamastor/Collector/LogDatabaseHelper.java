@@ -10,10 +10,6 @@ import com.opencsv.CSVWriter;
 
 import java.io.File;
 import java.io.FileWriter;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -21,7 +17,6 @@ import java.util.TreeMap;
 import java.util.concurrent.TimeUnit;
 
 import corp.kairos.adamastor.UserContext;
-import corp.kairos.adamastor.Util;
 
 public class LogDatabaseHelper extends SQLiteOpenHelper {
 
