@@ -25,9 +25,13 @@ import corp.kairos.adamastor.Settings.ContextRelated.ContextRelatedSettingsActiv
 import corp.kairos.adamastor.Settings.Settings;
 import corp.kairos.adamastor.UserContext;
 import corp.kairos.adamastor.collector.CollectorService;
+import corp.kairos.adamastor.Collector.CollectorService;
+import corp.kairos.adamastor.Onboarding.Onboard1Activity;
+import corp.kairos.adamastor.R;
+import corp.kairos.adamastor.Settings.ContextRelated.ContextRelatedSettingsActivity;
+import corp.kairos.adamastor.Settings.Settings;
 import corp.kairos.adamastor.Statistics.StatisticsActivity;
 import corp.kairos.adamastor.UserContext;
-import corp.kairos.adamastor.Collector.CollectorService;
 
 public class HomeActivity extends AnimActivity {
 
@@ -57,7 +61,6 @@ public class HomeActivity extends AnimActivity {
             // Set animtations
             this.setRightActivity(AllAppsActivity.class);
             this.setLeftActivity(StatisticsActivity.class);
-
 
             // Setup contexts
             Settings settings = new Settings(getApplicationContext());

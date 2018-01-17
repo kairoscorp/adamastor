@@ -19,7 +19,6 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import corp.kairos.adamastor.AppDetail;
-import corp.kairos.adamastor.AppDetailComparator;
 import corp.kairos.adamastor.UserContext;
 
 

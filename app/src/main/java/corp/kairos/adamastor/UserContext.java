@@ -1,6 +1,7 @@
 package corp.kairos.adamastor;
 
 import android.location.Location;
+
 import java.util.GregorianCalendar;
 import java.util.List;
 

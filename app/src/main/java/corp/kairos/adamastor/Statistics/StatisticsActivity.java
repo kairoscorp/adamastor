@@ -55,6 +55,7 @@ public class StatisticsActivity extends AppCompatActivity {
     private FloatingActionButton mFab;
     private int mShortAnimationDuration;
     private boolean isShowingList = true;
+    private int measure = 0; // 0 - HOURS | 1 - MINUTES | 2 - SECONDS | 3 - MILLISECONDS
 
     private CollectorService collectorService;
 
@@ -146,7 +147,7 @@ public class StatisticsActivity extends AppCompatActivity {
         contextStats = collectorService.getContextStatistics();
 
         // Load view
-         loadGraphView();
+        loadGraphView();
     }
 
     private void crossFade() {
@@ -196,12 +197,27 @@ public class StatisticsActivity extends AppCompatActivity {
     private void loadGraphView(){
         List<PieEntry> pieEntries = new ArrayList<>();
         long percentage, finalTotal = 0;
+        long timeInHours, timeInMinutes, timeInSeconds;
         for (Map.Entry<String, Long> stat : contextStats.entrySet()) {
             finalTotal += stat.getValue();
+            timeInHours = TimeUnit.MILLISECONDS.toHours(stat.getValue());
+            if(timeInHours < 1) {
+                timeInMinutes = TimeUnit.MILLISECONDS.toMinutes(stat.getValue());
+                measure = Math.max(1, measure);
+                if(timeInMinutes < 1) {
+                    timeInSeconds = TimeUnit.MILLISECONDS.toSeconds(stat.getValue());
+                    measure = Math.max(2, measure);
+                    if(timeInSeconds < 1) {
+                        measure = Math.max(3, measure);
+                    }
+                }
+            }
         }
+        long value = 0;
         for (Map.Entry<String, Long> stat : contextStats.entrySet()) {
+            value = getMeasureValueByIndex(measure, stat.getValue());
             percentage = (stat.getValue() * 100) / finalTotal;
-            pieEntries.add(new PieEntry(TimeUnit.MILLISECONDS.toHours(stat.getValue()), stat.getKey() + " ("+percentage+"%)"));
+            pieEntries.add(new PieEntry(value, stat.getKey() + " ("+percentage+"%)"));
         }
 
         PieDataSet dataSet = new PieDataSet(pieEntries, "");
@@ -212,7 +228,7 @@ public class StatisticsActivity extends AppCompatActivity {
         pieData.setValueFormatter(new IValueFormatter() {
             @Override
             public String getFormattedValue(float value, Entry entry, int dataSetIndex, ViewPortHandler viewPortHandler) {
-                return Math.round(value) + " hours";
+                return Math.round(value) + " " + getMeasureNameByIndex(measure);
             }
         });
         pieData.setValueTextSize(12f);
@@ -230,5 +246,35 @@ public class StatisticsActivity extends AppCompatActivity {
         // undo all highlights
         chart.highlightValues(null);
         chart.invalidate();
+    }
+
+    private long getMeasureValueByIndex(int measure, long value){
+        switch (measure) {
+            case 0:
+                return TimeUnit.MILLISECONDS.toHours(value);
+            case 1:
+                return TimeUnit.MILLISECONDS.toMinutes(value);
+            case 2:
+                return TimeUnit.MILLISECONDS.toSeconds(value);
+            case 3:
+                return value;
+            default:
+                return 0;
+        }
+    }
+
+    private String getMeasureNameByIndex(int measure){
+        switch (measure) {
+            case 0:
+                return "hours";
+            case 1:
+                return "minutes";
+            case 2:
+                return "seconds";
+            case 3:
+                return "milliseconds";
+            default:
+                return "";
+        }
     }
 }
