@@ -2,44 +2,36 @@ package corp.kairos.adamastor.Statistics;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
-import android.app.usage.UsageStats;
 import android.app.usage.UsageStatsManager;
 import android.content.Context;
-import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 import android.widget.ListView;
 
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.components.Description;
-import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
-import com.github.mikephil.charting.formatter.IValueFormatter;
 import com.github.mikephil.charting.utils.ColorTemplate;
-import com.github.mikephil.charting.utils.ViewPortHandler;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeMap;
-import java.util.TreeSet;
 import java.util.concurrent.TimeUnit;
 
-import corp.kairos.adamastor.AppDetail;
+import corp.kairos.adamastor.Animation.AnimCompactActivity;
 import corp.kairos.adamastor.AppsManager.AppsManager;
 import corp.kairos.adamastor.Collector.CollectorService;
+import corp.kairos.adamastor.Home.HomeActivity;
 import corp.kairos.adamastor.R;
 
-public class StatisticsActivity extends AppCompatActivity {
+public class StatisticsActivity extends AnimCompactActivity {
 
     private PackageManager packageManager;
 
@@ -64,6 +56,9 @@ public class StatisticsActivity extends AppCompatActivity {
         this.appsManager = AppsManager.getInstance();
 
         collectorService = CollectorService.getInstance();
+
+        super.setAnimation("right");
+        super.setRightActivity(HomeActivity.class);
 
         setContentView(R.layout.activity_statistics);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);

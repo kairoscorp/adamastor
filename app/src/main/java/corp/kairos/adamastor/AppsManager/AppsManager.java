@@ -45,7 +45,7 @@ public class AppsManager {
 
 
     public Set<AppDetail> getAllApps(PackageManager packageManager, Boolean withLaunchers) {
-        if(this.isSetup()) {
+        if(this.needToLoad()) {
             setupApps(packageManager);
         }
 
@@ -81,7 +81,7 @@ public class AppsManager {
     }
 
     public Set<AppDetailStats> getAppsStatistics(PackageManager packageManager, UsageStatsManager usm) {
-        if(this.isSetup()) {
+        if(this.needToLoad()) {
             setupApps(packageManager);
         }
 
@@ -114,7 +114,7 @@ public class AppsManager {
         return new TreeSet<>(appsStats.values());
     }
 
-    private boolean isSetup(){
+    private boolean needToLoad(){
         return this.allAppsDetails.size() == 0 || this.force;
     }
 }

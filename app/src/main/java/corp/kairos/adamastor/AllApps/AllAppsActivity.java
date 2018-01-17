@@ -7,7 +7,7 @@ import android.widget.GridView;
 
 import java.util.Set;
 
-import corp.kairos.adamastor.AnimActivity;
+import corp.kairos.adamastor.Animation.AnimActivity;
 import corp.kairos.adamastor.AppDetail;
 import corp.kairos.adamastor.AppsManager.AppsManager;
 import corp.kairos.adamastor.Home.HomeActivity;
@@ -27,6 +27,8 @@ public class AllAppsActivity extends AnimActivity {
         setContentView(R.layout.allapps_menu);
 
         this.appsManager = AppsManager.getInstance();
+
+        super.setAnimation("left");
         this.setLeftActivity(HomeActivity.class);
 
         loadApps();

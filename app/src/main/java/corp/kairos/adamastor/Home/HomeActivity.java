@@ -22,7 +22,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import corp.kairos.adamastor.AllApps.AllAppsActivity;
-import corp.kairos.adamastor.AnimActivity;
+import corp.kairos.adamastor.Animation.AnimActivity;
 import corp.kairos.adamastor.AppDetail;
 import corp.kairos.adamastor.AppsManager.AppsManager;
 import corp.kairos.adamastor.Collector.CollectorService;
@@ -159,16 +159,19 @@ public class HomeActivity extends AnimActivity {
     public void showAllAppsMenu(View v){
         Vibrator vibe = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
         vibe.vibrate(50);
+        super.setAnimation("right");
         Intent i = new Intent(this, AllAppsActivity.class);
         startActivity(i);
     }
 
     public void showSettings(View v){
+        super.setAnimation("top");
         Intent i = new Intent(this, ContextRelatedSettingsActivity.class);
         startActivity(i);
     }
 
     public void showStatistics(View v){
+        super.setAnimation("left");
         Intent i = new Intent(this, StatisticsActivity.class);
         startActivity(i);
     }
