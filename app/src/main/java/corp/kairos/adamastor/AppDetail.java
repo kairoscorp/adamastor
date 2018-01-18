@@ -75,6 +75,6 @@ public class AppDetail implements Comparable{
 
         AppDetail appDetail = (AppDetail) o;
 
-        return this.getLabel().toLowerCase().compareTo(appDetail.getLabel().toLowerCase());
+        return appDetail.getLabel().compareTo(this.getLabel());
     }
 }

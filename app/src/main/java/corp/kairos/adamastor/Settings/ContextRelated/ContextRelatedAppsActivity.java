@@ -6,9 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
-
 import java.util.Set;
-
 import corp.kairos.adamastor.AppDetail;
 import corp.kairos.adamastor.R;
 import corp.kairos.adamastor.Settings.Settings;
