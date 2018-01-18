@@ -17,7 +17,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
+
 import corp.kairos.adamastor.AppDetail;
+import corp.kairos.adamastor.AppDetailComparator;
 import corp.kairos.adamastor.UserContext;
 
 
@@ -105,7 +107,7 @@ public class Settings{
 
 
     public Set<AppDetail> loadApps() {
-        Set<AppDetail> apps = new TreeSet<>();
+        Set<AppDetail> apps = new TreeSet<>(new AppDetailComparator());
       
         Intent i = new Intent(Intent.ACTION_MAIN, null);
         i.addCategory(Intent.CATEGORY_LAUNCHER);

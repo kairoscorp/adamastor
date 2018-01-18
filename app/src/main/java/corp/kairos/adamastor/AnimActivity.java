@@ -1,13 +1,8 @@
-package corp.kairos.adamastor.Animation;
+package corp.kairos.adamastor;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.view.MotionEvent;
-
-import java.util.Objects;
-
-import corp.kairos.adamastor.R;
 
 
 public abstract class AnimActivity extends Activity {
@@ -34,14 +29,6 @@ public abstract class AnimActivity extends Activity {
 
     public void setLeftActivity(Class leftActivity) {
         this.leftActivity = leftActivity;
-    }
-
-    public void setAnimation(String animation) {
-        this.animation = animation;
-    }
-
-    public String getAnimation(){
-        return this.animation;
     }
 
     @Override
@@ -82,19 +69,10 @@ public abstract class AnimActivity extends Activity {
     @Override
     public void startActivity(Intent intent) {
         super.startActivity(intent);
-        switch (animation) {
-            case "right":
-                overridePendingTransitionRight();
-                break;
-            case "left":
-                overridePendingTransitionLeft();
-                break;
-            case "top":
-                overridePendingTransitionTop();
-                break;
-            case "down":
-                overridePendingTransitionDown();
-                break;
+        if(this.animation == "right") {
+            overridePendingTransitionRight();
+        } else {
+            overridePendingTransitionLeft();
         }
     }
 
@@ -103,8 +81,6 @@ public abstract class AnimActivity extends Activity {
         super.onBackPressed();
         overridePendingTransitionLeft();
     }
-
-
 
     @Override
     public void finish() {
@@ -118,13 +94,5 @@ public abstract class AnimActivity extends Activity {
 
     private void overridePendingTransitionLeft() {
         overridePendingTransition(R.anim.slide_from_left, R.anim.slide_to_right);
-    }
-
-    private void overridePendingTransitionTop() {
-        overridePendingTransition(R.anim.slide_from_up, R.anim.slide_to_down);
-    }
-
-    private void overridePendingTransitionDown() {
-        overridePendingTransition(R.anim.slide_from_down, R.anim.slide_to_up);
     }
 }

@@ -2,14 +2,20 @@ package corp.kairos.adamastor.AllApps;
 
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.GridView;
 
+import java.util.List;
 import java.util.Set;
+import java.util.TreeSet;
 
-import corp.kairos.adamastor.Animation.AnimActivity;
+import corp.kairos.adamastor.AnimActivity;
 import corp.kairos.adamastor.AppDetail;
-import corp.kairos.adamastor.AppsManager.AppsManager;
+import corp.kairos.adamastor.AppDetailComparator;
 import corp.kairos.adamastor.Home.HomeActivity;
 import corp.kairos.adamastor.R;
 
@@ -19,16 +25,12 @@ public class AllAppsActivity extends AnimActivity {
     private PackageManager packageManager;
     private Set<AppDetail> allApps;
     private GridView allAppsMenuView;
-    private AppsManager appsManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.allapps_menu);
 
-        this.appsManager = AppsManager.getInstance();
-
-        super.setAnimation("left");
         this.setLeftActivity(HomeActivity.class);
 
         loadApps();
@@ -37,8 +39,20 @@ public class AllAppsActivity extends AnimActivity {
     }
 
     private void loadApps(){
-        packageManager = getPackageManager();
-        this.allApps = this.appsManager.getAllApps(packageManager, true);
+        this.packageManager = getPackageManager();
+        this.allApps = new TreeSet<>(new AppDetailComparator());
+
+        Intent i = new Intent(Intent.ACTION_MAIN, null);
+        i.addCategory(Intent.CATEGORY_LAUNCHER);
+
+        List<ResolveInfo> availableActivities = this.packageManager.queryIntentActivities(i, 0);
+        for(ResolveInfo ri:availableActivities){
+            String label = ri.loadLabel(this.packageManager).toString();
+            String name = ri.activityInfo.packageName.toString();
+            Drawable icon = ri.activityInfo.loadIcon(this.packageManager);
+            AppDetail app = new AppDetail(label, name, icon);
+            this.allApps.add(app);
+        }
     }
 
     private void loadListView(){
@@ -48,10 +62,14 @@ public class AllAppsActivity extends AnimActivity {
     }
 
     private void addClickListener(){
-        this.allAppsMenuView.setOnItemClickListener((av, v, pos, id) -> {
-            AppDetail app = (AppDetail) getObjectByIndex(pos, allApps);
-            Intent i = packageManager.getLaunchIntentForPackage(app.getName());
-            AllAppsActivity.this.startActivity(i);
+        this.allAppsMenuView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> av, View v, int pos,
+                                    long id) {
+                AppDetail app = (AppDetail) getObjectByIndex(pos, allApps);
+                Intent i = packageManager.getLaunchIntentForPackage(app.getName());
+                AllAppsActivity.this.startActivity(i);
+            }
         });
     }
 }

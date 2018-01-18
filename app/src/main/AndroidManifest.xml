@@ -68,13 +68,12 @@
         </activity>
 
         <service
-            android:name=".Collector.CollectorService"
+            android:name=".collector.CollectorService"
             android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.service.notification.CollectorService" />
             </intent-filter>
         </service>
-
 
         <activity
             android:name=".Onboarding.Onboard1Activity"
@@ -120,26 +119,6 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="corp.kairos.adamastor.Onboarding.Onboard3Activity" />
         </activity>
-
-        <activity        
-            android:name=".Statistics.StatisticsActivity"
-            android:label="@string/title_activity_statistics"
-            android:theme="@style/AppTheme.NoActionBar">
-        </activity>
-
-        <receiver android:name=".AppsManager.AppsBroadcastService">
-            <intent-filter>
-                <category android:name="android.intent.category.DEFAULT" />
-                <action android:name="android.intent.action.PACKAGE_ADDED"  />
-                <action android:name="android.intent.action.PACKAGE_CHANGED" />
-                <action android:name="android.intent.action.PACKAGE_INSTALL" />
-                <action android:name="android.intent.action.PACKAGE_REMOVED" />
-                <action android:name="android.intent.action.PACKAGE_REPLACED" />
-                <data android:scheme="package" />
-            </intent-filter>
-        </receiver>
-
-
     </application>
 
 </manifest>
