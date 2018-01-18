@@ -37,7 +37,7 @@
             android:label="@string/app_name"
             android:launchMode="singleTask"
             android:stateNotNeeded="true"
-            android:theme="@android:style/Theme.Wallpaper.NoTitleBar.Fullscreen"
+            android:theme="@style/LauncherTheme"
             tools:targetApi="eclair">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -47,9 +47,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity
             android:name=".AllApps.AllAppsActivity"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen" />
+            android:theme="@style/LauncherTheme" />
+
         <activity
             android:name=".Settings.ContextRelated.ContextRelatedSettingsActivity"
             android:label="Onboarding"
@@ -58,6 +60,7 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="corp.kairos.adamastor.Home.HomeActivity" />
         </activity>
+
         <activity
             android:name=".Settings.ContextRelated.ContextRelatedAppsActivity"
             android:label="Context Related Apps"
@@ -67,27 +70,10 @@
                 android:value=".Settings.ContextRelated.ContextRelatedSettingsActivity" />
         </activity>
 
-        <service
-            android:name=".collector.CollectorService"
-            android:label="@string/app_name">
-            <intent-filter>
-                <action android:name="android.service.notification.CollectorService" />
-            </intent-filter>
-        </service>
-
         <activity
             android:name=".Onboarding.Onboard1Activity"
             android:label="Onboarding"
             android:parentActivityName=".Home.HomeActivity">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="corp.kairos.adamastor.Home.HomeActivity" />
-        </activity>
-
-        <activity
-            android:name=".Onboarding.OnboardUsageSettings"
-            android:label="Onboarding"
-            android:parentActivityName=".Onboarding.Onboard1Activity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="corp.kairos.adamastor.Home.HomeActivity" />
@@ -121,8 +107,26 @@
         </activity>
 
         <activity
+            android:name=".Onboarding.OnboardUsageSettings"
+            android:label="Onboarding"
+            android:parentActivityName=".Onboarding.Onboard1Activity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="corp.kairos.adamastor.Home.HomeActivity" />
+        </activity>
+
+        <activity
             android:name=".ContextList.ContextListActivity"
-            android:theme="@android:style/Theme.Wallpaper.NoTitleBar.Fullscreen" />
+            android:theme="@style/LauncherTheme" />
+
+        <service
+            android:name=".collector.CollectorService"
+            android:label="@string/app_name">
+            <intent-filter>
+                <action android:name="android.service.notification.CollectorService" />
+            </intent-filter>
+        </service>
+
     </application>
 
 </manifest>
