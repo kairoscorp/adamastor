@@ -20,6 +20,7 @@ import android.location.LocationManager;
 import android.media.AudioManager;
 import android.os.Binder;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -34,6 +35,8 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.ActivityRecognition;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.LinkedList;
@@ -84,6 +87,9 @@ public class CollectorService extends Service implements GoogleApiClient.Connect
                 .build();
 
         googleApiClient.connect();
+
+        ModelHandler modelHandler = new ModelHandler();
+        modelHandler.setModel(this.readModelFile());
 
         new Thread(){
             public void run(){
@@ -413,6 +419,16 @@ public class CollectorService extends Service implements GoogleApiClient.Connect
         }
     }
 
+    private InputStream readModelFile(){
+        FileInputStream fileInputStream = null;
+        try {
+            File modelFile = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath() + File.separator + "model.ser");
+            fileInputStream = new FileInputStream(modelFile);
+        }catch(Exception e){
+            Log.i("CollectorServiceLog", "Error openeing file");
+        }
 
+        return fileInputStream;
+    }
 
 }
