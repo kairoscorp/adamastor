@@ -1,6 +1,7 @@
 package corp.kairos.adamastor;
 
 import android.location.Location;
+
 import java.util.GregorianCalendar;
 import java.util.List;
 
@@ -52,6 +53,27 @@ public class UserContext {
 
     public void setLocation(Location location){
         this.location = location;
+    }
+
+
+
+    public static String getContextNameById(int id) {
+        switch (id) {
+            case 0:
+                return "Home";
+
+            case 1:
+                return "Work";
+
+            case 2:
+                return "Travel";
+
+            case 3:
+                return "Fitness";
+
+            default:
+                return "Other";
+        }
     }
 
 }

@@ -7,9 +7,7 @@ import android.content.pm.PackageManager;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
-import android.location.LocationProvider;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -21,16 +19,11 @@ import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.maps.model.Polygon;
 
-import java.io.Serializable;
-import java.util.List;
 import java.util.Set;
 
 import corp.kairos.adamastor.R;
 import corp.kairos.adamastor.Settings.Settings;
-
-import static android.location.Criteria.ACCURACY_HIGH;
 
 
 public class Onboard2Activity extends AppCompatActivity{

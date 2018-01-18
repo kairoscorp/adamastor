@@ -1,6 +1,5 @@
 package corp.kairos.adamastor.Onboarding;
 
-import android.app.Activity;
 import android.app.AppOpsManager;
 import android.content.Intent;
 import android.os.Bundle;
@@ -8,7 +7,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
 import corp.kairos.adamastor.R;
-import corp.kairos.adamastor.Settings.Settings;
 
 
 public class OnboardUsageSettings extends AppCompatActivity{

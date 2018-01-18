@@ -1,4 +1,4 @@
-package corp.kairos.adamastor.collector;
+package corp.kairos.adamastor;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -12,27 +12,22 @@ import java.io.File;
 import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
+import java.util.concurrent.TimeUnit;
 
-public class LogDatabaseHelper extends SQLiteOpenHelper {
+public class DatabaseHelper extends SQLiteOpenHelper {
 
-    public LogDatabaseHelper(Context context) {
+    public DatabaseHelper(Context context) {
         super(context, "ActivityLog.db", null, 1);
     }
 
+    @Override
+    public void onCreate(SQLiteDatabase db) {
+        createDB(db);
+    }
 
-    public void addLogEntry(String timestamp,
-                            String foreground,
-                            int activity,
-                            int screen_active,
-                            int call_active,
-                            int music_active,
-                            int ring_mode,
-                            double latitude,
-                            double longitude,
-                            String provider,
-                            String account){
-
-        SQLiteDatabase activityLogDB = this.getWritableDatabase();
+    private void createDB (SQLiteDatabase db) {
 
         String NEWTABLE = "CREATE TABLE IF NOT EXISTS 'ServiceLogs' "
                 + "( _id  INTEGER PRIMARY KEY AUTOINCREMENT, "
@@ -46,12 +41,29 @@ public class LogDatabaseHelper extends SQLiteOpenHelper {
                 + "latitude REAL, "
                 + "longitude REAL, "
                 + "provider TEXT, "
-                + "account TEXT"
+                + "account TEXT,"
+                + "context INTEGER"
                 + ");";
 
-        activityLogDB.execSQL(NEWTABLE);
+        db.execSQL(NEWTABLE);
+    }
 
+    public void addLogEntry(String timestamp,
+                            String foreground,
+                            int activity,
+                            int screen_active,
+                            int call_active,
+                            int music_active,
+                            int ring_mode,
+                            double latitude,
+                            double longitude,
+                            String provider,
+                            String account,
+                            int context){
 
+        SQLiteDatabase activityLogDB = this.getWritableDatabase();
+
+        createDB(activityLogDB);
 
         String ENTRY = "INSERT INTO ServiceLogs (" +
                 "timestamp, " +
@@ -64,7 +76,8 @@ public class LogDatabaseHelper extends SQLiteOpenHelper {
                 "latitude, "+
                 "longitude, "+
                 "provider, "+
-                "account) VALUES ('"+
+                "account, "+
+                "context) VALUES ('"+
                 timestamp + "', '" +
                 foreground + "', " +
                 activity + "," +
@@ -75,21 +88,53 @@ public class LogDatabaseHelper extends SQLiteOpenHelper {
                 latitude + ", "+
                 longitude + ", '"+
                 provider + "', '"+
-                account  + "');";
+                account + "', '"+
+                context  + "');";
 
         activityLogDB.execSQL(ENTRY);
     }
+
+    public Map<String, Long> getContextStatistics() {
+        Map<String, Long> result = new TreeMap<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        String query = "SELECT logs.context As Context, SUM(logs._id) AS Times " +
+                       "FROM ServiceLogs AS logs " +
+                       "GROUP BY logs.context;";
+
+        db.beginTransaction();
+
+        Cursor res = db.rawQuery(query, null );
+        res.moveToFirst();
+
+        while(!res.isAfterLast()) {
+            int context = res.getInt(res.getColumnIndex("Context"));
+
+            // Each record means approximately 10 seconds in the context
+            int timeSeconds = res.getInt(res.getColumnIndex("Times")) * 10;
+
+            result.put(UserContext.getContextNameById(context), TimeUnit.SECONDS.toMillis(timeSeconds));
+            res.moveToNext();
+        }
+
+        db.endTransaction();
+        return result;
+    }
+
 
 
     public List<String> getAllLogs(){
         List<String> result = new ArrayList<String>();
         SQLiteDatabase db = this.getReadableDatabase();
         String query = "SELECT * FROM ServiceLogs";
+
+        db.beginTransaction();
+
         Cursor res = db.rawQuery(query, null );
         res.moveToFirst();
 
 
-        while(res.isAfterLast() == false){
+        while(!res.isAfterLast()){
             String entry = "";
             entry = res.getString(res.getColumnIndex("_id"));
             entry = entry + "::" + res.getString(res.getColumnIndex("timestamp"));
@@ -101,9 +146,12 @@ public class LogDatabaseHelper extends SQLiteOpenHelper {
             entry = entry + "::" + res.getString(res.getColumnIndex("longitude"));
             entry = entry + "::" + res.getString(res.getColumnIndex("provider"));
             entry = entry + "::" + res.getString(res.getColumnIndex("account"));
+            entry = entry + "::" + res.getString(res.getColumnIndex("context"));
             result.add(entry);
             res.moveToNext();
         }
+
+        db.endTransaction();
         return result;
     }
 
@@ -136,7 +184,8 @@ public class LogDatabaseHelper extends SQLiteOpenHelper {
                         curCSV.getString(curCSV.getColumnIndex("latitude")),
                         curCSV.getString(curCSV.getColumnIndex("longitude")),
                         curCSV.getString(curCSV.getColumnIndex("provider")),
-                        curCSV.getString(curCSV.getColumnIndex("account"))
+                        curCSV.getString(curCSV.getColumnIndex("account")),
+                        curCSV.getString(curCSV.getColumnIndex("context"))
                 };
                 csvWrite.writeNext(arrStr);
             }
@@ -148,27 +197,6 @@ public class LogDatabaseHelper extends SQLiteOpenHelper {
             Log.e("CollectorServiceLog", sqlEx.getMessage(), sqlEx);
         }
 
-    }
-
-    @Override
-    public void onCreate(SQLiteDatabase db) {
-
-        String NEWTABLE = "CREATE TABLE IF NOT EXISTS 'ServiceLogs' "
-                + "( _id  INTEGER PRIMARY KEY AUTOINCREMENT, "
-                + "timestamp NUMERIC, "
-                + "foreground TEXT, "
-                + "activity INTEGER,"
-                + "screen_active INTEGER, "
-                + "call_active INTEGER, "
-                + "music_active INTEGER, "
-                + "ring_mode INTEGER, "
-                + "latitude REAL, "
-                + "longitude REAL, "
-                + "provider TEXT, "
-                + "account TEXT"
-                + ");";
-
-        db.execSQL(NEWTABLE);
     }
 
     @Override
