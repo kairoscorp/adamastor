@@ -44,11 +44,11 @@ public class HomeActivity extends AnimActivity {
         super.onCreate(savedInstanceState);
 
         Settings sets = new Settings(this);
-//        if(!sets.isOnboardingDone()){
-//            Intent i = new Intent(this, Onboard1Activity.class);
-//            startActivity(i);
-//            finish();
-//        } else {
+        if(!sets.isOnboardingDone()){
+            Intent i = new Intent(this, Onboard1Activity.class);
+            startActivity(i);
+            finish();
+        } else {
             setContentView(R.layout.activity_home);
             pm = getPackageManager();
 
@@ -61,7 +61,7 @@ public class HomeActivity extends AnimActivity {
             this.currentContextIndex = 0;
             this.currentContext = this.contexts[0];
             addClickListener();
-//        }
+        }
     }
 
     private void addClickListener(){
