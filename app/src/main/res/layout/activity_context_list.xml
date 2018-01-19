@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:fitsSystemWindows="true"
+    tools:context="corp.kairos.adamastor.ContextList.ContextListActivity"
+    android:id="@+id/context_list_main_layout"
+    android:orientation="horizontal"
+    android:background="@color/secondaryColor">
+
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/all_contexts_recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:divider="@android:color/transparent"
+        android:dividerHeight="5dp"
+        android:scrollbars="none"/>
+
+</LinearLayout>

@@ -119,6 +119,10 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="corp.kairos.adamastor.Onboarding.Onboard3Activity" />
         </activity>
+
+        <activity
+            android:name=".ContextList.ContextListActivity"
+            android:theme="@android:style/Theme.Wallpaper.NoTitleBar.Fullscreen" />
     </application>
 
 </manifest>

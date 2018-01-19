@@ -25,10 +25,15 @@ public class UserContext {
     public List<AppDetail> getContextApps() {
         return contextApps;
     }
-    public void addApp(AppDetail app){contextApps.add(app);}
+
+    public void addApp(AppDetail app) {
+        contextApps.add(app);
+    }
+
     public void removeApp(AppDetail app){
         contextApps.remove(app);
     }
+
     public boolean appExists(AppDetail app){
         return contextApps.contains(app);
 
