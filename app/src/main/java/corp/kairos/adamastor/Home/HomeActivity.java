@@ -2,7 +2,6 @@ package corp.kairos.adamastor.Home;
 
 
 import android.Manifest;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -29,18 +28,16 @@ import corp.kairos.adamastor.UserContext;
 
 public class HomeActivity extends AnimationActivity {
 
-    private static final String TAG = HomeActivity.class.getName();
+    public static final String TAG = HomeActivity.class.toString();
+    public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
 
-    private UserContext currentContext;
-    private int currentContextIndex;
-    private View.OnClickListener clickHandler;
     private PackageManager packageManager;
     private Settings settingsUser;
     private AppsManager appsManager;
 
+    private UserContext[] contexts;
 
     private boolean permissionsGranted = false;
-    public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +47,7 @@ public class HomeActivity extends AnimationActivity {
         this.settingsUser = Settings.getInstance(this);
         this.appsManager = AppsManager.getInstance();
         this.appsManager.setupApps(packageManager);
+
         if (!settingsUser.isOnboardingDone()) {
             // Set animation
             super.setAnimation("up");
@@ -62,11 +60,12 @@ public class HomeActivity extends AnimationActivity {
             setContentView(R.layout.activity_home);
 
             // Setup contexts
-            this.currentContextIndex = 0;
-            this.currentContext = settingsUser.getCurrentUserContext();
 
-            addClickListener();
-            adjustScreenToContext();
+
+            // Load favorite apps
+
+
+            // Setup Contexts
 
             // Set animations
             this.setDownActivity(AllAppsActivity.class);
@@ -77,45 +76,18 @@ public class HomeActivity extends AnimationActivity {
             if (permissionsGranted) {
                 bindCollectorService();
             }
+
         }
     }
 
-    private void addClickListener() {
-        clickHandler = v -> {
-            super.setAnimation("right");
-            HomeApp ha = (HomeApp) v;
-            Intent i = packageManager.getLaunchIntentForPackage(ha.getPackageName());
-            this.startActivity(i);
-        };
-    }
 
-    /*
-    * This method should be called when the home screen needs to change in order to show the
-    * correct apps for the current context*/
-    private void adjustScreenToContext() {
-        TextView contextOnScreen = ((TextView) findViewById(R.id.id_context_label));
+    @Override
+    protected void onResume() {
+        super.onResume();
 
-        //Just refresh the view if the context actually changed
-        if (!(contextOnScreen.getText().equals(currentContext.getContextName()))) {
-            LinearLayout contextAppsList = findViewById(R.id.id_context_apps_list);
-            contextAppsList.removeAllViews();
-            contextOnScreen.setText(currentContext.getContextName());
-
-            for (AppDetails app : currentContext.getContextApps()) {
-                LayoutInflater inflater = LayoutInflater.from(this);
-                HomeApp inflatedView = (HomeApp) inflater.inflate(R.layout.home_app, null);
-
-                inflatedView.setPackageName(app.getPackageName());
-                TextView textViewTitle = (TextView) inflatedView.findViewById(R.id.app_text);
-                ImageView imageViewIte = (ImageView) inflatedView.findViewById(R.id.app_image);
-
-                textViewTitle.setText(app.getLabel());
-                imageViewIte.setImageDrawable(app.getIcon());
-                inflatedView.setOnClickListener(clickHandler);
-
-                contextAppsList.addView(inflatedView);
-            }
-        }
+        checkPermissions();
+        if (permissionsGranted)
+            bindCollectorService();
     }
 
     public void showAllAppsMenu(View v) {
@@ -130,17 +102,7 @@ public class HomeActivity extends AnimationActivity {
         startActivity(i);
     }
 
-    /*
-    * The mechanism for manual context change is pressing the context label.
-    * This method is called when the context label is pressed.
-    */
-    public void changeContext(View view) {
-        this.currentContextIndex = (this.currentContextIndex + 1) % settingsUser.getContextNames().size();
-        this.currentContext = settingsUser.getUserContext(currentContextIndex);
-        adjustScreenToContext();
-    }
 
-    //KAIROS
     private void checkPermissions() {
         if ((ActivityCompat.checkSelfPermission(this,
                 android.Manifest.permission.ACCESS_FINE_LOCATION)
@@ -155,8 +117,7 @@ public class HomeActivity extends AnimationActivity {
                         Manifest.permission.GET_ACCOUNTS)
                         != PackageManager.PERMISSION_GRANTED)) {
 
-
-            requestPremissions();
+            requestPermissions();
 
         } else {
             Log.i(TAG, "permissions OK");
@@ -164,8 +125,7 @@ public class HomeActivity extends AnimationActivity {
         }
     }
 
-    //KAIROS
-    private void requestPremissions() {
+    private void requestPermissions() {
         ActivityCompat.requestPermissions(this,
                 new String[]{Manifest.permission.ACCESS_COARSE_LOCATION,
                         Manifest.permission.ACCESS_FINE_LOCATION,
@@ -176,7 +136,6 @@ public class HomeActivity extends AnimationActivity {
                 MY_PERMISSIONS_REQUEST_LOCATION);
     }
 
-    //KAIROS
     private void bindCollectorService() {
         Log.i(TAG, "Binding Service");
         Intent intent = new Intent(this, CollectorService.class);
@@ -185,13 +144,11 @@ public class HomeActivity extends AnimationActivity {
     }
 
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        if (requestCode == MY_PERMISSIONS_REQUEST_LOCATION) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+        if(requestCode == MY_PERMISSIONS_REQUEST_LOCATION)
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
                 permissionsGranted = true;
-            } else {
+            else
                 permissionsGranted = false;
-            }
-        }
     }
 
 }

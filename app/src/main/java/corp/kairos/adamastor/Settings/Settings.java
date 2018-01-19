@@ -30,7 +30,7 @@ public class Settings {
 
 
     private Map<String,UserContext> contexts;
-    public static int contextsNumber;
+    public int contextsNumber;
 
     private Context context;
     private static final String TIME_FROM = "_timeFrom";
@@ -49,6 +49,7 @@ public class Settings {
         this.context = c;
         this.packageManager = c.getPackageManager();
         this.appsManager = AppsManager.getInstance();
+
         this.contexts = new HashMap<>();
 
         setUpContexts();

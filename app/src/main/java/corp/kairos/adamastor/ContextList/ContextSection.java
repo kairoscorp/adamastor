@@ -2,7 +2,6 @@ package corp.kairos.adamastor.ContextList;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -84,7 +83,7 @@ public class ContextSection extends StatelessSection {
         headerHolder.rootView.setOnClickListener((View v) -> {
             isExpanded = !isExpanded;
             headerHolder.expandArrowView.setImageResource(
-                    isExpanded ? R.drawable.ic_keyboard_arrow_up_black_24dp : R.drawable.ic_keyboard_arrow_down_black_24dp
+                    isExpanded ? R.drawable.ic_expand_less_black_24dp : R.drawable.ic_expand_more_black_24dp
             );
             mAdapter.notifyDataSetChanged();
         });

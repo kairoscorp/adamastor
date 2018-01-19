@@ -1,52 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".Home.HomeActivity"
-    android:id="@+id/homeActivity">
+    android:id="@+id/homeActivity"
+    android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/id_context_label"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:onClick="changeContext"
-        android:text="Hello"
-        android:textColor="@android:color/white"
-        android:textSize="30sp"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="70dp"/>
 
     <ImageView
-        android:id="@+id/config_btn"
+        android:id="@+id/show_settings_icon"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:layout_gravity="center_vertical"
-        android:contentDescription="Settings Icon"
+        android:maxHeight="50dp"
+        android:layout_gravity="start"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="50dp"
+        android:contentDescription="@string/settings_icon_accessibility"
         android:onClick="showSettings"
         android:src="@drawable/ic_settings_black_24dp"
         android:tint="@color/secondaryColor"
-        android:layout_alignParentEnd="true"
-        android:layout_marginEnd="20dp"
-        android:layout_marginTop="50dp"/>
+        android:layout_weight="0"
+    />
 
-    <Button
-        android:id="@+id/id_all_apps_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:background="@drawable/ic_allapps"
-        android:clickable="true"
-        android:onClick="showAllAppsMenu"
-        android:focusable="true" />
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="2" />
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/home_view_pager"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_gravity="bottom"
+        android:layout_weight="1.5"
+    />
 
 
-    <LinearLayout
-        android:id="@+id/id_context_apps_list"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/id_all_apps_button"
-        android:orientation="horizontal">
-    </LinearLayout>
-</RelativeLayout>
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/favorite_apps_view"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.7"
+    />
+
+</LinearLayout>
