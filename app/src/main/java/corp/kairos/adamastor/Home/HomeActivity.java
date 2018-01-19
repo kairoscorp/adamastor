@@ -19,7 +19,7 @@ import corp.kairos.adamastor.AllApps.AllAppsActivity;
 import corp.kairos.adamastor.AnimActivity;
 import corp.kairos.adamastor.AppDetail;
 import corp.kairos.adamastor.ContextList.ContextListActivity;
-import corp.kairos.adamastor.Onboarding.Onboard1Activity;
+import corp.kairos.adamastor.Onboarding.Onboard1WelcomeActivity;
 import corp.kairos.adamastor.R;
 import corp.kairos.adamastor.Settings.ContextRelated.ContextRelatedSettingsActivity;
 import corp.kairos.adamastor.Settings.Settings;
@@ -45,7 +45,7 @@ public class HomeActivity extends AnimActivity {
 
         Settings sets = new Settings(this);
         if(!sets.isOnboardingDone()){
-            Intent i = new Intent(this, Onboard1Activity.class);
+            Intent i = new Intent(this, Onboard1WelcomeActivity.class);
             startActivity(i);
             finish();
         } else {

@@ -18,12 +18,12 @@ import corp.kairos.adamastor.R;
 import corp.kairos.adamastor.Settings.Settings;
 
 
-public class Onboard4Activity extends AppCompatActivity implements TimePickerDialog.OnTimeSetListener{
+public class Onboard5ScheduleActivity extends AppCompatActivity implements TimePickerDialog.OnTimeSetListener{
     public Settings sets;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.onboard4);
+        setContentView(R.layout.onboard5_schedule);
         this.sets = new Settings(this);
         
         GregorianCalendar from = new GregorianCalendar();
@@ -61,7 +61,7 @@ public class Onboard4Activity extends AppCompatActivity implements TimePickerDia
 
     public void goNext(View v) {
         sets.saveContextSettings("Work");
-        setContentView(R.layout.onboard_final);
+        setContentView(R.layout.onboard6_final);
     }
 
     public void finish(View v) {

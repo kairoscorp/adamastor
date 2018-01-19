@@ -3,7 +3,6 @@ package corp.kairos.adamastor.Onboarding;
 
 import android.Manifest;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
@@ -15,20 +14,20 @@ import corp.kairos.adamastor.R;
 import corp.kairos.adamastor.Settings.Settings;
 
 
-public class Onboard1Activity extends AppCompatActivity {
+public class Onboard1WelcomeActivity extends AppCompatActivity {
     private boolean permissionsGranted = false;
     public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.onboard1);
+        setContentView(R.layout.onboard1_welcome);
         new Settings(this).resetSettings();
         checkPermissions();
     }
 
     public void start(View v) {
-        Intent i = new Intent(this,OnboardUsageSettings.class);
+        Intent i = new Intent(this,Onboard2UsageSettingsActivity.class);
         startActivity(i);
         finish();
     }
