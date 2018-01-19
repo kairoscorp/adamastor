@@ -56,7 +56,6 @@ public class HomeActivity extends AnimActivity {
             this.setRightActivity(ContextListActivity.class);
 
             // Setup contexts
-//            contexts = Util.createDummyContextList(TAG, pm);
             Settings settings = new Settings(getApplicationContext());
             contexts = settings.getUserContextsAsArray();
             this.currentContextIndex = 0;
