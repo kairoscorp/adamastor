@@ -18,7 +18,7 @@ import corp.kairos.adamastor.Settings.Settings;
 import corp.kairos.adamastor.UserContext;
 
 
-public class Onboard3Activity extends AppCompatActivity {
+public class Onboard4ContextAppsActivity extends AppCompatActivity {
     private ListView checkAppsMenuView;
     private AppCheckAdapter adapter;
     public Context context = this;
@@ -32,7 +32,7 @@ public class Onboard3Activity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.onboard3);
+        setContentView(R.layout.onboard4_context_apps);
         this.sets = new Settings(this);
         this.contexts = sets.getContextNames();
         this.allApps = sets.getAllApps();
@@ -61,7 +61,7 @@ public class Onboard3Activity extends AppCompatActivity {
             loadSettings();
         }
         else {
-            Intent i = new Intent(this,Onboard4Activity.class);
+            Intent i = new Intent(this,Onboard5ScheduleActivity.class);
             startActivity(i);
             finish();
         }

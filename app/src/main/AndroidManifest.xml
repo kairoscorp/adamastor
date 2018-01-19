@@ -71,7 +71,7 @@
         </activity>
 
         <activity
-            android:name=".Onboarding.Onboard1Activity"
+            android:name=".Onboarding.Onboard1WelcomeActivity"
             android:label="Onboarding"
             android:parentActivityName=".Home.HomeActivity">
             <meta-data
@@ -80,36 +80,36 @@
         </activity>
 
         <activity
-            android:name=".Onboarding.Onboard2Activity"
+            android:name=".Onboarding.Onboard3LocationActivity"
             android:label="Onboarding"
-            android:parentActivityName=".Onboarding.Onboard1Activity">
+            android:parentActivityName=".Onboarding.Onboard1WelcomeActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="corp.kairos.adamastor.Onboarding.Onboard1Activity" />
+                android:value="corp.kairos.adamastor.Onboarding.Onboard1WelcomeActivity" />
         </activity>
 
         <activity
-            android:name=".Onboarding.Onboard3Activity"
+            android:name=".Onboarding.Onboard4ContextAppsActivity"
             android:label="Onboarding"
-            android:parentActivityName=".Onboarding.Onboard2Activity">
+            android:parentActivityName=".Onboarding.Onboard3LocationActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="corp.kairos.adamastor.Onboarding.Onboard2Activity" />
+                android:value="corp.kairos.adamastor.Onboarding.Onboard3LocationActivity" />
         </activity>
 
         <activity
-            android:name=".Onboarding.Onboard4Activity"
+            android:name=".Onboarding.Onboard5ScheduleActivity"
             android:label="Onboarding"
-            android:parentActivityName=".Onboarding.Onboard3Activity">
+            android:parentActivityName=".Onboarding.Onboard4ContextAppsActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="corp.kairos.adamastor.Onboarding.Onboard3Activity" />
+                android:value="corp.kairos.adamastor.Onboarding.Onboard4ContextAppsActivity" />
         </activity>
 
         <activity
-            android:name=".Onboarding.OnboardUsageSettings"
+            android:name=".Onboarding.Onboard2UsageSettingsActivity"
             android:label="Onboarding"
-            android:parentActivityName=".Onboarding.Onboard1Activity">
+            android:parentActivityName=".Onboarding.Onboard1WelcomeActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="corp.kairos.adamastor.Home.HomeActivity" />

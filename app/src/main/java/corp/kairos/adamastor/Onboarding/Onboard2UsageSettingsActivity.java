@@ -1,6 +1,5 @@
 package corp.kairos.adamastor.Onboarding;
 
-import android.app.Activity;
 import android.app.AppOpsManager;
 import android.content.Intent;
 import android.os.Bundle;
@@ -8,15 +7,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
 import corp.kairos.adamastor.R;
-import corp.kairos.adamastor.Settings.Settings;
 
 
-public class OnboardUsageSettings extends AppCompatActivity{
+public class Onboard2UsageSettingsActivity extends AppCompatActivity{
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.onboard_usage_sets);
+        setContentView(R.layout.onboard2_usage_sets);
     }
 
     @Override
@@ -37,7 +35,7 @@ public class OnboardUsageSettings extends AppCompatActivity{
     }
 
     public void goNext(View v) {
-        startActivity(new Intent(this,Onboard2Activity.class));
+        startActivity(new Intent(this,Onboard3LocationActivity.class));
         finish();
     }
 }
