@@ -84,7 +84,6 @@ public class AnimationActivity extends Activity {
         this.animation.overrideTransition(this);
     }
 
-
     @Override
     public void finish() {
         super.finish();

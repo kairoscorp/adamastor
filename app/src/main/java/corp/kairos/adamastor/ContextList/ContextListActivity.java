@@ -31,8 +31,8 @@ public class ContextListActivity extends AnimationActivity {
         userContexts = ArrayUtils.addAll(settings.getUserContextsAsArray(), settings.getZeroContext());
 
         // Set side activities
-        setLeftActivity(HomeActivity.class);
-        setRightActivity(AllAppsActivity.class);
+        super.setAnimation("left");
+        super.setLeftActivity(AllAppsActivity.class);
 
         setupViews();
     }

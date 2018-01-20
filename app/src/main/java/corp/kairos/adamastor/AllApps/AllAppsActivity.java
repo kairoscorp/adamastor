@@ -10,6 +10,7 @@ import java.util.Set;
 import corp.kairos.adamastor.Animation.AnimationActivity;
 import corp.kairos.adamastor.AppDetails;
 import corp.kairos.adamastor.AppsManager.AppsManager;
+import corp.kairos.adamastor.ContextList.ContextListActivity;
 import corp.kairos.adamastor.Home.HomeActivity;
 import corp.kairos.adamastor.R;
 
@@ -35,6 +36,7 @@ public class AllAppsActivity extends AnimationActivity {
         // Set animations
         super.setAnimation("up");
         super.setUpActivity(HomeActivity.class);
+        super.setRightActivity(ContextListActivity.class);
 
         // Load apps and views
         loadApps();

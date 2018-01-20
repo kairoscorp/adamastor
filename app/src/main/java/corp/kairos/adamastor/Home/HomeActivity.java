@@ -127,13 +127,6 @@ public class HomeActivity extends AnimationActivity {
         startActivity(i);
     }
 
-    public void showStatistics(View v) {
-        super.setAnimation("left");
-        Intent i = new Intent(this, StatisticsActivity.class);
-        startActivity(i);
-    }
-
-
     /*
     * The mechanism for manual context change is pressing the context label.
     * This method is called when the context label is pressed.

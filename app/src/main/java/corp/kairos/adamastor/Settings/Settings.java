@@ -139,7 +139,6 @@ public class Settings {
     }
 
 
-
     public Map<String, UserContext> getContexts() {
         return this.contexts;
     }
@@ -179,7 +178,10 @@ public class Settings {
     }
 
     public UserContext[] getUserContextsAsArray() {
-        return (UserContext[]) contexts.values().toArray();
+        Collection collection = contexts.values();
+        UserContext[] userContextsArray = new UserContext[collection.size()];
+        collection.toArray(userContextsArray);
+        return userContextsArray;
     }
 
     public UserContext getZeroContext() {
@@ -193,8 +195,11 @@ public class Settings {
                 if (context.appExists(app)) break;
                 else i++;
             }
-            if (i==3) zeroContext.addApp(app);
+            if (i==contextsNumber) zeroContext.addApp(app);
         }
+
+        System.out.println(zeroContext.toString());
+        System.out.println(zeroContext.toString());
 
         return zeroContext;
     }

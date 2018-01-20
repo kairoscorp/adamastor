@@ -5,20 +5,20 @@ import android.support.annotation.NonNull;
 
 public class AppDetails implements Comparable{
     private String label;
-    private String name;
+    private String packageName;
     private Drawable icon;
     private Long usageStatistics;
 
-    public AppDetails(String label, String name, Drawable icon) {
+    public AppDetails(String label, String packageName, Drawable icon) {
         this.label = label;
-        this.name = name;
+        this.packageName = packageName;
         this.icon = icon;
         this.usageStatistics = 0L;
     }
 
     public AppDetails(AppDetails appDetail) {
         this.label = appDetail.getLabel();
-        this.name = appDetail.getPackageName();
+        this.packageName = appDetail.getPackageName();
         this.icon = appDetail.getIcon();
         this.usageStatistics = appDetail.getUsageStatistics();
     }
@@ -32,11 +32,11 @@ public class AppDetails implements Comparable{
     }
 
     public String getPackageName() {
-        return name;
+        return packageName;
     }
 
-    public void setPackageName(String name) {
-        this.name = name;
+    public void setPackageName(String packageName) {
+        this.packageName = packageName;
     }
 
     public Drawable getIcon() {
@@ -65,20 +65,18 @@ public class AppDetails implements Comparable{
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        AppDetails appDetail = (AppDetails) o;
+        AppDetails that = (AppDetails) o;
 
-        if (label != null ? !label.equals(appDetail.label) : appDetail.label != null) return false;
-        if (name != null ? !name.equals(appDetail.name) : appDetail.name != null) return false;
-        if (usageStatistics != null ? !usageStatistics.equals(appDetail.usageStatistics) : appDetail.usageStatistics != null) return false;
-        return icon != null ? icon.equals(appDetail.icon) : appDetail.icon == null;
+        if (!label.equals(that.label)) return false;
+        if (!packageName.equals(that.packageName)) return false;
+        return usageStatistics != null ? usageStatistics.equals(that.usageStatistics) : that.usageStatistics == null;
     }
 
     @Override
     public int hashCode() {
-        int result = label != null ? label.hashCode() : 0;
-        result = 31 * result + (name != null ? name.hashCode() : 0);
+        int result = label.hashCode();
+        result = 31 * result + packageName.hashCode();
         result = 31 * result + (usageStatistics != null ? usageStatistics.hashCode() : 0);
-        result = 31 * result + (icon != null ? icon.hashCode() : 0);
         return result;
     }
 
