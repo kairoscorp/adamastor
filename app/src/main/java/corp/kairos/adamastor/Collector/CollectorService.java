@@ -105,13 +105,6 @@ public class CollectorService extends Service implements GoogleApiClient.Connect
 
         for(int i = 0; i < 4; i++) {
             randomTime =  ThreadLocalRandom.current().nextLong(min, max);
-            if(settingsUser == null) {
-                Log.i("DEBUG", "settings");
-            } else if (settingsUser.getUserContext(i) == null) {
-                Log.i("DEBUG", "getUserContext("+i+")");
-            } else if(settingsUser.getUserContext(i).getContextName() == null) {
-                Log.i("DEBUG", "name");
-            }
             stats.put(settingsUser.getUserContext(i).getContextName(), randomTime);
         }
 
