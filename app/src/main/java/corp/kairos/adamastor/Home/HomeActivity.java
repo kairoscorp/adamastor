@@ -13,11 +13,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import java.util.List;
 
 import corp.kairos.adamastor.AllApps.AllAppsActivity;
-import corp.kairos.adamastor.Animation.AnimationActivity;
+import corp.kairos.adamastor.Animation.AnimationCompactActivity;
 import corp.kairos.adamastor.AppDetails;
 import corp.kairos.adamastor.AppsManager.AppsManager;
 import corp.kairos.adamastor.Collector.CollectorService;
@@ -32,7 +33,8 @@ import corp.kairos.adamastor.Statistics.StatisticsActivity;
 import corp.kairos.adamastor.UserContext;
 
 
-public class HomeActivity extends AnimationActivity {
+// TODO: Find a way to not need this as to not have duplicated code.
+public class HomeActivity extends AnimationCompactActivity {
 
     public static final String TAG = HomeActivity.class.toString();
     public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
@@ -45,11 +47,8 @@ public class HomeActivity extends AnimationActivity {
     private TabLayout tabLayout;
     private ViewPager viewPager;
 
-
     private Settings settings;
-    private UserContext[] contexts;
-    private int currentContextIndex;
-    private UserContext currentContext;
+    private UserContext[] userContexts;
     private List<AppDetails> favouriteApps;
 
     private boolean permissionsGranted = false;
@@ -90,8 +89,11 @@ public class HomeActivity extends AnimationActivity {
 //            this.currentContext = this.contexts[0];
 
             setupFavouriteApps();
+
+            setupContextDisplayer();
         }
     }
+
 
     private void setupFavouriteApps() {
         // Load favorite apps
@@ -117,22 +119,79 @@ public class HomeActivity extends AnimationActivity {
                 Intent intent = getPackageManager().getLaunchIntentForPackage(app.getPackageName());
                 HomeActivity.this.startActivity(intent);
             });
-            img.setMaxWidth(45);
-            img.setMaxHeight(45);
             parentLayout.addView(img);
             i++;
         }
 
     }
-//
-//    private void setupContextViews() {
-//        this.viewPager = (ViewPager) findViewById(R.id.viewpager);
-//        createViewPager(viewPager);
-//
-//        this.tabLayout = (TabLayout) findViewById(R.id.tabs);
-//        this.tabLayout.setupWithViewPager(viewPager);
-//    }
 
+    private void setupContextDisplayer() {
+        loadContexts();
+
+        setupViewPager();
+
+        setupTabs();
+    }
+
+    // TODO: Make this method get last active context
+    private void loadContexts() {
+        this.userContexts = settingsUser.getUserContextsAsArray();
+    }
+
+    private void setupViewPager() {
+        this.viewPager = (ViewPager) findViewById(R.id.home_context_view_pager);
+
+        ContextsViewPagerAdapter adapter = new ContextsViewPagerAdapter(getSupportFragmentManager());
+
+        for (UserContext context : this.userContexts)
+            adapter.addFrag(new ContextFragment(), context.getContextName());
+
+        this.viewPager.setAdapter(adapter);
+    }
+
+    private void setupTabs() {
+        this.tabLayout = (TabLayout) findViewById(R.id.context_tabs);
+        this.tabLayout.setupWithViewPager(this.viewPager);
+//        this.tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+//            @Override
+//            public void onTabSelected(TabLayout.Tab tab) {
+//                LinearLayout linearLayout = findViewById(R.id.home_activity);
+//                linearLayout.setBackground();
+//            }
+//
+//            @Override
+//            public void onTabUnselected(TabLayout.Tab tab) {
+//                // Do Nothing
+//            }
+//
+//            @Override
+//            public void onTabReselected(TabLayout.Tab tab) {
+//                // Do Nothing
+//            }
+//        });
+        int i = 0;
+        for (UserContext context : this.userContexts) {
+            TextView tab = (TextView) LayoutInflater.from(this).inflate(R.layout.context_tab, null);
+            tab.setText(context.getContextName());
+            int icon;
+            switch (context.getContextName()) {
+                case "Work":
+                    icon = R.drawable.ic_work_black_24dp;
+                    break;
+                case "Leisure":
+                    icon = R.drawable.ic_leisure_black_24dp;
+                    break;
+                case "Commute":
+                    icon = R.drawable.ic_commute_black_24dp;
+                    break;
+                default:
+                    icon = R.drawable.ic_settings_black_24dp;
+            }
+            tab.setCompoundDrawablesWithIntrinsicBounds(0, 0, icon, 0);
+            tabLayout.getTabAt(i).setCustomView(tab);
+            i++;
+        }
+    }
 
     @Override
     protected void onResume() {

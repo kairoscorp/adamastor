@@ -36,7 +36,7 @@
             android:label="@string/app_name"
             android:launchMode="singleTask"
             android:stateNotNeeded="true"
-            android:theme="@style/LauncherTheme"
+            android:theme="@style/HomeTheme"
             tools:targetApi="eclair">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
