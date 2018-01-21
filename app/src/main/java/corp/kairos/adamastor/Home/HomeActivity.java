@@ -171,7 +171,7 @@ public class HomeActivity extends AnimationCompactActivity {
 //        });
         int i = 0;
         for (UserContext context : this.userContexts) {
-            TextView tab = (TextView) LayoutInflater.from(this).inflate(R.layout.context_tab, null);
+            TextView tab = (TextView) LayoutInflater.from(this).inflate(R.layout.context_tab_header, null);
             tab.setText(context.getContextName());
             int icon;
             switch (context.getContextName()) {
@@ -181,6 +181,7 @@ public class HomeActivity extends AnimationCompactActivity {
                 case "Leisure":
                     icon = R.drawable.ic_leisure_black_24dp;
                     break;
+                case "Travel":
                 case "Commute":
                     icon = R.drawable.ic_commute_black_24dp;
                     break;
