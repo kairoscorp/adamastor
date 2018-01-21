@@ -19,15 +19,12 @@ import corp.kairos.adamastor.AppDetails;
 import corp.kairos.adamastor.AppsManager.AppsManager;
 import corp.kairos.adamastor.UserContext;
 
-
-
 public class Settings {
     private static Settings instance;
     private AppsManager appsManager;
     private PackageManager packageManager;
 
     private static final String TAG = Settings.class.getName();
-
 
     private Map<String,UserContext> contexts;
     public int contextsNumber;

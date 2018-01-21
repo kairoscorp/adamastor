@@ -1,5 +1,7 @@
 package corp.kairos.adamastor;
 
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 
@@ -22,6 +24,15 @@ public class AppDetails implements Comparable{
         this.icon = appDetail.getIcon();
         this.usageStatistics = appDetail.getUsageStatistics();
     }
+
+    public AppDetails(PackageManager pm, String packageName) throws PackageManager.NameNotFoundException {
+        ApplicationInfo ai = pm.getApplicationInfo(packageName, 0);
+
+        this.label = (String) pm.getApplicationLabel(ai);
+        this.packageName = ai.packageName;
+        this.icon = pm.getApplicationIcon(ai);
+    }
+
 
     public String getLabel() {
         return label;

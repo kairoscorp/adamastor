@@ -5,13 +5,16 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TextView;
+
+import java.util.List;
 
 import corp.kairos.adamastor.AllApps.AllAppsActivity;
 import corp.kairos.adamastor.Animation.AnimationActivity;
@@ -19,12 +22,15 @@ import corp.kairos.adamastor.AppDetails;
 import corp.kairos.adamastor.AppsManager.AppsManager;
 import corp.kairos.adamastor.Collector.CollectorService;
 import corp.kairos.adamastor.ContextList.ContextListActivity;
+import corp.kairos.adamastor.Home.dao.FavouriteAppsDAO;
+import corp.kairos.adamastor.Home.dao.StaticFavouriteAppsDAO;
 import corp.kairos.adamastor.Onboarding.Onboard1WelcomeActivity;
 import corp.kairos.adamastor.R;
 import corp.kairos.adamastor.Settings.ContextRelated.ContextRelatedSettingsActivity;
 import corp.kairos.adamastor.Settings.Settings;
 import corp.kairos.adamastor.Statistics.StatisticsActivity;
 import corp.kairos.adamastor.UserContext;
+
 
 public class HomeActivity extends AnimationActivity {
 
@@ -35,7 +41,16 @@ public class HomeActivity extends AnimationActivity {
     private Settings settingsUser;
     private AppsManager appsManager;
 
+
+    private TabLayout tabLayout;
+    private ViewPager viewPager;
+
+
+    private Settings settings;
     private UserContext[] contexts;
+    private int currentContextIndex;
+    private UserContext currentContext;
+    private List<AppDetails> favouriteApps;
 
     private boolean permissionsGranted = false;
 
@@ -59,26 +74,64 @@ public class HomeActivity extends AnimationActivity {
         } else {
             setContentView(R.layout.activity_home);
 
-            // Setup contexts
+            checkPermissions();
+            if (permissionsGranted)
+                bindCollectorService();
 
-
-            // Load favorite apps
-
-
-            // Setup Contexts
-
-            // Set animations
+            // Set navigation
             this.setDownActivity(AllAppsActivity.class);
             this.setLeftActivity(StatisticsActivity.class);
             this.setRightActivity(ContextListActivity.class);
 
-            checkPermissions();
-            if (permissionsGranted) {
-                bindCollectorService();
-            }
+            // Load settings & Setup Contexts
+//            setupContextViews();
+//            contexts = settings.getUserContextsAsArray();
+//            this.currentContextIndex = 0;
+//            this.currentContext = this.contexts[0];
 
+            setupFavouriteApps();
         }
     }
+
+    private void setupFavouriteApps() {
+        // Load favorite apps
+        FavouriteAppsDAO favAppsDAO = new StaticFavouriteAppsDAO(getPackageManager());
+        this.favouriteApps = favAppsDAO.getFavouriteApps();
+        Log.i("setupFavouriteApps", Integer.toString(favouriteApps.size()));
+
+        // Pass favourite apps to the views
+        int maxAppsPerSide = this.favouriteApps.size() / 2;
+        LayoutInflater layoutInflater = getLayoutInflater();
+        LinearLayout leftLinearLayout = findViewById(R.id.left_side_favourites);
+        LinearLayout rightLinearLayout = findViewById(R.id.right_side_favourites);
+
+        int i = 1;
+        for (AppDetails app : this.favouriteApps) {
+            // Choose what layout to fill
+            LinearLayout parentLayout = i <= maxAppsPerSide ? leftLinearLayout : rightLinearLayout;
+
+            // Create new Image view for this fav app
+            ImageView img = (ImageView) layoutInflater.inflate(R.layout.favourite_app_icon, parentLayout, false);
+            img.setImageDrawable(app.getIcon());
+            img.setOnClickListener(v -> {
+                Intent intent = getPackageManager().getLaunchIntentForPackage(app.getPackageName());
+                HomeActivity.this.startActivity(intent);
+            });
+            img.setMaxWidth(45);
+            img.setMaxHeight(45);
+            parentLayout.addView(img);
+            i++;
+        }
+
+    }
+//
+//    private void setupContextViews() {
+//        this.viewPager = (ViewPager) findViewById(R.id.viewpager);
+//        createViewPager(viewPager);
+//
+//        this.tabLayout = (TabLayout) findViewById(R.id.tabs);
+//        this.tabLayout.setupWithViewPager(viewPager);
+//    }
 
 
     @Override
@@ -101,7 +154,6 @@ public class HomeActivity extends AnimationActivity {
         Intent i = new Intent(this, ContextRelatedSettingsActivity.class);
         startActivity(i);
     }
-
 
     private void checkPermissions() {
         if ((ActivityCompat.checkSelfPermission(this,
