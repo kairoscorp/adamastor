@@ -9,6 +9,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -160,6 +161,7 @@ public class StatisticsActivity extends AnimationCompactActivity {
 
     private void loadGraphView(Map<String, Long> contextStats){
         List<PieEntry> pieEntries = new ArrayList<>();
+        this.measure = Measure.HOURS;
         long percentage, finalTotal = 0;
         long timeInHours, timeInMinutes, timeInSeconds;
         for (Map.Entry<String, Long> stat : contextStats.entrySet()) {
@@ -167,12 +169,12 @@ public class StatisticsActivity extends AnimationCompactActivity {
             timeInHours = TimeUnit.MILLISECONDS.toHours(stat.getValue());
             if(timeInHours < 1) {
                 timeInMinutes = TimeUnit.MILLISECONDS.toMinutes(stat.getValue());
-                measure = measure.max(1);
+                measure = measure.max(Measure.MINUTES.id);
                 if(timeInMinutes < 1) {
                     timeInSeconds = TimeUnit.MILLISECONDS.toSeconds(stat.getValue());
-                    measure = measure.max(2);
+                    measure = measure.max(Measure.SECONDS.id);
                     if(timeInSeconds < 1) {
-                        measure = measure.max(3);
+                        measure = measure.max(Measure.MILLISECONDS.id);
                     }
                 }
             }
