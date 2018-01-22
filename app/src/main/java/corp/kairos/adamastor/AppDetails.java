@@ -2,10 +2,15 @@ package corp.kairos.adamastor;
 
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 
-public class AppDetails implements Comparable{
+public class AppDetails implements Comparable, Parcelable {
+
     private String label;
     private String packageName;
     private Drawable icon;
@@ -33,6 +38,10 @@ public class AppDetails implements Comparable{
         this.icon = pm.getApplicationIcon(ai);
     }
 
+    protected AppDetails(Parcel in) {
+        this.label = in.readString();
+        this.packageName = in.readString();
+    }
 
     public String getLabel() {
         return label;
@@ -99,5 +108,32 @@ public class AppDetails implements Comparable{
         AppDetails appDetail = (AppDetails) o;
 
         return this.getLabel().toLowerCase().compareTo(appDetail.getLabel().toLowerCase());
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(label);
+        dest.writeString(packageName);
+    }
+
+    public static final Creator<AppDetails> CREATOR = new Creator<AppDetails>() {
+        @Override
+        public AppDetails createFromParcel(Parcel in) {
+            return new AppDetails(in);
+        }
+
+        @Override
+        public AppDetails[] newArray(int size) {
+            return new AppDetails[size];
+        }
+    };
+
+    public void loadIcon(PackageManager packageManager) throws PackageManager.NameNotFoundException {
+        this.icon = packageManager.getApplicationIcon(this.packageName);
     }
 }

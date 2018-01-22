@@ -1,10 +1,14 @@
 package corp.kairos.adamastor;
 
+import android.app.WallpaperManager;
+import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
+import android.os.AsyncTask;
 import android.util.Log;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -49,5 +53,24 @@ public class Util {
             n++;
         }
         return staticContexts;
+    }
+
+    /**
+     * Changes the background of the device asynchronously,
+     * resorting to a new thread.
+     *
+     * @param appContext         The application context
+     * @param backgroundResource The resource to set the background as.
+     */
+    public static void setBackground(Context appContext, int backgroundResource) {
+        AsyncTask.execute(() -> {
+            try {
+                WallpaperManager.getInstance(appContext)
+                        .setResource(backgroundResource);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
+
     }
 }

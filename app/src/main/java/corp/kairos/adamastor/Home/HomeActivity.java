@@ -31,7 +31,7 @@ import corp.kairos.adamastor.Settings.ContextRelated.ContextRelatedSettingsActiv
 import corp.kairos.adamastor.Settings.Settings;
 import corp.kairos.adamastor.Statistics.StatisticsActivity;
 import corp.kairos.adamastor.UserContext;
-
+import corp.kairos.adamastor.Util;
 
 // TODO: Find a way to not need this as to not have duplicated code.
 public class HomeActivity extends AnimationCompactActivity {
@@ -47,7 +47,6 @@ public class HomeActivity extends AnimationCompactActivity {
     private TabLayout tabLayout;
     private ViewPager viewPager;
 
-    private Settings settings;
     private UserContext[] userContexts;
     private List<AppDetails> favouriteApps;
 
@@ -72,6 +71,8 @@ public class HomeActivity extends AnimationCompactActivity {
 
         } else {
             setContentView(R.layout.activity_home);
+            this.viewPager = (ViewPager) findViewById(R.id.home_context_view_pager);
+            this.tabLayout = (TabLayout) findViewById(R.id.context_tabs);
 
             checkPermissions();
             if (permissionsGranted)
@@ -135,40 +136,24 @@ public class HomeActivity extends AnimationCompactActivity {
 
     // TODO: Make this method get last active context
     private void loadContexts() {
-        this.userContexts = settingsUser.getUserContextsAsArray();
+//        Settings settings = new Settings(this);
+//        this.userContexts = settings.getUserContextsAsArray();
+        this.userContexts = Util.createDummyContextList("HomeActivity", getPackageManager());
     }
 
     private void setupViewPager() {
-        this.viewPager = (ViewPager) findViewById(R.id.home_context_view_pager);
-
         ContextsViewPagerAdapter adapter = new ContextsViewPagerAdapter(getSupportFragmentManager());
 
-        for (UserContext context : this.userContexts)
-            adapter.addFrag(new ContextFragment(), context.getContextName());
-
+        for (UserContext context : this.userContexts) {
+            PlaceholderFragment ctxFragment = PlaceholderFragment.newInstance(context);
+            adapter.addFrag(ctxFragment, context.getContextName());
+        }
         this.viewPager.setAdapter(adapter);
     }
 
     private void setupTabs() {
-        this.tabLayout = (TabLayout) findViewById(R.id.context_tabs);
         this.tabLayout.setupWithViewPager(this.viewPager);
-//        this.tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-//            @Override
-//            public void onTabSelected(TabLayout.Tab tab) {
-//                LinearLayout linearLayout = findViewById(R.id.home_activity);
-//                linearLayout.setBackground();
-//            }
-//
-//            @Override
-//            public void onTabUnselected(TabLayout.Tab tab) {
-//                // Do Nothing
-//            }
-//
-//            @Override
-//            public void onTabReselected(TabLayout.Tab tab) {
-//                // Do Nothing
-//            }
-//        });
+
         int i = 0;
         for (UserContext context : this.userContexts) {
             TextView tab = (TextView) LayoutInflater.from(this).inflate(R.layout.context_tab_header, null);
@@ -192,6 +177,36 @@ public class HomeActivity extends AnimationCompactActivity {
             tabLayout.getTabAt(i).setCustomView(tab);
             i++;
         }
+
+        addBackgroundChangerListener(this.tabLayout);
+        // TODO: Set last active context
+        // TODO: Substitute for the persisted
+        Util.setBackground(getApplicationContext(), R.drawable.commute_background);
+    }
+
+    private void addBackgroundChangerListener(TabLayout tabLayout) {
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                int backgroundResource, tabPosition = tab.getPosition();
+                if (tabPosition == 0) backgroundResource = R.drawable.commute_background;
+                else if (tabPosition == 1) backgroundResource = R.drawable.leisure_background;
+                    // Default
+                else backgroundResource = R.drawable.work_background;
+
+                Util.setBackground(getApplicationContext(), backgroundResource);
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+                // Do Nothing
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+                // Do Nothing
+            }
+        });
     }
 
     @Override

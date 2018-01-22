@@ -1,6 +1,8 @@
 package corp.kairos.adamastor;
 
 import android.location.Location;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 import java.util.GregorianCalendar;
 import java.util.List;
@@ -9,7 +11,7 @@ import java.util.Objects;
 /*
 * This class represents a context
 * */
-public class UserContext {
+public class UserContext implements Parcelable {
     private String contextName; //The name of the context
     private List<AppDetails> contextApps; //The list of apps associated with this context
     private Location location;
@@ -21,6 +23,15 @@ public class UserContext {
         this.contextName = contextName;
         this.contextApps = contextApps;
     }
+
+    protected UserContext(Parcel in) {
+        contextName = in.readString();
+        contextApps = in.createTypedArrayList(AppDetails.CREATOR);
+        location = in.readParcelable(Location.class.getClassLoader());
+        init = (GregorianCalendar) in.readSerializable();
+        end = (GregorianCalendar) in.readSerializable();
+    }
+
     public String getContextName() {
         return contextName;
     }
@@ -68,5 +79,31 @@ public class UserContext {
         }
         return sb.toString();
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.contextName);
+        dest.writeList(this.contextApps);
+        dest.writeParcelable(location, flags);
+        dest.writeSerializable(init);
+        dest.writeSerializable(end);
+    }
+
+    public static final Creator<UserContext> CREATOR = new Creator<UserContext>() {
+        @Override
+        public UserContext createFromParcel(Parcel in) {
+            return new UserContext(in);
+        }
+
+        @Override
+        public UserContext[] newArray(int size) {
+            return new UserContext[size];
+        }
+    };
 }
 

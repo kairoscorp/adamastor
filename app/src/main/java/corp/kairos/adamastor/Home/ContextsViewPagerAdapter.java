@@ -2,17 +2,20 @@ package corp.kairos.adamastor.Home;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentStatePagerAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
 
-class ContextsViewPagerAdapter extends FragmentPagerAdapter {
+class ContextsViewPagerAdapter extends FragmentStatePagerAdapter {
+
     private final List<Fragment> mFragmentList = new ArrayList<>();
     private final List<String> mFragmentTitleList = new ArrayList<>();
 
     public ContextsViewPagerAdapter(FragmentManager manager) {
         super(manager);
+
+        // Populate Recycler view
     }
 
     @Override
