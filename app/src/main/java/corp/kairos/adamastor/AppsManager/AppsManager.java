@@ -1,14 +1,11 @@
 package corp.kairos.adamastor.AppsManager;
 
-import android.app.usage.UsageStats;
 import android.app.usage.UsageStatsManager;
 import android.content.BroadcastReceiver;
 import android.content.Intent;
-import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.drawable.Drawable;
-import android.util.Log;
 
 import java.util.List;
 import java.util.Map;
@@ -17,12 +14,16 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 
 import corp.kairos.adamastor.AppDetails;
-import corp.kairos.adamastor.Collector.CollectorService;
-import corp.kairos.adamastor.Statistics.StatisticsAppDetailsComparator;
+import corp.kairos.adamastor.Settings.Settings;
+import corp.kairos.adamastor.Statistics.StatisticsManager.RealStatisticsDAO;
+import corp.kairos.adamastor.Statistics.StatisticsManager.StatisticsDAO;
+import corp.kairos.adamastor.Statistics.StatisticsManager.RandomStatisticsDAO;
 
 public class AppsManager {
     private Map<String, AppDetails> allAppsDetails;
     private Map<String, AppDetails> appsDetailsWithoutLauncher;
+    private Settings settings;
+    private StatisticsDAO statisticsManager;
     private static AppsManager instance;
     private BroadcastReceiver listener;
     protected Boolean force;
@@ -30,6 +31,7 @@ public class AppsManager {
     private static final String TAG = AppsManager.class.getName();
 
     private AppsManager(){
+        this.statisticsManager = new RandomStatisticsDAO();
         this.allAppsDetails = new TreeMap<>();
         this.appsDetailsWithoutLauncher = new TreeMap<>();
         this.force = true;
@@ -85,38 +87,11 @@ public class AppsManager {
             setupApps(packageManager);
         }
 
-        Map<String, AppDetails> appStatsMap = new TreeMap<>();
-        long time = System.currentTimeMillis();
-        List<UsageStats> appList = usm.queryUsageStats(UsageStatsManager.INTERVAL_DAILY,  time - 10000000, time);
-        if (appList != null && appList.size() > 0) {
-            for (UsageStats usageStats : appList) {
-                String appName = usageStats.getPackageName();
-                Long appTotalTime = usageStats.getTotalTimeInForeground();
-
-                // Get the app from all apps
-                if(this.allAppsDetails.containsKey(appName)) {
-                    AppDetails appDetails = this.allAppsDetails.get(appName);
-                    appDetails.setUsageStatistics(appTotalTime);
-                    if(appTotalTime > 0 && appsDetailsWithoutLauncher.containsKey(appName)) {
-                        if(appStatsMap.containsKey(appName)) {
-                            appDetails.setUsageStatistics(appTotalTime + appStatsMap.get(appName).getUsageStatistics());
-                        }
-                        appStatsMap.put(appName, appDetails);
-
-                        // Update the all apps map to use as cache
-                        allAppsDetails.put(appName, appDetails);
-                    }
-                }
-            }
-        }
-
-        Set<AppDetails> resultSet = new TreeSet<>(new StatisticsAppDetailsComparator());
-        resultSet.addAll(appStatsMap.values());
-        return resultSet;
+        return statisticsManager.getAppsStatistics(this.allAppsDetails, this.appsDetailsWithoutLauncher, usm);
     }
 
     public Map<String, Long> getContextStatistics() {
-         return CollectorService.getContextStatistics();
+         return statisticsManager.getContextStatistics();
     }
 
     public AppDetails getAppDetails(PackageManager packageManager, String packageName) {

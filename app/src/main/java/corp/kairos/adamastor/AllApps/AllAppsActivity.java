@@ -36,7 +36,6 @@ public class AllAppsActivity extends AnimationActivity {
         // Set animations
         super.setAnimation("up");
         super.setUpActivity(HomeActivity.class);
-        super.setRightActivity(ContextListActivity.class);
 
         // Load apps and views
         loadApps();
@@ -56,11 +55,9 @@ public class AllAppsActivity extends AnimationActivity {
 
     private void addClickListener(){
         this.allAppsMenuView.setOnItemClickListener((av, v, pos, id) -> {
-            super.setAnimation("down");
             AppDetails app = (AppDetails) getObjectByIndex(pos, allApps);
             Intent i = packageManager.getLaunchIntentForPackage(app.getPackageName());
             startActivity(i);
-            super.setAnimation("up");
         });
     }
 }

@@ -39,7 +39,7 @@ public class Settings {
     private static final String LOC_LNG = "_lng";
     private static final String CONTEXT_NAME = "_name";
 
-    private static final String [] contextNames = {
+    public static final String [] contextsNames = {
             "Home",
             "Work",
             "Fitness",
@@ -58,7 +58,7 @@ public class Settings {
     }
 
     private void setUpContexts() {
-        for(String contextName: contextNames) {
+        for(String contextName: contextsNames) {
             this.contexts.put(contextName, loadContextSettings(contextName));
         }
     }
@@ -152,15 +152,15 @@ public class Settings {
     }
 
     public UserContext getUserContext(int id) {
-        String currentContextName = contextNames[id];
+        String currentContextName = contextsNames[id];
         return this.contexts.get(currentContextName);
     }
 
     public UserContext getCurrentUserContext() {
         int min = 0;
-        int max = contextNames.length;
+        int max = contextsNames.length;
         int currentContextNumber = ThreadLocalRandom.current().nextInt(min, max);
-        String currentContextName = contextNames[currentContextNumber];
+        String currentContextName = contextsNames[currentContextNumber];
         return this.contexts.get(currentContextName);
     }
 
@@ -197,9 +197,6 @@ public class Settings {
             }
             if (i==contextsNumber) zeroContext.addApp(app);
         }
-
-        System.out.println(zeroContext.toString());
-        System.out.println(zeroContext.toString());
 
         return zeroContext;
     }

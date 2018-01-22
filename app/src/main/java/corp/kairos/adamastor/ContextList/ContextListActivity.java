@@ -32,7 +32,7 @@ public class ContextListActivity extends AnimationActivity {
 
         // Set side activities
         super.setAnimation("left");
-        super.setLeftActivity(AllAppsActivity.class);
+        super.setLeftActivity(HomeActivity.class);
 
         setupViews();
     }

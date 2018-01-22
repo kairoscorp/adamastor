@@ -2,6 +2,7 @@ package corp.kairos.adamastor.Home;
 
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -18,6 +19,7 @@ import corp.kairos.adamastor.Animation.AnimationActivity;
 import corp.kairos.adamastor.AppDetails;
 import corp.kairos.adamastor.AppsManager.AppsManager;
 import corp.kairos.adamastor.Collector.CollectorService;
+import corp.kairos.adamastor.ContextList.ContextListActivity;
 import corp.kairos.adamastor.Onboarding.Onboard1WelcomeActivity;
 import corp.kairos.adamastor.R;
 import corp.kairos.adamastor.Settings.ContextRelated.ContextRelatedSettingsActivity;
@@ -69,6 +71,7 @@ public class HomeActivity extends AnimationActivity {
             // Set animations
             this.setDownActivity(AllAppsActivity.class);
             this.setLeftActivity(StatisticsActivity.class);
+            this.setRightActivity(ContextListActivity.class);
 
             checkPermissions();
             if (permissionsGranted) {

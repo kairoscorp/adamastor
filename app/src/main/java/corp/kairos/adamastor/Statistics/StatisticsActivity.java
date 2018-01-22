@@ -10,7 +10,8 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.widget.Button;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ListView;
 
 import com.github.mikephil.charting.charts.PieChart;
@@ -38,17 +39,17 @@ public class StatisticsActivity extends AnimationCompactActivity {
 
     private View mFromView;
     private View mToView;
-    PieChart mChart;
+    private PieChart mChart;
+    private ListView mList;
     private FloatingActionButton mSwitch;
     private FloatingActionButton mRefresh;
     private int mShortAnimationDuration;
-    private boolean isShowingList = true;
+    private boolean isShowingGraph = true;
     private AppsManager appsManager;
-    private int measure = 0; // 0 - HOURS | 1 - MINUTES | 2 - SECONDS | 3 - MILLISECONDS
+    // private int measure = 0; // 0 - HOURS | 1 - MINUTES | 2 - SECONDS | 3 - MILLISECONDS
+    private Measure measure = Measure.HOURS; // 0 - HOURS | 1 - MINUTES | 2 - SECONDS | 3 - MILLISECONDS
 
     private static final String TAG = StatisticsActivity.class.getName();
-
-    private Map<String, Long> contextStats;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,11 +65,14 @@ public class StatisticsActivity extends AnimationCompactActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        mToView = findViewById(R.id.stats_context);
-        mFromView = findViewById(R.id.stats_apps_list);
+        mChart = findViewById(R.id.stats_context);
+        mList = findViewById(R.id.stats_apps_list);
+
+        mToView = mChart;
+        mFromView = mList;
+
         mSwitch = (FloatingActionButton) findViewById(R.id.id_stats_swich_button);
         mRefresh = (FloatingActionButton) findViewById(R.id.id_stats_refresh_button);
-        mChart = (PieChart) findViewById(R.id.stats_context);
 
         // Initially hide the content view.
         mToView.setVisibility(View.GONE);
@@ -77,14 +81,17 @@ public class StatisticsActivity extends AnimationCompactActivity {
         mShortAnimationDuration = getResources().getInteger(
                 android.R.integer.config_shortAnimTime);
 
-        mSwitch.setOnClickListener(view -> crossFade());
+        mSwitch.setOnClickListener(view -> {
+            crossFade();
+        });
         mRefresh.setOnClickListener(view -> {
             loadAppsStatistics();
             loadContextStatistics();
 
-            if(! isShowingList) {
-                mChart.animate();
-            }
+            Animation anim = AnimationUtils.loadAnimation(this, R.anim.fade_in);
+
+            mChart.animate();
+            mList.startAnimation(anim);
         });
 
         // Load Application Statistics View
@@ -102,13 +109,10 @@ public class StatisticsActivity extends AnimationCompactActivity {
     }
 
     private void loadContextStatistics() {
-        contextStats = this.appsManager.getContextStatistics();
+        Map<String, Long> contextStats = this.appsManager.getContextStatistics();
 
         // Load view
-        loadGraphView();
-
-        // Add refresh button
-
+        loadGraphView(contextStats);
     }
 
     private void crossFade() {
@@ -139,23 +143,22 @@ public class StatisticsActivity extends AnimationCompactActivity {
                         View temp = mToView;
                         mToView = mFromView;
                         mFromView = temp;
-                        if(isShowingList) {
+                        if(isShowingGraph) {
                             mSwitch.setImageResource(R.drawable.ic_list);
                         } else {
-                            mSwitch.setImageResource(R.drawable.ic_graph);
+                            mSwitch.setImageResource(R.drawable.ic_pie_chart);
                         }
-                        isShowingList = !isShowingList;
+                        isShowingGraph = !isShowingGraph;
                     }
                 });
     }
 
     private void loadListView(Set<AppDetails> appsStats){
-        ListView list = (ListView)findViewById(R.id.stats_apps_list);
         StatisticsAppsMenuAdapter adapter = new StatisticsAppsMenuAdapter(this, appsStats);
-        list.setAdapter(adapter);
+        mList.setAdapter(adapter);
     }
 
-    private void loadGraphView(){
+    private void loadGraphView(Map<String, Long> contextStats){
         List<PieEntry> pieEntries = new ArrayList<>();
         long percentage, finalTotal = 0;
         long timeInHours, timeInMinutes, timeInSeconds;
@@ -164,19 +167,19 @@ public class StatisticsActivity extends AnimationCompactActivity {
             timeInHours = TimeUnit.MILLISECONDS.toHours(stat.getValue());
             if(timeInHours < 1) {
                 timeInMinutes = TimeUnit.MILLISECONDS.toMinutes(stat.getValue());
-                measure = Math.max(1, measure);
+                measure = measure.max(1);
                 if(timeInMinutes < 1) {
                     timeInSeconds = TimeUnit.MILLISECONDS.toSeconds(stat.getValue());
-                    measure = Math.max(2, measure);
+                    measure = measure.max(2);
                     if(timeInSeconds < 1) {
-                        measure = Math.max(3, measure);
+                        measure = measure.max(3);
                     }
                 }
             }
         }
         long value = 0;
         for (Map.Entry<String, Long> stat : contextStats.entrySet()) {
-            value = getMeasureValueByIndex(measure, stat.getValue());
+            value = measure.getValue(stat.getValue());
             percentage = (stat.getValue() * 100) / finalTotal;
             pieEntries.add(new PieEntry(value, stat.getKey() + " ("+percentage+"%)"));
         }
@@ -186,7 +189,7 @@ public class StatisticsActivity extends AnimationCompactActivity {
 
         // Data
         PieData pieData = new PieData(dataSet);
-        pieData.setValueFormatter((value1, entry, dataSetIndex, viewPortHandler) -> Math.round(value1) + " " + getMeasureNameByIndex(measure));
+        pieData.setValueFormatter((value1, entry, dataSetIndex, viewPortHandler) -> Math.round(value1) + " " + measure.name);
         pieData.setValueTextSize(12f);
 
         Description description = new Description();
@@ -205,33 +208,62 @@ public class StatisticsActivity extends AnimationCompactActivity {
         mChart.invalidate();
     }
 
-    private long getMeasureValueByIndex(int measure, long value){
-        switch (measure) {
-            case 0:
-                return TimeUnit.MILLISECONDS.toHours(value);
-            case 1:
-                return TimeUnit.MILLISECONDS.toMinutes(value);
-            case 2:
-                return TimeUnit.MILLISECONDS.toSeconds(value);
-            case 3:
-                return value;
-            default:
-                return 0;
-        }
-    }
+    private enum Measure {
 
-    private String getMeasureNameByIndex(int measure){
-        switch (measure) {
-            case 0:
-                return "hours";
-            case 1:
-                return "minutes";
-            case 2:
-                return "seconds";
-            case 3:
-                return "milliseconds";
-            default:
-                return "";
+        HOURS, MINUTES, SECONDS, MILLISECONDS;
+
+        private int id;
+        private String name;
+
+        static {
+            HOURS.id = 0;
+            HOURS.name = "hours";
+
+            MINUTES.id = 1;
+            MINUTES.name = "minutes";
+
+            SECONDS.id = 2;
+            SECONDS.name = "seconds";
+
+            MILLISECONDS.id = 3;
+            MILLISECONDS.name = "milliseconds";
         }
+
+        public long getValue(long value) {
+            switch (this.id) {
+                case 0:
+                    return TimeUnit.MILLISECONDS.toHours(value);
+                case 1:
+                    return TimeUnit.MILLISECONDS.toMinutes(value);
+                case 2:
+                    return TimeUnit.MILLISECONDS.toSeconds(value);
+                case 3:
+                    return value;
+
+                default:
+                    return 0;
+            }
+        }
+
+        private Measure getMeasure(int id) {
+            switch (id) {
+                case 0:
+                    return HOURS;
+                case 1:
+                    return MINUTES;
+                case 2:
+                    return SECONDS;
+                case 3:
+                    return MILLISECONDS;
+
+                default:
+                    return HOURS;
+            }
+        }
+
+        public Measure max(int id) {
+            return getMeasure(Math.max(this.id, id));
+        }
+
     }
 }

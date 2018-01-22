@@ -50,7 +50,7 @@
         app:layout_anchor="@id/app_bar"
         app:layout_anchorGravity="bottom|end"
         app:backgroundTint="@color/primaryDarkColor"
-        app:srcCompat="@drawable/ic_graph" />
+        app:srcCompat="@drawable/ic_pie_chart" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/id_stats_refresh_button"

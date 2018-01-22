@@ -97,21 +97,7 @@ public class CollectorService extends Service implements GoogleApiClient.Connect
     }
 
     public static Map<String, Long> getContextStatistics() {
-        // Random Values
-        Map<String, Long> stats = new TreeMap<>();
-        long min = TimeUnit.HOURS.toMillis(2);
-        long max = TimeUnit.HOURS.toMillis(100);
-        long randomTime = 0;
-
-        for(int i = 0; i < 4; i++) {
-            randomTime =  ThreadLocalRandom.current().nextLong(min, max);
-            stats.put(settingsUser.getUserContext(i).getContextName(), randomTime);
-        }
-
-        // Real values
-        stats = logDatabaseHelper.getContextStatistics();
-
-        return stats;
+        return logDatabaseHelper.getContextStatistics();
     }
 
     @Override

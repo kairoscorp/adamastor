@@ -41,17 +41,16 @@
         android:id="@+id/app_stats_usage_time"
         android:layout_width="64dp"
         android:layout_height="17dp"
+        android:layout_marginTop="20dp"
         android:ems="10"
         android:gravity="center"
-        android:textColor="@android:color/background_dark"
         android:text="120 minutes"
+        android:textColor="@color/secondaryColor"
         android:textSize="10dp"
-        app:layout_constraintBottom_toTopOf="@+id/app_stats_progress_bar"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.778"
+        app:layout_constraintHorizontal_bias="0.761"
         app:layout_constraintStart_toEndOf="@+id/app_stats_image"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ProgressBar
         android:id="@+id/app_stats_progress_bar"
@@ -80,6 +79,7 @@
         app:layout_constraintStart_toEndOf="@+id/app_stats_image"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="1.0" />
+
 
 
 </android.support.constraint.ConstraintLayout>
