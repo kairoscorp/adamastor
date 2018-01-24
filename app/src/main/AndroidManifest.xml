@@ -128,7 +128,7 @@
             android:theme="@style/LauncherTheme" />
 
         <service
-            android:name=".collector.CollectorService"
+            android:name=".Collector.CollectorService"
             android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.service.notification.CollectorService" />

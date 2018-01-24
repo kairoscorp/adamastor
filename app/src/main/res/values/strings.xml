@@ -11,5 +11,16 @@
     <string name="title_activity_statistics">Statistics</string>
     <string name="action_settings">Settings</string>
 
+    <string name="commute_name">Commute</string>
+    <string name="work_name">Work</string>
+    <string name="home_name">Home</string>
+
+    <!-- Strings related to onboarding welcome -->
+    <string name="onboarding_sub_welcome">This onboarding process will help us understand your preferences for each of the provided context, in order to give you the best experience possible.</string>
+    <string name="onboarding_welcome">Welcome to kairos!</string>
+    <string name="onboarding_work_description">All the apps you need to be the most productive at work!</string>
+    <string name="onboarding_home_description">Relax and procrastinate a little bit!</string>
+    <string name="onboarding_commute_description">Go out and explore! You maybe commute!</string>
+
     <string name="dummy_context_name">Context 1</string>
 </resources>
