@@ -5,9 +5,11 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -167,38 +169,40 @@ public class HomeActivity extends AnimationCompactActivity {
 
     private void setupTabs() {
         this.tabLayout.setupWithViewPager(this.viewPager);
-
         int i = 0;
         for (UserContext context : this.userContexts) {
-            TextView tab = (TextView) LayoutInflater.from(this).inflate(R.layout.context_tab_header, null);
-            tab.setText(context.getContextName());
-            int icon;
+            int iconCode;
             switch (context.getContextName()) {
                 case "Work":
-                    icon = R.drawable.ic_work_black_24dp;
+                    iconCode = R.drawable.ic_work_black_24dp;
                     break;
                 case "Leisure":
-                    icon = R.drawable.ic_leisure_black_24dp;
+                    iconCode = R.drawable.ic_leisure_black_24dp;
                     break;
                 case "Travel":
                 case "Commute":
-                    icon = R.drawable.ic_commute_black_24dp;
+                    iconCode = R.drawable.ic_commute_black_24dp;
                     break;
                 default:
-                    icon = R.drawable.ic_settings_black_24dp;
+                    iconCode = R.drawable.ic_settings_black_24dp;
             }
-            tab.setCompoundDrawablesWithIntrinsicBounds(0, 0, icon, 0);
-            tabLayout.getTabAt(i).setCustomView(tab);
+
+            // Setup Icon Colors
+            TabLayout.Tab tab = this.tabLayout.getTabAt(i);
+            tab.setIcon(iconCode);
+            Drawable icon = tab.getIcon();
+            icon = DrawableCompat.wrap(icon);
+            DrawableCompat.setTintList(icon, getResources().getColorStateList(R.color.main_screen_tab_icon_colors));
             i++;
         }
 
-        addBackgroundChangerListener(this.tabLayout);
+        addTabEventListener(this.tabLayout);
         // TODO: Set last active context
         // TODO: Substitute for the persisted
         Util.setBackground(getApplicationContext(), R.drawable.commute_background);
     }
 
-    private void addBackgroundChangerListener(TabLayout tabLayout) {
+    private void addTabEventListener(TabLayout tabLayout) {
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
@@ -207,7 +211,6 @@ public class HomeActivity extends AnimationCompactActivity {
                 else if (tabPosition == 1) backgroundResource = R.drawable.leisure_background;
                     // Default
                 else backgroundResource = R.drawable.work_background;
-
                 Util.setBackground(getApplicationContext(), backgroundResource);
             }
 
