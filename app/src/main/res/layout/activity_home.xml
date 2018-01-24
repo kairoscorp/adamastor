@@ -7,29 +7,64 @@
     tools:context=".Home.HomeActivity"
     android:id="@+id/home_activity"
     android:orientation="vertical"
->
+    >
+
+    <include layout="@layout/status_bar_space" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_weight="1"
+        >
+
+        <ImageView
+            android:id="@+id/show_settings_icon"
+            android:layout_width="85dp"
+            android:layout_height="50dp"
+            android:maxHeight="50dp"
+            android:layout_alignParentStart="true"
+            android:contentDescription="@string/settings_icon_accessibility"
+            android:onClick="showSettings"
+            android:src="@mipmap/ic_launcher_round"
+            android:background="@color/primaryTextColor"
+            android:layout_marginTop="50dp"
+            android:paddingStart="35dp"
+            />
+
+        <TextView
+            android:id="@+id/month_day_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="40sp"
+            android:layout_alignParentEnd="true"
+            android:textColor="@color/primaryTextColor"
+            android:layout_marginEnd="10dp"
+            android:layout_marginTop="30dp"
+            android:text="Month Day"
+            />
+
+        <TextView
+            android:id="@+id/weekday_year_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:layout_alignParentEnd="true"
+            android:layout_below="@id/month_day_text_view"
+            android:textColor="@color/primaryTextColor"
+            android:layout_marginEnd="10dp"
+            android:text="Weekday Year"
+            />
 
 
-    <ImageView
-        android:id="@+id/show_settings_icon"
-        android:layout_width="85dp"
-        android:layout_height="50dp"
-        android:maxHeight="50dp"
-        android:layout_gravity="start"
-        android:layout_marginTop="50dp"
-        android:contentDescription="@string/settings_icon_accessibility"
-        android:onClick="showSettings"
-        android:src="@drawable/ic_settings_black_24dp"
-        android:tint="@color/primaryColor"
-        android:layout_weight="0"
-        android:background="@color/secondaryLightColor"
-    />
+    </RelativeLayout>
+
 
     <View
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="3"
-    />
+        android:layout_weight="2"
+        />
 
     <include layout="@layout/context_displayer" />
 

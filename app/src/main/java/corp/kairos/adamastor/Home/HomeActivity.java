@@ -2,6 +2,7 @@ package corp.kairos.adamastor.Home;
 
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -15,6 +16,9 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import corp.kairos.adamastor.AllApps.AllAppsActivity;
@@ -46,6 +50,8 @@ public class HomeActivity extends AnimationCompactActivity {
 
     private TabLayout tabLayout;
     private ViewPager viewPager;
+    private TextView monthDayTextView;
+    private TextView weekdayYearTextView;
 
     private UserContext[] userContexts;
     private List<AppDetails> favouriteApps;
@@ -73,6 +79,8 @@ public class HomeActivity extends AnimationCompactActivity {
             setContentView(R.layout.activity_home);
             this.viewPager = (ViewPager) findViewById(R.id.home_context_view_pager);
             this.tabLayout = (TabLayout) findViewById(R.id.context_tabs);
+            this.monthDayTextView = (TextView) findViewById(R.id.month_day_text_view);
+            this.weekdayYearTextView = (TextView) findViewById(R.id.weekday_year_text_view);
 
             checkPermissions();
             if (permissionsGranted)
@@ -83,16 +91,22 @@ public class HomeActivity extends AnimationCompactActivity {
             this.setLeftActivity(StatisticsActivity.class);
             this.setRightActivity(ContextListActivity.class);
 
-            // Load settings & Setup Contexts
-//            setupContextViews();
-//            contexts = settings.getUserContextsAsArray();
-//            this.currentContextIndex = 0;
-//            this.currentContext = this.contexts[0];
+            setupDates();
 
             setupFavouriteApps();
 
             setupContextDisplayer();
         }
+    }
+
+    @SuppressLint("SimpleDateFormat")
+    private void setupDates() {
+        Date time = Calendar.getInstance().getTime();
+         SimpleDateFormat df = new SimpleDateFormat("MMMM dd");
+        this.monthDayTextView.setText(df.format(time));
+
+        df = new SimpleDateFormat("EEEE, yyyy");
+        this.weekdayYearTextView.setText(df.format(time));
     }
 
 
