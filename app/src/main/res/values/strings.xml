@@ -27,5 +27,8 @@
     <string name="onboarding_home_description">Relax and procrastinate a little bit!</string>
     <string name="onboarding_commute_description">Go out and explore! You maybe commute!</string>
 
-    <string name="dummy_context_name">Context 1</string>
+    <string name="add_app_contexts_description_default">Please select the apps related to your context</string>
+    <string name="add_app_contexts_description_work">Please select the apps related to your work context</string>
+    <string name="add_app_contexts_description_home">Please select the apps related to your home context</string>
+    <string name="add_app_contexts_description_commute">Please select the apps related to your commute context</string>
 </resources>
