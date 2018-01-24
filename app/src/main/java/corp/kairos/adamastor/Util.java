@@ -13,8 +13,8 @@ import java.util.Set;
 public class Util {
     public static Object getObjectByIndex(int position, Set set) {
         int i = 0;
-        for(Object object: set) {
-            if(i == position) {
+        for (Object object : set) {
+            if (i == position) {
                 return object;
             }
             i++;
@@ -36,7 +36,7 @@ public class Util {
         // These loops just associate different apps with different contexts
         int n = 0;
         for(List<String> appsList : apps){
-            List<AppDetail> appDetails = new ArrayList<>();
+            List<AppDetails> appDetails = new ArrayList<>();
             for(String p: appsList){
                 try {
                     ApplicationInfo ai = pm.getApplicationInfo(p,0);
@@ -45,7 +45,7 @@ public class Util {
                     String name = ai.packageName;
                     Drawable icon = pm.getApplicationIcon(ai);
 
-                    AppDetail app = new AppDetail(label, name, icon);
+                    AppDetails app = new AppDetails(label, name, icon);
                     appDetails.add(app);
                 } catch (PackageManager.NameNotFoundException e) {
                     Log.e(ActivityTAG, "App not found");

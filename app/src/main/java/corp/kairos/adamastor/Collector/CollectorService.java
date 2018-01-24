@@ -1,4 +1,4 @@
-package corp.kairos.adamastor.collector;
+package corp.kairos.adamastor.Collector;
 
 import android.Manifest;
 import android.accounts.Account;
@@ -38,29 +38,39 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
+import java.util.concurrent.ThreadLocalRandom;
+import java.util.concurrent.TimeUnit;
+
+import corp.kairos.adamastor.Settings.Settings;
 
 public class CollectorService extends Service implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
     private static final String NULL_APP = "NULL";
 
+    private static final String TAG = ActivityRecognitionService.class.getName();
+
     private CollectorServiceBinder mCollectorServiceBinder = new CollectorServiceBinder();;
     private LocationManager locationManager;
     private PackageManager packageManager;
+    private static Settings settingsUser;
     private LocationListener locationListener;
     private Location lastLocation;
     private boolean checkLocation = false;
-    private LogDatabaseHelper logDatabaseHelper;
+    private static LogDatabaseHelper logDatabaseHelper;
     private GoogleApiClient googleApiClient;
     private int userActivityNow = 4; // 4 is Detected activity UNKNOWN
 
-
-
+    @Override
     public void onCreate(){
-        Log.i("CollectorServiceLog", "ServiceCreated");
+        Log.i(TAG, "ServiceCreated");
+
+        // Managers and Settings
         locationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
         packageManager = this.getPackageManager();
+        settingsUser = Settings.getInstance(this);
         createLocationListener();
         checkLocationPermissions();
         logDatabaseHelper = new LogDatabaseHelper(this);
@@ -86,25 +96,28 @@ public class CollectorService extends Service implements GoogleApiClient.Connect
 
     }
 
+    public static Map<String, Long> getContextStatistics() {
+        return logDatabaseHelper.getContextStatistics();
+    }
+
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         return Service.START_STICKY;
     }
 
     private void mainLoop(){
-        Log.i("CollectorServiceLog", "MainLoopStarted");
+        Log.i(TAG, "MainLoopStarted");
         while(true){
             try {
-                double latitude = 0;
-                double longitude = 0;
-                String provider = "";
-                int phoneActivity;
-                int playingMusic;
+                double latitude, longitude;
+                int phoneActivity, playingMusic;
+                String context = settingsUser.getCurrentUserContext().getContextName();
+                int callActivity = getPhoneCallState();
+                int ringMode = getRingtoneMode();
+                String provider;
+                String account = getUsername();
                 String time = getTimeNow();
                 String appForeground = getForegroundTask();
-                int callActivity = getPhoneCallState();
-                String account = getUsername();
-                int ringMode = getRingtoneMode();
 
                 if(isPhoneActive()){
                     phoneActivity = 1;
@@ -129,7 +142,7 @@ public class CollectorService extends Service implements GoogleApiClient.Connect
                     provider = "PROVIDER";
                 }
 
-                Log.i("CollectorServiceLog",
+                Log.i(TAG,
                         time + "::"
                                 + appForeground + "::"
                                 + userActivityNow + "::"
@@ -140,12 +153,13 @@ public class CollectorService extends Service implements GoogleApiClient.Connect
                                 + latitude + "::"
                                 + longitude + "::"
                                 + provider + "::"
-                                + account);
-                logDatabaseHelper.addLogEntry(time,appForeground,userActivityNow,phoneActivity,callActivity,playingMusic,ringMode,latitude,longitude,provider,account);
+                                + account + "::"
+                                + context);
+                logDatabaseHelper.addLogEntry(time, appForeground, userActivityNow,phoneActivity, callActivity, playingMusic, ringMode, latitude, longitude, provider, account, context);
 
                 Thread.sleep(10000);
             }catch(InterruptedException ex){
-                Log.i("CollectorServiceLog", "Exception in Main Loop");
+                Log.i(TAG, "Exception in Main Loop");
             }
         }
     }
@@ -322,7 +336,7 @@ public class CollectorService extends Service implements GoogleApiClient.Connect
 
     @Override
     public IBinder onBind(Intent intent) {
-        Log.i("CollectorServiceLog", "ServiceBound");
+        Log.i(TAG, "ServiceBound");
         return mCollectorServiceBinder;
     }
 
@@ -350,7 +364,7 @@ public class CollectorService extends Service implements GoogleApiClient.Connect
 
     public class CollectorServiceBinder extends Binder {
         public CollectorService getBinder(){
-            Log.i("CollectorServiceLog", "GettingBinder");
+            Log.i(TAG, "GettingBinder");
             return CollectorService.this;
         }
     }

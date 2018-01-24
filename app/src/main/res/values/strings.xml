@@ -3,11 +3,13 @@
     <string name="app_name">Adamastor</string>
     <string name="google_android_map_api_key">AIzaSyD9GnbGKudeaNFVXWUftSla7Wfr6JGg_BU</string>
 
-    <!-- Strings relatedsettings_onboardingding -->
+    <!-- Strings related to onboarding -->
     <string name="onboarding_summary">we want to know some things about you!</string>
     <string name="onboarding_work_hours">Working hours</string>
     <string name="onboarding_work_place">Workplace Location</string>
     <string name="onboarding_house">Home Location</string>
+    <string name="title_activity_statistics">Statistics</string>
+    <string name="action_settings">Settings</string>
 
     <string name="dummy_context_name">Context 1</string>
 </resources>

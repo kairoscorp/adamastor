@@ -2,7 +2,6 @@ package corp.kairos.adamastor.Onboarding;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.TextView;
 
@@ -13,34 +12,40 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.GregorianCalendar;
 
+import corp.kairos.adamastor.Animation.AnimationCompactActivity;
 import corp.kairos.adamastor.Home.HomeActivity;
 import corp.kairos.adamastor.R;
 import corp.kairos.adamastor.Settings.Settings;
+import corp.kairos.adamastor.UserContext;
 
 
-public class Onboard5ScheduleActivity extends AppCompatActivity implements TimePickerDialog.OnTimeSetListener{
-    public Settings sets;
+public class Onboard5ScheduleActivity extends AnimationCompactActivity implements TimePickerDialog.OnTimeSetListener{
+
+    private Settings settingsUser;
+    private UserContext workContext;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.onboard5_schedule);
-        this.sets = new Settings(this);
-        
+        this.settingsUser = Settings.getInstance(this);
+
         GregorianCalendar from = new GregorianCalendar();
         GregorianCalendar to = new GregorianCalendar();
         from.set(GregorianCalendar.HOUR_OF_DAY,9);
         from.set(GregorianCalendar.MINUTE,0);
         to.set(GregorianCalendar.HOUR_OF_DAY,17);
         to.set(GregorianCalendar.MINUTE,0);
-        sets.getUserContext("Work").setTimes(from, to);
+
+        workContext = settingsUser.getUserContext("Work");
+        workContext.setTimes(from, to);
+        settingsUser.setUserContext(workContext);
     }
-
-
 
     public void showTimePicker(View v) {
         TimePickerDialog tpd = TimePickerDialog.newInstance(this, 9, 0, true, 17, 0);
         tpd.show(getFragmentManager(), "Timepickerdialog");
     }
+
     @Override
     public void onTimeSet(RadialPickerLayout view, int hourOfDay, int minute, int hourOfDayEnd, int minuteEnd) {
         GregorianCalendar from = new GregorianCalendar();
@@ -50,7 +55,8 @@ public class Onboard5ScheduleActivity extends AppCompatActivity implements TimeP
         to.set(GregorianCalendar.HOUR_OF_DAY,hourOfDayEnd);
         to.set(GregorianCalendar.MINUTE,minuteEnd);
 
-        sets.getUserContext("Work").setTimes(from, to);
+        workContext.setTimes(from, to);
+        settingsUser.setUserContext(workContext);
 
         TextView timeFrom = findViewById(R.id.work_from);
         TextView timeTo = findViewById(R.id.work_to);
@@ -60,16 +66,15 @@ public class Onboard5ScheduleActivity extends AppCompatActivity implements TimeP
     }
 
     public void goNext(View v) {
-        sets.saveContextSettings("Work");
+        settingsUser.saveContextSettings();
         setContentView(R.layout.onboard6_final);
     }
 
     public void finish(View v) {
-        sets.setOnboardingDone();
+        settingsUser.setOnboardingDone();
+        super.setAnimation("up");
         Intent i = new Intent(this, HomeActivity.class);
         startActivity(i);
         finish();
     }
-
-
 }

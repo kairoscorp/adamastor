@@ -9,9 +9,10 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+
 import java.util.List;
 
-import corp.kairos.adamastor.AppDetail;
+import corp.kairos.adamastor.AppDetails;
 import corp.kairos.adamastor.R;
 import io.github.luizgrp.sectionedrecyclerviewadapter.SectionParameters;
 import io.github.luizgrp.sectionedrecyclerviewadapter.SectionedRecyclerViewAdapter;
@@ -26,12 +27,12 @@ public class ContextSection extends StatelessSection {
     private Context appContext;
     private SectionedRecyclerViewAdapter mAdapter;
     private String contextName;
-    private List<AppDetail> contextApps;
+    private List<AppDetails> contextApps;
     private boolean isExpanded = INITIAL_EXPANDED_STATE;
 
 
     public ContextSection(Context appContext, SectionedRecyclerViewAdapter adapter,
-                          String contextName, List<AppDetail> contextApps) {
+                          String contextName, List<AppDetails> contextApps) {
     super(new SectionParameters.Builder(R.layout.allapps_app)
                 .headerResourceId(R.layout.context_header)
                 .build());
@@ -54,7 +55,7 @@ public class ContextSection extends StatelessSection {
     @Override
     public void onBindItemViewHolder(RecyclerView.ViewHolder holder, int position) {
         AppViewHolder itemHolder = (AppViewHolder) holder;
-        AppDetail currentItem = this.contextApps.get(position);
+        AppDetails currentItem = this.contextApps.get(position);
 
         itemHolder.iconView.setImageDrawable(currentItem.getIcon());
         itemHolder.labelView.setText(currentItem.getLabel());

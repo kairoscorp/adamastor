@@ -12,14 +12,14 @@ import android.widget.TextView;
 
 import java.util.Set;
 
-import corp.kairos.adamastor.AppDetail;
+import corp.kairos.adamastor.AppDetails;
 import corp.kairos.adamastor.R;
 
 import static corp.kairos.adamastor.Util.getObjectByIndex;
 
 public class AllAppsMenuAdapter extends ArrayAdapter {
     private Context context;
-    private Set<AppDetail> apps;
+    private Set<AppDetails> apps;
 
     public AllAppsMenuAdapter(Context context, Set apps) {
         super(context, R.layout.allapps_menu);
@@ -52,7 +52,7 @@ public class AllAppsMenuAdapter extends ArrayAdapter {
             row = inflater.inflate(R.layout.allapps_app, parent, false);
         }
 
-        AppDetail app = (AppDetail) getObjectByIndex(position, this.apps);
+        AppDetails app = (AppDetails) getObjectByIndex(position, this.apps);
 
         TextView textViewTitle = (TextView) row.findViewById(R.id.app_text);
         ImageView imageViewIte = (ImageView) row.findViewById(R.id.app_image);

@@ -49,7 +49,4 @@
         android:layout_above="@+id/id_all_apps_button"
         android:orientation="horizontal">
     </LinearLayout>
-
-
-
 </RelativeLayout>

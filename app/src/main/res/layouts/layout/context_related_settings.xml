@@ -188,13 +188,13 @@
                         android:background="@color/common_google_signin_btn_text_dark_disabled" />
 
                     <Button
-                        android:id="@+id/leisure_apps"
+                        android:id="@+id/home_apps"
                         style="@style/Widget.AppCompat.Button"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
-                        android:onClick="ShowLeisureApps"
-                        android:text="Define Leisure Applications"
+                        android:onClick="ShowHomeApps"
+                        android:text="Define Home Applications"
                         android:textAppearance="@style/TextAppearance.AppCompat.Headline" />
 
                 </LinearLayout>

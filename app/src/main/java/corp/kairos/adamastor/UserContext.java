@@ -1,20 +1,23 @@
 package corp.kairos.adamastor;
 
 import android.location.Location;
+
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.Objects;
 
 /*
 * This class represents a context
 * */
 public class UserContext {
     private String contextName; //The name of the context
-    private List<AppDetail> contextApps; //The list of apps associated with this context
+    private List<AppDetails> contextApps; //The list of apps associated with this context
     private Location location;
     private GregorianCalendar init;
     private GregorianCalendar end;
 
-    public UserContext(String contextName, List<AppDetail> contextApps) {
+
+    public UserContext(String contextName, List<AppDetails> contextApps) {
         this.contextName = contextName;
         this.contextApps = contextApps;
     }
@@ -22,22 +25,21 @@ public class UserContext {
         return contextName;
     }
 
-    public List<AppDetail> getContextApps() {
+    public List<AppDetails> getContextApps() {
         return contextApps;
     }
-
-    public void addApp(AppDetail app) {
+    public void addApp(AppDetails app){
         contextApps.add(app);
     }
 
-    public void removeApp(AppDetail app){
+    public void removeApp(AppDetails app){
         contextApps.remove(app);
     }
 
-    public boolean appExists(AppDetail app){
+    public boolean appExists(AppDetails app){
         return contextApps.contains(app);
-
     }
+
     public void setTimes(GregorianCalendar init, GregorianCalendar end){
         this.init=init;
         this.end=end;
@@ -59,5 +61,12 @@ public class UserContext {
         this.location = location;
     }
 
+    public String toString(){
+        StringBuilder sb = new StringBuilder(" --- " + contextName + " ---\n");
+        for(AppDetails app: contextApps) {
+            sb.append("- ").append(app.getPackageName()).append("\n");
+        }
+        return sb.toString();
+    }
 }
 
