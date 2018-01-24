@@ -3,6 +3,14 @@
     <string name="app_name">Adamastor</string>
     <string name="google_android_map_api_key">AIzaSyD9GnbGKudeaNFVXWUftSla7Wfr6JGg_BU</string>
 
+    <!-- Buttons -->
+    <string name="btn_next_label">Next</string>
+
+    <!-- Context names -->
+    <string name="commute_name">Commute</string>
+    <string name="work_name">Work</string>
+    <string name="home_name">Home</string>
+
     <!-- Strings related to onboarding -->
     <string name="onboarding_label">Onboarding</string>
     <string name="onboarding_summary">we want to know some things about you!</string>
@@ -15,17 +23,20 @@
     <string name="onboarding_special_permission_first">We need one special permission that you must activate manually.</string>
     <string name="onboarding_special_permission_second">You will have to select \"Kairos Launcher\" and grant permission.</string>
     <string name="onboarding_special_permission_third">After that come back using the phone\'s back button and can continue with the onboarding.</string>
-
-    <string name="commute_name">Commute</string>
-    <string name="work_name">Work</string>
-    <string name="home_name">Home</string>
-
     <!-- Strings related to onboarding welcome -->
     <string name="onboarding_sub_welcome">This onboarding process will help us understand your preferences for each of the provided context, in order to give you the best experience possible.</string>
     <string name="onboarding_welcome">Welcome to kairos!</string>
     <string name="onboarding_work_description">All the apps you need to be the most productive at work!</string>
     <string name="onboarding_home_description">Relax and procrastinate a little bit!</string>
     <string name="onboarding_commute_description">Go out and explore! You maybe commute!</string>
+    <!-- Strings related to onboarding work time -->
+    <string name="onboarding_worktime_title">One last thing!</string>
+    <string name="onboarding_worktime_description">Kairos needs to know your work schedule so it can better adapt to your personal context.</string>
+    <string name="onboarding_worktime_from_label">Start</string>
+    <string name="onboarding_worktime_from_time">9:00</string>
+    <string name="onboarding_worktime_to_label">Finish</string>
+    <string name="onboarding_worktime_to_time">17:00</string>
+
 
     <string name="dummy_context_name">Context 1</string>
 </resources>
