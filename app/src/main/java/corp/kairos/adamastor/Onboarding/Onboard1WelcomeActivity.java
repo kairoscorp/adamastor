@@ -25,13 +25,14 @@ public class Onboard1WelcomeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.onboard1_welcome);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         this.settingsUser = Settings.getInstance(this);
         this.settingsUser.resetSettings();
         checkPermissions();
     }
 
     public void start(View v) {
-        Intent i = new Intent(this,Onboard2UsageSettingsActivity.class);
+        Intent i = new Intent(this,Onboard2SpecialPermissionActivity.class);
         startActivity(i);
         finish();
     }
