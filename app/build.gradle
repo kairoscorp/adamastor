@@ -25,9 +25,9 @@ android {
         main {
             res.srcDirs =
                     [
-                            'src/main/res/layouts/onboarding',
-                            'src/main/res/layouts',
-                            'src/main/res'
+                            'src/main/res',
+                            'src/main/res/layouts/onboarding'
+
                     ]
         }
     }
