@@ -53,8 +53,9 @@ public class Onboard3LocationActivity extends AppCompatActivity{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        this.settingsUser = Settings.getInstance(this);
         setContentView(R.layout.onboard3_location);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+        this.settingsUser = Settings.getInstance(this);
         locationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
         checkLocationPermissions();
         loadMapsSettings(savedInstanceState);

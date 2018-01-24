@@ -27,6 +27,7 @@ public class Onboard5ScheduleActivity extends AnimationCompactActivity implement
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.onboard5_schedule);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         this.settingsUser = Settings.getInstance(this);
 
         GregorianCalendar from = new GregorianCalendar();

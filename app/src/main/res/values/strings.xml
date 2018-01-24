@@ -4,12 +4,17 @@
     <string name="google_android_map_api_key">AIzaSyD9GnbGKudeaNFVXWUftSla7Wfr6JGg_BU</string>
 
     <!-- Strings related to onboarding -->
+    <string name="onboarding_label">Onboarding</string>
     <string name="onboarding_summary">we want to know some things about you!</string>
     <string name="onboarding_work_hours">Working hours</string>
     <string name="onboarding_work_place">Workplace Location</string>
     <string name="onboarding_house">Home Location</string>
     <string name="title_activity_statistics">Statistics</string>
     <string name="action_settings">Settings</string>
+    <string name="onboarding_special_permission_title">Just one thing!</string>
+    <string name="onboarding_special_permission_first">We need one special permission that you must activate manually.</string>
+    <string name="onboarding_special_permission_second">You will have to select \"Kairos Launcher\" and grant permission.</string>
+    <string name="onboarding_special_permission_third">After that come back using the phone\'s back button and can continue with the onboarding.</string>
 
     <string name="commute_name">Commute</string>
     <string name="work_name">Work</string>

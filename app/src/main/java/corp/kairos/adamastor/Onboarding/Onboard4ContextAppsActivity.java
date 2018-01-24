@@ -35,6 +35,7 @@ public class Onboard4ContextAppsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.onboard4_context_apps);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         this.appsManager = AppsManager.getInstance();
         this.settingsUser = Settings.getInstance(this);
         this.contextsIterator = settingsUser.getContextNames().iterator();
