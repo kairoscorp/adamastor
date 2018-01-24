@@ -10,8 +10,8 @@
 
     <ImageView
         android:id="@+id/app_image"
-        android:layout_width="73dp"
-        android:layout_height="64dp"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
         android:layout_gravity="center"
         android:contentDescription="image"
         android:padding="1dp"
@@ -25,6 +25,9 @@
         android:gravity="center"
         android:ellipsize="end"
         android:maxLines="1"
-        android:textSize="11dp"
-        android:textColor="@color/appLabelText" />
+        android:textSize="12sp"
+        android:textColor="@color/appLabelText"
+        android:maxWidth="60dp"
+        />
+
 </LinearLayout>

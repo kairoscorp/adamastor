@@ -27,10 +27,11 @@
             android:contentDescription="@string/settings_icon_accessibility"
             android:onClick="showSettings"
             android:src="@mipmap/ic_launcher_round"
-            android:background="@color/primaryTextColor"
             android:layout_marginTop="50dp"
             android:paddingStart="35dp"
             />
+
+        <!--android:background="@color/primaryTextColor"-->
 
         <TextView
             android:id="@+id/month_day_text_view"
@@ -63,7 +64,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="2"
+        android:layout_weight="1.5"
         />
 
     <include layout="@layout/context_displayer" />

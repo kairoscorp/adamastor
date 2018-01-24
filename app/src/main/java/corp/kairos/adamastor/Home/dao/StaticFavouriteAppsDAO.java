@@ -21,8 +21,12 @@ public class StaticFavouriteAppsDAO implements FavouriteAppsDAO {
     @Override
     public List<AppDetails> getFavouriteApps() {
         List<AppDetails> favouriteApps = new ArrayList<>();
-        List<String> staticPackageNames = Arrays.asList("com.android.phone",
-                "com.android.chrome", "com.android.camera2", "com.google.android.apps.messaging");
+        List<String> staticPackageNames = Arrays.asList(
+                "com.android.chrome",
+                "com.google.android.gm",
+                "com.android.phone",
+                "com.google.android.apps.messaging"
+        );
 
         for(String appPackage: staticPackageNames) {
             try {

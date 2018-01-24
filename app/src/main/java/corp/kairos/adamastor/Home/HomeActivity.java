@@ -39,24 +39,21 @@ import corp.kairos.adamastor.Statistics.StatisticsActivity;
 import corp.kairos.adamastor.UserContext;
 import corp.kairos.adamastor.Util;
 
-// TODO: Find a way to not need this as to not have duplicated code.
 public class HomeActivity extends AnimationCompactActivity {
 
     public static final String TAG = HomeActivity.class.toString();
     public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
 
     private PackageManager packageManager;
-    private Settings settingsUser;
+    private Settings userSettings;
     private AppsManager appsManager;
-
+    private UserContext[] userContexts;
+    private List<AppDetails> favouriteApps;
 
     private TabLayout tabLayout;
     private ViewPager viewPager;
     private TextView monthDayTextView;
     private TextView weekdayYearTextView;
-
-    private UserContext[] userContexts;
-    private List<AppDetails> favouriteApps;
 
     private boolean permissionsGranted = false;
 
@@ -65,21 +62,20 @@ public class HomeActivity extends AnimationCompactActivity {
         super.onCreate(savedInstanceState);
 
         this.packageManager = getPackageManager();
-        this.settingsUser = Settings.getInstance(this);
+        this.userSettings = Settings.getInstance(this);
         this.appsManager = AppsManager.getInstance();
         this.appsManager.setupApps(packageManager);
 
-        if (!settingsUser.isOnboardingDone()) {
+        if (! userSettings.isOnboardingDone()) {
             // Set animation
             super.setAnimation("up");
 
             Intent i = new Intent(this, Onboard1WelcomeActivity.class);
             startActivity(i);
             finish();
-
         } else {
             setContentView(R.layout.activity_home);
-            this.viewPager = (ViewPager) findViewById(R.id.home_context_view_pager);
+            this.viewPager = (ViewPager) findViewById(R.id.home_view_pager);
             this.tabLayout = (TabLayout) findViewById(R.id.context_tabs);
             this.monthDayTextView = (TextView) findViewById(R.id.month_day_text_view);
             this.weekdayYearTextView = (TextView) findViewById(R.id.weekday_year_text_view);
@@ -143,27 +139,20 @@ public class HomeActivity extends AnimationCompactActivity {
     }
 
     private void setupContextDisplayer() {
-        loadContexts();
+        // TODO: Make this method get last active context
+        this.userContexts = userSettings.getUserContextsAsArray();
 
         setupViewPager();
 
         setupTabs();
     }
 
-    // TODO: Make this method get last active context
-    private void loadContexts() {
-//        Settings settings = new Settings(this);
-//        this.userContexts = settings.getUserContextsAsArray();
-        this.userContexts = Util.createDummyContextList("HomeActivity", getPackageManager());
-    }
-
     private void setupViewPager() {
-        ContextsViewPagerAdapter adapter = new ContextsViewPagerAdapter(getSupportFragmentManager());
+        ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
 
-        for (UserContext context : this.userContexts) {
-            PlaceholderFragment ctxFragment = PlaceholderFragment.newInstance(context);
-            adapter.addFrag(ctxFragment, context.getContextName());
-        }
+        for (UserContext context : this.userContexts)
+            adapter.addFrag(PlaceholderFragment.newInstance(context));
+
         this.viewPager.setAdapter(adapter);
     }
 
@@ -172,10 +161,12 @@ public class HomeActivity extends AnimationCompactActivity {
         int i = 0;
         for (UserContext context : this.userContexts) {
             int iconCode;
+            // TODO: make contexts carry their own icon
             switch (context.getContextName()) {
                 case "Work":
                     iconCode = R.drawable.ic_work_black_24dp;
                     break;
+                case "Home":
                 case "Leisure":
                     iconCode = R.drawable.ic_leisure_black_24dp;
                     break;
