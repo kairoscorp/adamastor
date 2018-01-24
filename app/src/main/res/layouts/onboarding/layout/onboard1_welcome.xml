@@ -61,6 +61,7 @@
                 android:layout_toEndOf="@+id/image_work"
                 android:layout_weight="1"
                 android:text="@string/work_name"
+                android:textColor="@android:color/black"
                 android:textAppearance="@android:style/TextAppearance.Material.Medium" />
 
             <TextView
@@ -98,6 +99,7 @@
                 android:layout_toEndOf="@+id/image_home"
                 android:layout_weight="1"
                 android:text="@string/home_name"
+                android:textColor="@android:color/black"
                 android:textAppearance="@android:style/TextAppearance.Material.Medium" />
 
             <TextView
@@ -136,6 +138,7 @@
                 android:layout_toEndOf="@+id/image_commute"
                 android:layout_weight="1"
                 android:text="@string/commute_name"
+                android:textColor="@android:color/black"
                 android:textAppearance="@android:style/TextAppearance.Material.Medium" />
 
             <TextView
