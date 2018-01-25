@@ -37,12 +37,12 @@
 
     <ImageView
         android:id="@+id/kairos_finish"
-        android:layout_width="220dp"
-        android:layout_height="220dp"
+        android:layout_width="240dp"
+        android:layout_height="250dp"
         android:layout_below="@+id/linearLayout"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="34dp"
-        app:srcCompat="@drawable/onboarding_finish_k" />
+        app:srcCompat="@drawable/onboarding_k" />
 
     <Button
         android:id="@+id/finish"
