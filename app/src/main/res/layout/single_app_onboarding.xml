@@ -4,20 +4,17 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:clickable="false"
     android:descendantFocusability="blocksDescendants"
-    android:focusable="false"
-    android:focusableInTouchMode="false"
     android:orientation="vertical"
-    android:padding="20dp"
+    android:padding="15dp"
+    android:clickable="true"
+    android:focusable="true"
+    android:id="@+id/app_check"
     >
     <RelativeLayout
-        android:id="@+id/app_check"
-        android:clickable="true"
-        android:focusable="true"
-        android:focusableInTouchMode="true"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:clickable="false">
 
         <ImageView
             android:id="@+id/app_check_image"
@@ -26,8 +23,8 @@
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
             android:layout_weight="1"
-            app:srcCompat="@drawable/ic_work_black"
-            />
+            android:clickable="false"
+            app:srcCompat="@drawable/ic_work_black" />
 
         <TextView
             android:id="@+id/app_check_label"
@@ -39,7 +36,9 @@
             android:textAppearance="@android:style/TextAppearance.Material.Medium"
             android:layout_toEndOf="@+id/app_check_image"
             android:textColor="@android:color/black"
-            android:text="Application Name" />
+            android:text="Application Name"
+            android:clickable="false"
+            />
 
         <CheckBox
             android:id="@+id/app_check_box"

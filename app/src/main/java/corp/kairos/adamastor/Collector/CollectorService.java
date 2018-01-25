@@ -54,6 +54,7 @@ public class CollectorService extends Service implements GoogleApiClient.Connect
 
     private CollectorServiceBinder mCollectorServiceBinder = new CollectorServiceBinder();;
     private LocationManager locationManager;
+    private static CollectorService instance;
     private PackageManager packageManager;
     private static Settings settingsUser;
     private LocationListener locationListener;
@@ -93,10 +94,16 @@ public class CollectorService extends Service implements GoogleApiClient.Connect
                 mainLoop();
             }
         }.start();
-
     }
 
-    public static Map<String, Long> getContextStatistics() {
+    public static CollectorService getInstance(){
+        if(instance == null) {
+            instance = new CollectorService();
+        }
+        return instance;
+    }
+
+    public Map<String, Long> getContextStatistics() {
         return logDatabaseHelper.getContextStatistics();
     }
 

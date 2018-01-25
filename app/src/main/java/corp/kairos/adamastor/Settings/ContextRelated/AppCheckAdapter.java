@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -48,32 +49,18 @@ public class AppCheckAdapter extends ArrayAdapter {
         return position;
     }
 
-    private class ViewHolder {
-        CheckBox checkBox;
-        ImageView imageView;
-        TextView textView;
-        RelativeLayout relativeLayout;
-    }
-
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         View row = convertView;
-        ViewHolder holder = null;
 
         if (row == null) {
             LayoutInflater inflater = ((Activity) context).getLayoutInflater();
             row = inflater.inflate(R.layout.single_app_onboarding, parent, false);
 
-            holder = new ViewHolder();
-            holder.checkBox = (CheckBox) row.findViewById(R.id.app_check_box);
-            holder.imageView= (ImageView) row.findViewById(R.id.app_check_image);
-            holder.textView = (TextView) row.findViewById(R.id.app_check_label);
-            holder.relativeLayout = (RelativeLayout) row.findViewById(R.id.app_check);
-            row.setTag(holder);
+            LinearLayout linearLayout = (LinearLayout) row.findViewById(R.id.app_check);
 
-            holder.relativeLayout.setOnClickListener((View v) -> {
-                RelativeLayout relativeLayout = (RelativeLayout) v;
-                CheckBox checkBox = (CheckBox) relativeLayout.findViewById(R.id.app_check_box);
+            linearLayout.setOnClickListener((View v) -> {
+                CheckBox checkBox = (CheckBox) v.findViewById(R.id.app_check_box);
                 AppDetails app = (AppDetails) checkBox.getTag();
                 if (checkBox.isChecked()) {
                     checkBox.setChecked(false);
@@ -83,16 +70,18 @@ public class AppCheckAdapter extends ArrayAdapter {
                     uc.addApp(app);
                 }
             });
-        } else {
-            holder = (ViewHolder) row.getTag();
         }
 
         AppDetails app = (AppDetails) getObjectByIndex(position, this.apps);
 
-        holder.textView.setText(app.getLabel());
-        holder.imageView.setImageDrawable(app.getIcon());
-        holder.checkBox.setChecked(uc.appExists(app));
-        holder.checkBox.setTag(app);
+        CheckBox checkBox = (CheckBox) row.findViewById(R.id.app_check_box);
+        ImageView imageView= (ImageView) row.findViewById(R.id.app_check_image);
+        TextView textView = (TextView) row.findViewById(R.id.app_check_label);
+
+        textView.setText(app.getLabel());
+        imageView.setImageDrawable(app.getIcon());
+        checkBox.setChecked(uc.appExists(app));
+        checkBox.setTag(app);
 
         return row;
     }

@@ -26,6 +26,7 @@ public class Onboard5ScheduleActivity extends AnimationCompactActivity implement
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        super.setAnimation("up");
         setContentView(R.layout.onboard5_schedule);
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         this.settingsUser = Settings.getInstance(this);
@@ -73,7 +74,6 @@ public class Onboard5ScheduleActivity extends AnimationCompactActivity implement
 
     public void finish(View v) {
         settingsUser.setOnboardingDone();
-        super.setAnimation("up");
         Intent i = new Intent(this, HomeActivity.class);
         startActivity(i);
         finish();

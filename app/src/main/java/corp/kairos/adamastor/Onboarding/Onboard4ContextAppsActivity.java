@@ -92,7 +92,6 @@ public class Onboard4ContextAppsActivity extends AppCompatActivity {
 
     public void goNext(View v) {
         settingsUser.setUserContext(userContext);
-        Log.i("INFO", userContext.toString());
         if(contextsIterator.hasNext()) {
             loadSettings();
         } else {
