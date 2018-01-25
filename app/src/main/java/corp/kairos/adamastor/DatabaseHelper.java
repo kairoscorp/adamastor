@@ -203,4 +203,37 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
 
     }
+
+    public void addEntryAppLookUp(String app){
+        String NEWTABLE = "CREATE TABLE IF NOT EXISTS 'AppLookUp' "
+                + "( app PRIMARY KEY TEXT, "
+                + "key INTEGER AUTOINCREMENT"
+                + ");";
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL(NEWTABLE);
+
+        String ENTRY = "INSERT INTO AppLookUp (" +
+                "app" +
+                ") VALUES ('"+
+                app + "');";
+
+        db.execSQL(ENTRY);
+    }
+
+    public int getAppKey(String app){
+        String query = "SELECT key FROM AppLookUp WHERE app = '" + app + "';";
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(query,null);
+        int result = 0;
+
+        if(cursor.moveToFirst()){
+            result = cursor.getInt(cursor.getColumnIndex("key"));
+        }else{
+            addEntryAppLookUp(app);
+            result = getAppKey(app);
+        }
+
+        return result;
+    }
 }

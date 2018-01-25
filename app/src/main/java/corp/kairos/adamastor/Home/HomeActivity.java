@@ -60,12 +60,15 @@ public class HomeActivity extends AnimActivity {
             setContentView(R.layout.activity_home);
 
             setContexts();
-            this.currentContext = this.contexts[0];
-            this.currentContextIndex = 0;
+
             this.setRightActivity(AllAppsActivity.class);
             this.setLeftActivity(StatisticsActivity.class);
 
             addClickListener();
+
+            this.currentContextIndex = CollectorService.getInstance().getPredictedContext() - 1;
+            this.currentContext = this.contexts[this.currentContextIndex];
+            this.adjustScreenToContext();
         }
     }
 
@@ -80,6 +83,8 @@ public class HomeActivity extends AnimActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        this.currentContextIndex = CollectorService.getInstance().getPredictedContext() - 1;
+        this.currentContext = this.contexts[this.currentContextIndex];
         adjustScreenToContext();
 
         checkPermissions();
