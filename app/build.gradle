@@ -31,6 +31,11 @@ android {
                     ]
         }
     }
+    testOptions {
+        unitTests {
+            includeAndroidResources = true
+        }
+    }
 }
 
 dependencies {
@@ -42,9 +47,14 @@ dependencies {
     implementation 'com.android.support:design:26.1.0'
     implementation 'com.google.android.gms:play-services-location:11.8.0'
     implementation 'com.android.support:recyclerview-v7:26.1.0'
+
+    //Testing
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
+    testImplementation "org.robolectric:robolectric:3.6.1"
+    testImplementation "org.mockito:mockito-core:2.13.0"
+
     implementation 'com.android.support.constraint:constraint-layout:1.0.2'
     implementation 'com.google.android.gms:play-services-maps:11.8.0'
     compile 'com.borax12.materialdaterangepicker:library:1.9'
