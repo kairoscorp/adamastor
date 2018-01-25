@@ -12,6 +12,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -30,15 +31,12 @@ import corp.kairos.adamastor.UserContext;
 public class Onboard3LocationActivity extends AppCompatActivity{
     private Settings settingsUser;
 
-    private LocationManager locationManager;
-    private Location lastLocation;
     private boolean checkLocation = false;
     private GoogleMap workMap;
     private GoogleMap homeMap;
     private MapView workplaceView;
     private MapView homeplaceView;
-    private static final String MAP_VIEW_BUNDLE_WORK_KEY = "MapViewBundleWorkKey";
-    private static final String MAP_VIEW_BUNDLE_HOME_KEY = "MapViewBundleHomeKey";
+    public static final int PLACE_PICKER_REQUEST = 7;
 
     private Location homeLoc;
     private Location workLoc;
@@ -56,30 +54,9 @@ public class Onboard3LocationActivity extends AppCompatActivity{
         setContentView(R.layout.onboard3_location);
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         this.settingsUser = Settings.getInstance(this);
-        locationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
-        checkLocationPermissions();
         loadMapsSettings(savedInstanceState);
     }
 
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-
-        Bundle mapWorkViewBundle = outState.getBundle(MAP_VIEW_BUNDLE_WORK_KEY);
-        Bundle mapHomeViewBundle = outState.getBundle(MAP_VIEW_BUNDLE_WORK_KEY);
-        if (mapWorkViewBundle == null) {
-            mapWorkViewBundle = new Bundle();
-            outState.putBundle(MAP_VIEW_BUNDLE_WORK_KEY, mapWorkViewBundle);
-        }
-        if (mapHomeViewBundle == null) {
-            mapHomeViewBundle = new Bundle();
-            outState.putBundle(MAP_VIEW_BUNDLE_HOME_KEY, mapHomeViewBundle);
-        }
-
-        workplaceView.onSaveInstanceState(mapWorkViewBundle);
-        homeplaceView.onSaveInstanceState(mapHomeViewBundle);
-
-    }
 
     //Override Methods in order to control life cycle of MapViews
     @Override
@@ -169,7 +146,7 @@ public class Onboard3LocationActivity extends AppCompatActivity{
         homeplaceView.getMapAsync(new OnMapReadyCallback() {
             public void onMapReady(GoogleMap googleMap) {
                 homeMap = googleMap;
-                homeMap.setMinZoomPreference(10);
+                homeMap.setMinZoomPreference(12);
                 if(checkLocation) {
                     pos = new LatLng(lastLocation.getLatitude(), lastLocation.getLongitude());
                 }
@@ -203,21 +180,16 @@ public class Onboard3LocationActivity extends AppCompatActivity{
 
     }
 
-    public void checkLocationPermissions(){
-        Criteria criteria = new Criteria();
-        criteria.setAccuracy(Criteria.ACCURACY_FINE);
+    private void pickHomeLocation() {
+        PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
 
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            checkLocation = false;
-        }else{
-            checkLocation = true;
-        }
+        startActivityForResult(builder.build(this), PLACE_PICKER_REQUEST);
+    }
 
-        lastLocation = locationManager.getLastKnownLocation(locationManager.getBestProvider(criteria,true));
-
-        if(lastLocation == null){
-            checkLocation = false;
-        }
+    private void showHomeMap(String address) {
+        findViewById(R.id.warning_location_home).setVisibility(View.INVISIBLE);
+        ((TextView)findViewById(R.id.home_location_label)).setTextSize(14);
+        ((TextView)findViewById(R.id.home_location_address)).setText(address);
     }
 
     private void showNext() {

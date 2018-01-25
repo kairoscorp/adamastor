@@ -44,8 +44,15 @@
     <string name="add_app_contexts_description_commute">Please select the apps related to your commute context</string>
 
     <string name="dummy_context_name">Context 1</string>
+
     <string name="onboarding_finish_text1">All done!</string>
     <string name="onboarding_finish_text2">You\'ve successfully completed the onboarding! You\'re now ready o boost your produtivity to a whole new level!</string>
     <string name="onboarding_finish_text3">We hope you enjoy and make good use of Kairos!</string>
 
+    <string name="onboarding_location_description">Kairos needs to know your work and home location so it can better define your context depending on your location.</string>
+    <string name="btn_set_location">Set Location</string>
+    <string name="onboarding_location_work_label">Work location</string>
+    <string name="onboarding_location_default_address">rua linda nº1</string>
+    <string name="onboarding_location_home_label">Home location</string>
+    <string name="onboarding_no_location">Not currently set</string>
 </resources>
