@@ -14,14 +14,14 @@ import corp.kairos.adamastor.Collector.CollectorService;
 import corp.kairos.adamastor.Statistics.StatisticsAppDetailsComparator;
 
 public class RealStatisticsDAO implements StatisticsDAO {
-
+    private CollectorService collectorService = CollectorService.getInstance();
     public RealStatisticsDAO() {
         //
     }
 
     @Override
     public Map<String, Long> getContextStatistics() {
-        return CollectorService.getContextStatistics();
+        return collectorService.getContextStatistics();
     }
 
     @Override

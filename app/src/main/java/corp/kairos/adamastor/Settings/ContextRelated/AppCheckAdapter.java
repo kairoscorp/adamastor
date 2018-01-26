@@ -2,13 +2,16 @@ package corp.kairos.adamastor.Settings.ContextRelated;
 
 import android.app.Activity;
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import java.util.Set;
 
@@ -46,52 +49,39 @@ public class AppCheckAdapter extends ArrayAdapter {
         return position;
     }
 
-    private class ViewHolder {
-        CheckBox nameBox;
-        ImageView icon;
-    }
-
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         View row = convertView;
-        ViewHolder holder = null;
 
         if (row == null) {
             LayoutInflater inflater = ((Activity) context).getLayoutInflater();
             row = inflater.inflate(R.layout.single_app_onboarding, parent, false);
 
-            holder = new ViewHolder();
-            holder.icon = row.findViewById(R.id.app_check_image);
-            holder.nameBox = row.findViewById(R.id.app_check_box);
-            row.setTag(holder);
+            LinearLayout linearLayout = (LinearLayout) row.findViewById(R.id.app_check);
 
-
-            holder.nameBox.setOnClickListener(v -> {
-                CheckBox cb = (CheckBox) v;
-                AppDetails app = (AppDetails) cb.getTag();
-                if (cb.isChecked()) {
-                    uc.addApp(app);
-                } else {
+            linearLayout.setOnClickListener((View v) -> {
+                CheckBox checkBox = (CheckBox) v.findViewById(R.id.app_check_box);
+                AppDetails app = (AppDetails) checkBox.getTag();
+                if (checkBox.isChecked()) {
+                    checkBox.setChecked(false);
                     uc.removeApp(app);
-                }
-                Button btn = ((Activity) context).findViewById(R.id.next3);
-                if (uc.getContextApps().size() > 2) {
-                    if(btn != null) {btn.setVisibility(View.VISIBLE);}
                 } else {
-                    if(btn != null) {btn.setVisibility(View.INVISIBLE);}
+                    checkBox.setChecked(true);
+                    uc.addApp(app);
                 }
             });
-
-        } else {
-            holder = (ViewHolder) row.getTag();
         }
 
         AppDetails app = (AppDetails) getObjectByIndex(position, this.apps);
 
-        holder.nameBox.setText(app.getLabel());
-        holder.icon.setImageDrawable(app.getIcon());
-        holder.nameBox.setChecked(uc.appExists(app));
-        holder.nameBox.setTag(app);
+        CheckBox checkBox = (CheckBox) row.findViewById(R.id.app_check_box);
+        ImageView imageView= (ImageView) row.findViewById(R.id.app_check_image);
+        TextView textView = (TextView) row.findViewById(R.id.app_check_label);
+
+        textView.setText(app.getLabel());
+        imageView.setImageDrawable(app.getIcon());
+        checkBox.setChecked(uc.appExists(app));
+        checkBox.setTag(app);
 
         return row;
     }

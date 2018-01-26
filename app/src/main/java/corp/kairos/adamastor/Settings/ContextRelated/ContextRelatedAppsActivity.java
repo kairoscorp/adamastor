@@ -3,8 +3,13 @@ package corp.kairos.adamastor.Settings.ContextRelated;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 
 import java.util.Set;
 

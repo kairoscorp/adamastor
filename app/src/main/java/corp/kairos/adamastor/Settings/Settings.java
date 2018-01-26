@@ -42,8 +42,7 @@ public class Settings {
     public static final String [] contextsNames = {
             "Home",
             "Work",
-            "Fitness",
-            "Travel"
+            "Commute"
     };
 
     private Settings(Context c) {
