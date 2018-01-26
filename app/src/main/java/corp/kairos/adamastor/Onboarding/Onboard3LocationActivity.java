@@ -13,9 +13,15 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
+import com.google.android.gms.common.GooglePlayServicesRepairableException;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.ui.PlacePicker;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.GoogleMapOptions;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
@@ -31,12 +37,13 @@ import corp.kairos.adamastor.UserContext;
 public class Onboard3LocationActivity extends AppCompatActivity{
     private Settings settingsUser;
 
-    private boolean checkLocation = false;
     private GoogleMap workMap;
     private GoogleMap homeMap;
     private MapView workplaceView;
     private MapView homeplaceView;
-    public static final int PLACE_PICKER_REQUEST = 7;
+    public static final int PLACE_PICKER_REQUEST_HOME = 1;
+    public static final int PLACE_PICKER_REQUEST_WORK = 2;
+    private Bundle savedInstanceState;
 
     private Location homeLoc;
     private Location workLoc;
@@ -54,142 +61,88 @@ public class Onboard3LocationActivity extends AppCompatActivity{
         setContentView(R.layout.onboard3_location);
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         this.settingsUser = Settings.getInstance(this);
-        loadMapsSettings(savedInstanceState);
-    }
-
-
-    //Override Methods in order to control life cycle of MapViews
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        workplaceView.onDestroy();
-        homeplaceView.onDestroy();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        workplaceView.onResume();
-        homeplaceView.onResume();
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        workplaceView.onPause();
-        homeplaceView.onPause();
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        workplaceView.onStart();
-        homeplaceView.onStart();
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        workplaceView.onStop();
-        homeplaceView.onStop();
-    }
-
-    @Override
-    public void onLowMemory() {
-        super.onLowMemory();
-        workplaceView.onLowMemory();
-        homeplaceView.onLowMemory();
-    }
-
-    public void loadMapsSettings(Bundle savedInstanceState) {
-        findViewById(R.id.btn_pickHome).setVisibility(View.INVISIBLE);
-        findViewById(R.id.btn_pickWork).setVisibility(View.INVISIBLE);
+        this.savedInstanceState = savedInstanceState;
         workplaceView = findViewById(R.id.mapWork);
-        workplaceView.onCreate(savedInstanceState);
-        workplaceView.getMapAsync(new OnMapReadyCallback() {
-            public void onMapReady(GoogleMap googleMap) {
-                workMap = googleMap;
-                workMap.setMinZoomPreference(10);
-                if(checkLocation) {
-                     pos = new LatLng(lastLocation.getLatitude(), lastLocation.getLongitude());
-                }
-                workMap.moveCamera(CameraUpdateFactory.newLatLng(pos));
-
-                workMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
-                    @Override
-                    public void onMapClick(LatLng latLng) {
-                        workMap.clear();
-                        MarkerOptions opts = new MarkerOptions();
-                        opts.position(latLng);
-                        workMap.addMarker(opts);
-                        workLoc = new Location("provider");
-                        workLoc.setLatitude(latLng.latitude);
-                        workLoc.setLongitude(latLng.longitude);
-                        Button btn = findViewById(R.id.btn_pickWork);
-                        btn.setVisibility(View.VISIBLE);
-
-                        btn.setOnClickListener(view -> {
-                            pickWork = true;
-                            UserContext context = settingsUser.getUserContext("Work");
-                            context.setLocation(workLoc);
-                            settingsUser.setUserContext(context);
-                            showNext();
-                        });
-
-                    }
-                });
-            }
-        });
-
+        workplaceView.onCreate(this.savedInstanceState);
         homeplaceView = findViewById(R.id.mapHome);
-        homeplaceView.onCreate(savedInstanceState);
-        homeplaceView.getMapAsync(new OnMapReadyCallback() {
-            public void onMapReady(GoogleMap googleMap) {
-                homeMap = googleMap;
-                homeMap.setMinZoomPreference(12);
-                if(checkLocation) {
-                    pos = new LatLng(lastLocation.getLatitude(), lastLocation.getLongitude());
-                }
-                homeMap.moveCamera(CameraUpdateFactory.newLatLng(pos));
-
-                homeMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
-                    @Override
-                    public void onMapClick(LatLng latLng) {
-                        homeMap.clear();
-                        MarkerOptions opts = new MarkerOptions();
-                        opts.position(latLng);
-                        homeMap.addMarker(opts);
-                        homeLoc = new Location("provider");
-                        homeLoc.setLatitude(latLng.latitude);
-                        homeLoc.setLongitude(latLng.longitude);
-                        Button btn = findViewById(R.id.btn_pickHome);
-                        btn.setVisibility(View.VISIBLE);
-
-                        btn.setOnClickListener(view -> {
-                            pickHome = true;
-                            UserContext context = settingsUser.getUserContext("Home");
-                            context.setLocation(homeLoc);
-                            settingsUser.setUserContext(context);
-                            showNext();
-                        });
-
-                    }
-                });
-            }
-        });
-
+        homeplaceView.onCreate(this.savedInstanceState);
     }
 
-    private void pickHomeLocation() {
+
+
+    public void pickHomeLocation(View v) {
         PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
-
-        startActivityForResult(builder.build(this), PLACE_PICKER_REQUEST);
+        try {
+            startActivityForResult(builder.build(this), PLACE_PICKER_REQUEST_HOME);
+        } catch (GooglePlayServicesRepairableException e) {
+            e.printStackTrace();
+        } catch (GooglePlayServicesNotAvailableException e) {
+            e.printStackTrace();
+        }
     }
 
-    private void showHomeMap(String address) {
+    public void pickWorkLocation(View v) {
+        PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
+        try {
+            startActivityForResult(builder.build(this), PLACE_PICKER_REQUEST_WORK);
+        } catch (GooglePlayServicesRepairableException e) {
+            e.printStackTrace();
+        } catch (GooglePlayServicesNotAvailableException e) {
+            e.printStackTrace();
+        }
+    }
+
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == PLACE_PICKER_REQUEST_HOME)
+            if (resultCode == RESULT_OK) {
+                Place place = PlacePicker.getPlace(this,data);
+                String address = String.format("%s", place.getAddress());
+                showHomeMap(address, place.getLatLng());
+
+        }
+        if (requestCode == PLACE_PICKER_REQUEST_WORK)
+            if (resultCode == RESULT_OK) {
+                Place place = PlacePicker.getPlace(this,data);
+                String address = String.format("%s", place.getAddress());
+                showWorkMap(address,place.getLatLng());
+
+        }
+    }
+
+    private void showWorkMap(String address, LatLng pos) {
+        findViewById(R.id.warning_location_work).setVisibility(View.INVISIBLE);
+        ((TextView)findViewById(R.id.work_location_label)).setTextSize(14);
+        ((TextView)findViewById(R.id.work_location_address)).setText(address);
+        workplaceView.setVisibility(View.VISIBLE);
+        workplaceView.setClickable(false);
+        workplaceView.getMapAsync(googleMap -> {
+            workMap = googleMap;
+            workMap.getUiSettings().setMapToolbarEnabled(false);
+            workMap.moveCamera(CameraUpdateFactory.newLatLng(pos));
+            MarkerOptions opts = new MarkerOptions();
+            opts.position(pos);
+            workMap.addMarker(opts);
+        });
+        pickWork = true;
+        showNext();
+    }
+
+    private void showHomeMap(String address, LatLng pos) {
         findViewById(R.id.warning_location_home).setVisibility(View.INVISIBLE);
         ((TextView)findViewById(R.id.home_location_label)).setTextSize(14);
         ((TextView)findViewById(R.id.home_location_address)).setText(address);
+        homeplaceView.setVisibility(View.VISIBLE);
+        homeplaceView.setClickable(false);
+        homeplaceView.getMapAsync(googleMap -> {
+            homeMap = googleMap;
+            homeMap.getUiSettings().setMapToolbarEnabled(false);
+            homeMap.moveCamera(CameraUpdateFactory.newLatLng(pos));
+            MarkerOptions opts = new MarkerOptions();
+            opts.position(pos);
+            homeMap.addMarker(opts);
+        });
+        pickHome = true;
+        showNext();
     }
 
     private void showNext() {
