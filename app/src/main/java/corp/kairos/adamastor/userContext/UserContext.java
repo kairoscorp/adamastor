@@ -1,4 +1,4 @@
-package corp.kairos.adamastor;
+package corp.kairos.adamastor.userContext;
 
 import android.location.Location;
 
@@ -6,9 +6,12 @@ import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Objects;
 
-/*
-* This class represents a context
-* */
+import corp.kairos.adamastor.AppDetails;
+
+/**
+ * This class represents a context in the user routine
+ *
+ */
 public class UserContext {
     private String contextName; //The name of the context
     private List<AppDetails> contextApps; //The list of apps associated with this context
@@ -21,6 +24,16 @@ public class UserContext {
         this.contextName = contextName;
         this.contextApps = contextApps;
     }
+
+    public UserContext(String contextName, List<AppDetails> contextApps, Location location,
+                       GregorianCalendar init, GregorianCalendar end) {
+        this.contextName = contextName;
+        this.contextApps = contextApps;
+        this.location = location;
+        this.init = init;
+        this.end = end;
+    }
+
     public String getContextName() {
         return contextName;
     }
@@ -28,6 +41,7 @@ public class UserContext {
     public List<AppDetails> getContextApps() {
         return contextApps;
     }
+
     public void addApp(AppDetails app){
         contextApps.add(app);
     }
@@ -61,7 +75,7 @@ public class UserContext {
         this.location = location;
     }
 
-    public String toString(){
+    public String toString() {
         StringBuilder sb = new StringBuilder(" --- " + contextName + " ---\n");
         for(AppDetails app: contextApps) {
             sb.append("- ").append(app.getPackageName()).append("\n");

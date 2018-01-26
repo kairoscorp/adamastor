@@ -2,7 +2,6 @@ package corp.kairos.adamastor.Home;
 
 
 import android.Manifest;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -21,11 +20,13 @@ import corp.kairos.adamastor.AppsManager.AppsManager;
 import corp.kairos.adamastor.Collector.CollectorService;
 import corp.kairos.adamastor.ContextList.ContextListActivity;
 import corp.kairos.adamastor.Onboarding.Onboard1WelcomeActivity;
+import corp.kairos.adamastor.Onboarding.dao.OnboardStateDAO;
+import corp.kairos.adamastor.Onboarding.dao.SPOnboardStateDAO;
 import corp.kairos.adamastor.R;
 import corp.kairos.adamastor.Settings.ContextRelated.ContextRelatedSettingsActivity;
 import corp.kairos.adamastor.Settings.Settings;
 import corp.kairos.adamastor.Statistics.StatisticsActivity;
-import corp.kairos.adamastor.UserContext;
+import corp.kairos.adamastor.userContext.UserContext;
 
 public class HomeActivity extends AnimationActivity {
 
@@ -50,7 +51,8 @@ public class HomeActivity extends AnimationActivity {
         this.settingsUser = Settings.getInstance(this);
         this.appsManager = AppsManager.getInstance();
         this.appsManager.setupApps(packageManager);
-        if (!settingsUser.isOnboardingDone()) {
+        OnboardStateDAO onboardStateDAO = new SPOnboardStateDAO(HomeActivity.this);
+        if (! onboardStateDAO.isOnboardingDone()) {
             // Set animation
             super.setAnimation("up");
 

@@ -6,12 +6,11 @@ import android.support.v7.widget.RecyclerView;
 
 import org.apache.commons.lang3.ArrayUtils;
 
-import corp.kairos.adamastor.AllApps.AllAppsActivity;
 import corp.kairos.adamastor.Animation.AnimationActivity;
 import corp.kairos.adamastor.Home.HomeActivity;
 import corp.kairos.adamastor.R;
 import corp.kairos.adamastor.Settings.Settings;
-import corp.kairos.adamastor.UserContext;
+import corp.kairos.adamastor.userContext.UserContext;
 import io.github.luizgrp.sectionedrecyclerviewadapter.SectionedRecyclerViewAdapter;
 
 public class ContextListActivity extends AnimationActivity {

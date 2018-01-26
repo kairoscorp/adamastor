@@ -3,13 +3,8 @@ package corp.kairos.adamastor.Settings.ContextRelated;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
-import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
 
 import java.util.Set;
 
@@ -17,7 +12,7 @@ import corp.kairos.adamastor.AppDetails;
 import corp.kairos.adamastor.AppsManager.AppsManager;
 import corp.kairos.adamastor.R;
 import corp.kairos.adamastor.Settings.Settings;
-import corp.kairos.adamastor.UserContext;
+import corp.kairos.adamastor.userContext.UserContext;
 
 public class ContextRelatedAppsActivity extends Activity {
 
@@ -50,7 +45,6 @@ public class ContextRelatedAppsActivity extends Activity {
         } else {
             this.ctx = (String) savedInstanceState.getSerializable("CONTEXT");
         }
-        this.settingsUser = Settings.getInstance(this);
         this.allApps = this.appsManager.getAllApps(this.getPackageManager(), true);
         this.uc = settingsUser.getUserContext(ctx);
     }
@@ -64,7 +58,7 @@ public class ContextRelatedAppsActivity extends Activity {
     private void checkSaveButtonClick() {
         Button myButton = findViewById(R.id.btn_save_check_apps);
         myButton.setOnClickListener(v -> {
-            settingsUser.saveContextSettings();
+            settingsUser.saveContextSettings(ContextRelatedAppsActivity.this);
             finish();
         });
     }
