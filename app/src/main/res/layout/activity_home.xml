@@ -20,41 +20,37 @@
 
         <ImageView
             android:id="@+id/show_settings_icon"
-            android:layout_width="85dp"
-            android:layout_height="50dp"
-            android:maxHeight="50dp"
+            android:layout_width="90dp"
+            android:layout_height="80dp"
             android:layout_alignParentStart="true"
+            android:layout_marginTop="30dp"
             android:contentDescription="@string/settings_icon_accessibility"
             android:onClick="showSettings"
-            android:src="@mipmap/ic_launcher_round"
-            android:layout_marginTop="50dp"
-            android:paddingStart="35dp"
+            android:src="@drawable/kairos_sticker_red"
             />
-
-        <!--android:background="@color/primaryTextColor"-->
 
         <TextView
             android:id="@+id/month_day_text_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="40sp"
+            android:textSize="36sp"
             android:layout_alignParentEnd="true"
             android:textColor="@color/primaryTextColor"
-            android:layout_marginEnd="10dp"
+            android:layout_marginEnd="16dp"
             android:layout_marginTop="30dp"
-            android:text="Month Day"
+            android:text="@string/month_day_dummy_text"
             />
 
         <TextView
             android:id="@+id/weekday_year_text_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="20sp"
+            android:textSize="16sp"
             android:layout_alignParentEnd="true"
             android:layout_below="@id/month_day_text_view"
             android:textColor="@color/primaryTextColor"
-            android:layout_marginEnd="10dp"
-            android:text="Weekday Year"
+            android:layout_marginEnd="16dp"
+            android:text="@string/weekday_year_dummy_text"
             />
 
 

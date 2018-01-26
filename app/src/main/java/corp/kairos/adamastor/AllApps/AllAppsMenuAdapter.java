@@ -18,8 +18,8 @@ import corp.kairos.adamastor.R;
 import static corp.kairos.adamastor.Util.getObjectByIndex;
 
 public class AllAppsMenuAdapter extends ArrayAdapter {
-    private Context context;
-    private Set<AppDetails> apps;
+    protected Context context;
+    protected Set<AppDetails> apps;
 
     public AllAppsMenuAdapter(Context context, Set apps) {
         super(context, R.layout.allapps_menu);

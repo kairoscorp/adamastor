@@ -1,20 +1,22 @@
 package corp.kairos.adamastor.Home;
 
+import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.DividerItemDecoration;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.GridView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
+import corp.kairos.adamastor.AllApps.AllAppsMenuAdapter;
 import corp.kairos.adamastor.AppDetails;
-import corp.kairos.adamastor.ContextList.AppViewHolder;
 import corp.kairos.adamastor.R;
 import corp.kairos.adamastor.UserContext;
 
@@ -55,45 +57,31 @@ public class PlaceholderFragment extends Fragment {
                              Bundle savedInstanceState) {
         LinearLayout parentLayout = (LinearLayout) inflater.inflate(R.layout.context_fragment, container, false);
 
-
         // TODO: Change for most used apps?
         int min = Math.min(4, fragmentContext.getContextApps().size());
-        List<AppDetails> appsToDisplay = fragmentContext.getContextApps().subList(0, min);
+        Set<AppDetails> appsToDisplay = new HashSet<>(fragmentContext.getContextApps().subList(0, min));
 
-        LinearLayoutManager layoutManager
-                = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
-        RecyclerView list = (RecyclerView) parentLayout.findViewById(R.id.home_recycler_view);
-
-        list.setLayoutManager(layoutManager);
-        list.setAdapter(new ListAdapter(appsToDisplay));
+        GridView grid = (GridView) parentLayout.findViewById(R.id.home_grid_view);
+        grid.setNumColumns(min);
+        CustomAdapter adapter = new CustomAdapter(getActivity(), appsToDisplay);
+        grid.setAdapter(adapter);
 
         return parentLayout;
     }
 
-    class ListAdapter extends RecyclerView.Adapter<AppViewHolder> {
+    private class CustomAdapter extends AllAppsMenuAdapter {
 
-        List<AppDetails> appsToDisplay;
-
-        public ListAdapter(List<AppDetails> appsToDisplay) {
-            this.appsToDisplay = appsToDisplay;
+        public CustomAdapter(Context context, Set apps) {
+            super(context, apps);
         }
 
         @Override
-        public AppViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.allapps_app, parent, false);
-            return new AppViewHolder(view, parent.getContext());
-        }
-
-        @Override
-        public void onBindViewHolder(AppViewHolder holder, int position) {
-            AppDetails boundApp = appsToDisplay.get(position);
-            holder.iconView.setImageDrawable(boundApp.getIcon());
-            holder.labelView.setText(boundApp.getLabel());
-        }
-
-        @Override
-        public int getItemCount() {
-            return appsToDisplay.size();
+        public View getView(int position, View convertView, ViewGroup parent) {
+            View view = super.getView(position, convertView, parent);
+            TextView appLabel = (TextView) view.getRootView().findViewById(R.id.app_text);
+            appLabel.setTextColor(ContextCompat.getColor(this.context, R.color.primaryTextColor));
+            return view;
         }
     }
+
 }
