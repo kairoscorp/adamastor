@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.AbsListView;
 import android.widget.ImageView;
@@ -61,8 +60,8 @@ public class Onboard4ContextAppsActivity extends AppCompatActivity {
         switch (userContext.getContextName()) {
             case "Home":
                 image.setImageDrawable(getDrawable(R.drawable.ic_home_white));
-                label.setText(R.string.home_name);
-                description.setText(R.string.add_app_contexts_description_home);
+                label.setText(R.string.leisure_name);
+                description.setText(R.string.add_app_contexts_description_leisure);
                 break;
 
             case "Work":

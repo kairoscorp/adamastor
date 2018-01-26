@@ -18,7 +18,7 @@
         android:layout_marginEnd="10dp"
         android:onClick="goNext"
         android:text="Next"
-        android:visibility="invisible" />
+        android:visibility="visible" />
 
     <LinearLayout
             android:layout_width="match_parent"

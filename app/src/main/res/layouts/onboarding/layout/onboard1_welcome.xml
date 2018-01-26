@@ -96,7 +96,7 @@
                 android:layout_marginStart="24dp"
                 android:layout_toEndOf="@+id/image_home"
                 android:layout_weight="1"
-                android:text="@string/home_name"
+                android:text="@string/leisure_name"
                 android:textColor="@android:color/black"
                 android:textAppearance="@android:style/TextAppearance.Material.Medium" />
 
@@ -108,7 +108,7 @@
                 android:layout_marginStart="24dp"
                 android:layout_toEndOf="@+id/image_home"
                 android:layout_weight="1"
-                android:text="@string/onboarding_home_description"
+                android:text="@string/onboarding_leisure_description"
                 android:textAppearance="@android:style/TextAppearance.Material.Small" />
         </RelativeLayout>
 

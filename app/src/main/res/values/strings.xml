@@ -5,11 +5,12 @@
 
     <!-- Buttons -->
     <string name="btn_next_label">Next</string>
+    <string name="btn_finish_label">Finish</string>
 
     <!-- Context names -->
     <string name="commute_name">Commute</string>
     <string name="work_name">Work</string>
-    <string name="home_name">Home</string>
+    <string name="leisure_name">Leisure</string>
 
     <!-- Strings related to onboarding -->
     <string name="onboarding_label">Onboarding</string>
@@ -27,7 +28,7 @@
     <string name="onboarding_sub_welcome">This onboarding process will help us understand your preferences for each of the provided context, in order to give you the best experience possible.</string>
     <string name="onboarding_welcome">Welcome to kairos!</string>
     <string name="onboarding_work_description">All the apps you need to be the most productive at work!</string>
-    <string name="onboarding_home_description">Relax and procrastinate a little bit!</string>
+    <string name="onboarding_leisure_description">Relax and procrastinate a little bit!</string>
     <string name="onboarding_commute_description">Go out and explore! You maybe commute!</string>
     <!-- Strings related to onboarding work time -->
     <string name="onboarding_worktime_title">One last thing!</string>
@@ -37,9 +38,14 @@
     <string name="onboarding_worktime_to_label">Finish</string>
     <string name="onboarding_worktime_to_time">17:00</string>
 
-
     <string name="add_app_contexts_description_default">Please select the apps related to your context</string>
     <string name="add_app_contexts_description_work">Please select the apps related to your work context</string>
-    <string name="add_app_contexts_description_home">Please select the apps related to your home context</string>
+    <string name="add_app_contexts_description_leisure">Please select the apps related to your leisure context</string>
     <string name="add_app_contexts_description_commute">Please select the apps related to your commute context</string>
+
+    <string name="dummy_context_name">Context 1</string>
+    <string name="onboarding_finish_text1">All done!</string>
+    <string name="onboarding_finish_text2">You\'ve successfully completed the onboarding! You\'re now ready o boost your produtivity to a whole new level!</string>
+    <string name="onboarding_finish_text3">We hope you enjoy and make good use of Kairos!</string>
+
 </resources>
