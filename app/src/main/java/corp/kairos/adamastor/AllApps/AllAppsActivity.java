@@ -14,7 +14,6 @@ import corp.kairos.adamastor.AppsManager.AppsManager;
 import corp.kairos.adamastor.Home.HomeActivity;
 import corp.kairos.adamastor.OptionsMenu;
 import corp.kairos.adamastor.R;
-import corp.kairos.adamastor.SetContext;
 
 import static corp.kairos.adamastor.ContextList.ContextListActivity.NUMBER_OF_COLUMNS;
 

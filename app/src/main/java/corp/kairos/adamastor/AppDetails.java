@@ -9,8 +9,9 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 
-public class AppDetails implements Comparable, Parcelable {
+import java.io.Serializable;
 
+public class AppDetails implements Comparable,Serializable{
     private String label;
     private String packageName;
     private Drawable icon;
