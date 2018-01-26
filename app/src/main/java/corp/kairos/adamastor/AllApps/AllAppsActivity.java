@@ -28,6 +28,7 @@ import corp.kairos.adamastor.AppsManager.AppsManager;
 import corp.kairos.adamastor.Home.HomeActivity;
 import corp.kairos.adamastor.OptionsMenu;
 import corp.kairos.adamastor.R;
+import corp.kairos.adamastor.SetContext;
 
 import static android.view.View.generateViewId;
 import static corp.kairos.adamastor.Util.getObjectByIndex;
@@ -68,22 +69,19 @@ public class AllAppsActivity extends AnimationActivity {
             Intent i = packageManager.getLaunchIntentForPackage(app.getPackageName());
             startActivity(i);
         });
-        this.allAppsMenuView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                AppDetail app = (AppDetail) getObjectByIndex(position, allApps);
-                FrameLayout optionMenu = new FrameLayout(getApplicationContext());
+        this.allAppsMenuView.setOnItemLongClickListener((parent, view, position, id) -> {
+            AppDetail app = (AppDetail) getObjectByIndex(position, allApps);
+            FrameLayout optionMenu = new FrameLayout(getApplicationContext());
 
-                optionMenu.setBackgroundResource(android.R.color.transparent);
-                FrameLayout.LayoutParams params =  new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT);
-                params.gravity= Gravity.BOTTOM;
-                optionMenu.setLayoutParams(params);
-                ViewGroup parentView =  findViewById(android.R.id.content);
-                parentView.addView(optionMenu);
-                optionMenu.setId(R.id.view_option);
-                showOptionMenu(app,R.id.view_option);
-                return true;
-            }
+            optionMenu.setBackgroundResource(android.R.color.transparent);
+            FrameLayout.LayoutParams params =  new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT);
+            params.gravity= Gravity.BOTTOM;
+            optionMenu.setLayoutParams(params);
+            ViewGroup parentView =  findViewById(android.R.id.content);
+            parentView.addView(optionMenu);
+            optionMenu.setId(R.id.view_option);
+            showOptionMenu(app,R.id.view_option);
+            return true;
         });
     }
 
