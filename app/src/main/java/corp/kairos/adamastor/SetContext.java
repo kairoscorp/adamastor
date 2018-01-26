@@ -4,6 +4,7 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,7 +33,7 @@ public class SetContext extends Fragment {
     private String mParam2;
 
     private OnFragmentInteractionListener mListener;
-    private AppDetail appDetail;
+    private AppDetails appDetail;
 
     public SetContext() {
         // Required empty public constructor
@@ -69,23 +70,59 @@ public class SetContext extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        this.appDetail = (AppDetail) this.getArguments().getSerializable("app");
+        this.appDetail = (AppDetails) this.getArguments().getSerializable("app");
         View v = inflater.inflate(R.layout.fragment_set_context, container, false);
+        return v;
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
         CheckBox cWork = getActivity().findViewById(R.id.checkBox_Work);
         CheckBox cLeisure = getActivity().findViewById(R.id.checkBox_Leisure);
         CheckBox cCommute =getActivity().findViewById(R.id.checkBox_Commute);
         Button cancel = getActivity().findViewById(R.id.cancel);
+        Settings s =Settings.getInstance(this.getActivity());
+        UserContext work = s.getUserContext(getActivity().getResources().getString(R.string.work_name));
+        UserContext leisure = s.getUserContext(getActivity().getResources().getString(R.string.leisure_name));
+        UserContext commute = s.getUserContext(getActivity().getResources().getString(R.string.commute_name));
+        Boolean workIs =work.appExists(appDetail);
+        Boolean leisureIs =leisure.appExists(appDetail);
+        Boolean commuteIs =commute.appExists(appDetail);
+        cWork.setChecked(workIs);
+        cLeisure.setChecked(leisureIs);
+        cCommute.setChecked(commuteIs);
+        View frame = getActivity().findViewById(R.id.select_context);
+
         cancel.setOnClickListener(v1 -> {
-            ((ViewGroup) v.getParent()).removeView(v);
+            ((ViewGroup) frame.getParent()).removeView(frame);
         });
         Button ok = getActivity().findViewById(R.id.ok);
         ok.setOnClickListener(v2->{
-            if(cWork.isChecked()){
-
-            }
+                    if(cWork.isChecked()){
+                        work.addApp(appDetail);
+                    }
+                    else {
+                        work.removeApp(appDetail);
+                    }
+                    if(cLeisure.isChecked()){
+                        leisure.addApp(appDetail);
+                    }
+                    else {
+                        leisure.removeApp(appDetail);
+                    }
+                     if(cCommute.isChecked()){
+                        commute.addApp(appDetail);
+                    }  else {
+                         commute.removeApp(appDetail);
+                     }
+            s.setUserContext(work);
+            s.setUserContext(commute);
+            s.setUserContext(leisure);
+            s.saveContextSettings();
+            ((ViewGroup) frame.getParent()).removeView(frame);
         }
         );
-        return v;
     }
 
     // TODO: Rename method, update argument and hook method into UI event

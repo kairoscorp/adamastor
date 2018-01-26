@@ -17,6 +17,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 import corp.kairos.adamastor.AppDetails;
 import corp.kairos.adamastor.AppsManager.AppsManager;
+import corp.kairos.adamastor.R;
 import corp.kairos.adamastor.UserContext;
 
 public class Settings {
@@ -37,7 +38,7 @@ public class Settings {
     private static final String CONTEXT_NAME = "_name";
 
     public static final String [] contextsNames = {
-            "Home",
+            "Leisure",
             "Work",
             "Commute"
     };

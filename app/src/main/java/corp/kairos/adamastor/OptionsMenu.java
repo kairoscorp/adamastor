@@ -39,7 +39,7 @@ public class OptionsMenu extends Fragment {
     private String mParam2;
 
     private OnFragmentInteractionListener mListener;
-    private AppDetail appDetail;
+    private AppDetails appDetail;
     private View frameLayout;
     public OptionsMenu() {
         // Required empty public constructor
@@ -75,7 +75,7 @@ public class OptionsMenu extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        this.appDetail = (AppDetail) this.getArguments().getSerializable("app");
+        this.appDetail = (AppDetails) this.getArguments().getSerializable("app");
         return inflater.inflate(R.layout.fragment_options_menu, container, false);
     }
 
@@ -160,7 +160,7 @@ public class OptionsMenu extends Fragment {
     public interface OnFragmentInteractionListener {
         void onFragmentInteraction(Uri uri);
     }
-    public void showSetContext(AppDetail appDetail,int viewId){
+    public void showSetContext(AppDetails appDetail,int viewId){
         Bundle bundle = new Bundle();
         bundle.putSerializable("app",appDetail);
         Fragment options = new SetContext();
