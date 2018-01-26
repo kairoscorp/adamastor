@@ -1,5 +1,6 @@
 package corp.kairos.adamastor;
 
+import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -9,6 +10,7 @@ import android.os.Bundle;
 import android.app.Fragment;
 import android.provider.Settings;
 import android.support.annotation.Nullable;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -114,6 +116,21 @@ public class OptionsMenu extends Fragment {
             startActivity(appInfoIntent);
         });
         tv.setText(appDetail.getLabel());
+        context.setOnClickListener(v -> {
+            View frame = getActivity().findViewById(R.id.view_option);
+            ((ViewGroup)frame.getParent()).removeView(frame);
+            FrameLayout contextSelect = new FrameLayout(getActivity().getApplicationContext());
+            FrameLayout.LayoutParams params =  new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT);
+            contextSelect.setOnClickListener(v1 -> {
+                ((ViewGroup)contextSelect.getParent()).removeView(contextSelect);
+            });
+            params.gravity= Gravity.CENTER;
+            contextSelect.setLayoutParams(params);
+            ViewGroup parentView =  getActivity().findViewById(android.R.id.content);
+            parentView.addView(contextSelect);
+            contextSelect.setId(R.id.select_context);
+            showSetContext(appDetail,R.id.select_context);
+        });
 
         super.onActivityCreated(savedInstanceState);
     }
@@ -142,6 +159,15 @@ public class OptionsMenu extends Fragment {
      */
     public interface OnFragmentInteractionListener {
         void onFragmentInteraction(Uri uri);
+    }
+    public void showSetContext(AppDetail appDetail,int viewId){
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("app",appDetail);
+        Fragment options = new SetContext();
+        options.setArguments(bundle);
+        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+        transaction.replace(viewId,options);
+        transaction.commit();
     }
 
 }

@@ -1,12 +1,5 @@
 package corp.kairos.adamastor.AllApps;
 
-<<<<<<< HEAD
-=======
-
-import android.app.Fragment;
-import android.app.FragmentTransaction;
-import android.content.Intent;
->>>>>>> fd86672... add Inital View and code OptionMenu
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
@@ -21,6 +14,7 @@ import corp.kairos.adamastor.AppsManager.AppsManager;
 import corp.kairos.adamastor.Home.HomeActivity;
 import corp.kairos.adamastor.OptionsMenu;
 import corp.kairos.adamastor.R;
+import corp.kairos.adamastor.SetContext;
 
 import static corp.kairos.adamastor.ContextList.ContextListActivity.NUMBER_OF_COLUMNS;
 
