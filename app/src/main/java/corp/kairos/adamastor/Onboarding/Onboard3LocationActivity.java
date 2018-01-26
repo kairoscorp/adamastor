@@ -24,7 +24,7 @@ import java.util.Set;
 
 import corp.kairos.adamastor.R;
 import corp.kairos.adamastor.Settings.Settings;
-import corp.kairos.adamastor.UserContext;
+import corp.kairos.adamastor.userContext.UserContext;
 
 
 public class Onboard3LocationActivity extends AppCompatActivity{

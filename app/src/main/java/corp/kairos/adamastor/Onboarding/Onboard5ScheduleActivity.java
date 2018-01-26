@@ -14,9 +14,11 @@ import java.util.GregorianCalendar;
 
 import corp.kairos.adamastor.Animation.AnimationCompactActivity;
 import corp.kairos.adamastor.Home.HomeActivity;
+import corp.kairos.adamastor.Onboarding.dao.OnboardStateDAO;
+import corp.kairos.adamastor.Onboarding.dao.SPOnboardStateDAO;
 import corp.kairos.adamastor.R;
 import corp.kairos.adamastor.Settings.Settings;
-import corp.kairos.adamastor.UserContext;
+import corp.kairos.adamastor.userContext.UserContext;
 
 
 public class Onboard5ScheduleActivity extends AnimationCompactActivity implements TimePickerDialog.OnTimeSetListener{
@@ -68,12 +70,13 @@ public class Onboard5ScheduleActivity extends AnimationCompactActivity implement
     }
 
     public void goNext(View v) {
-        settingsUser.saveContextSettings();
+        settingsUser.saveContextSettings(Onboard5ScheduleActivity.this);
         setContentView(R.layout.onboard6_final);
     }
 
     public void finish(View v) {
-        settingsUser.setOnboardingDone();
+        OnboardStateDAO onboardStateDAO = new SPOnboardStateDAO(Onboard5ScheduleActivity.this);
+        onboardStateDAO.setOnboardingDone();
         Intent i = new Intent(this, HomeActivity.class);
         startActivity(i);
         finish();

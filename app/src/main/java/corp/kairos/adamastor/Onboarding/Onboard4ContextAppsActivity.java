@@ -19,7 +19,7 @@ import corp.kairos.adamastor.AppsManager.AppsManager;
 import corp.kairos.adamastor.R;
 import corp.kairos.adamastor.Settings.ContextRelated.AppCheckAdapter;
 import corp.kairos.adamastor.Settings.Settings;
-import corp.kairos.adamastor.UserContext;
+import corp.kairos.adamastor.userContext.UserContext;
 
 
 public class Onboard4ContextAppsActivity extends AppCompatActivity {

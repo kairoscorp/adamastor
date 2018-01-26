@@ -10,24 +10,29 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+
+import corp.kairos.adamastor.AppsManager.AppsManager;
 import corp.kairos.adamastor.R;
 import corp.kairos.adamastor.Settings.Settings;
+import corp.kairos.adamastor.userContext.dao.SPUserContextDAO;
+import corp.kairos.adamastor.userContext.dao.UserContextDAO;
 
 public class Onboard1WelcomeActivity extends AppCompatActivity {
-    private boolean permissionsGranted = false;
+
     public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
-    private Settings settingsUser;
-
     private static final String TAG = Onboard1WelcomeActivity.class.getName();
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.onboard1_welcome);
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-        this.settingsUser = Settings.getInstance(this);
-        this.settingsUser.resetSettings();
+
+        UserContextDAO userContextDAO = new SPUserContextDAO(Onboard1WelcomeActivity.this);
+        userContextDAO.deleteAllUserContexts(new HashSet<>(Arrays.asList(Settings.contextsNames)));
         checkPermissions();
     }
 

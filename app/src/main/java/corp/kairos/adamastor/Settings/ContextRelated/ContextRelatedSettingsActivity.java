@@ -24,7 +24,7 @@ import corp.kairos.adamastor.Animation.AnimationCompactActivity;
 import corp.kairos.adamastor.Home.HomeActivity;
 import corp.kairos.adamastor.R;
 import corp.kairos.adamastor.Settings.Settings;
-import corp.kairos.adamastor.UserContext;
+import corp.kairos.adamastor.userContext.UserContext;
 
 public class ContextRelatedSettingsActivity extends AnimationCompactActivity implements TimePickerDialog.OnTimeSetListener{
     private GoogleMap workMap;
@@ -264,7 +264,7 @@ public class ContextRelatedSettingsActivity extends AnimationCompactActivity imp
     }
 
     public void saveChanges(View v) {
-        this.settingsUser.saveContextSettings();
+        this.settingsUser.saveContextSettings(ContextRelatedSettingsActivity.this);
         Intent i = new Intent(this, HomeActivity.class);
         startActivity(i);
         finish();

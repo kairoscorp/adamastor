@@ -10,6 +10,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
+import corp.kairos.adamastor.userContext.UserContext;
+
 public class Util {
     public static Object getObjectByIndex(int position, Set set) {
         int i = 0;

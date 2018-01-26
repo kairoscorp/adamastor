@@ -17,8 +17,10 @@ import java.util.concurrent.ThreadLocalRandom;
 
 import corp.kairos.adamastor.AppDetails;
 import corp.kairos.adamastor.AppsManager.AppsManager;
-import corp.kairos.adamastor.UserContext;
-
+import corp.kairos.adamastor.Onboarding.dao.OnboardStateDAO;
+import corp.kairos.adamastor.userContext.UserContext;
+import corp.kairos.adamastor.userContext.dao.SPUserContextDAO;
+import corp.kairos.adamastor.userContext.dao.UserContextDAO;
 
 
 public class Settings {
@@ -26,18 +28,8 @@ public class Settings {
     private AppsManager appsManager;
     private PackageManager packageManager;
 
-    private static final String TAG = Settings.class.getName();
-
-
-    private Map<String,UserContext> contexts;
-    public static int contextsNumber;
-
-    private Context context;
-    private static final String TIME_FROM = "_timeFrom";
-    private static final String TIME_TO = "_timeTo";
-    private static final String LOC_LAT = "_lat";
-    private static final String LOC_LNG = "_lng";
-    private static final String CONTEXT_NAME = "_name";
+    private Map<String, UserContext> contexts;
+    private int contextsNumber = 0;
 
     public static final String [] contextsNames = {
             "Home",
@@ -46,20 +38,25 @@ public class Settings {
     };
 
     private Settings(Context c) {
-        this.context = c;
         this.packageManager = c.getPackageManager();
         this.appsManager = AppsManager.getInstance();
         this.contexts = new HashMap<>();
 
-        setUpContexts();
+        UserContextDAO userContextDAO = new SPUserContextDAO(c);
+
+        for(String contextName: contextsNames)
+            this.contexts.put(
+                contextName,
+                userContextDAO.loadUserContext(
+                    contextName,
+                    this.appsManager.getAllApps(
+                        this.packageManager,
+                        true
+                    )
+                )
+            );
 
         this.contextsNumber = this.contexts.size();
-    }
-
-    private void setUpContexts() {
-        for(String contextName: contextsNames) {
-            this.contexts.put(contextName, loadContextSettings(contextName));
-        }
     }
 
     public static Settings getInstance(Context c) {
@@ -69,74 +66,6 @@ public class Settings {
 
         return instance;
     }
-
-    public boolean isOnboardingDone() {
-        SharedPreferences sharedPref = context.getSharedPreferences("GENERAL",Context.MODE_PRIVATE);
-        return sharedPref.getBoolean("OnboardingDone",false);
-    }
-    public void setOnboardingDone() {
-        SharedPreferences sharedPref = context.getSharedPreferences("GENERAL",Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPref.edit();
-        editor.putBoolean("OnboardingDone",true);
-        editor.apply();
-    }
-
-    public UserContext loadContextSettings(String contextName) {
-        SharedPreferences sharedPref = context.getSharedPreferences("Prefs_"+contextName, Context.MODE_PRIVATE);
-
-        List<AppDetails> contextApps = new ArrayList<>();
-        GregorianCalendar start = new GregorianCalendar();
-        GregorianCalendar end = new GregorianCalendar();
-        Location pos = new Location("Provider");
-
-        start.setTimeInMillis(sharedPref.getLong(TIME_FROM, 0));
-        end.setTimeInMillis(sharedPref.getLong(TIME_TO,0));
-
-        pos.setLatitude(sharedPref.getFloat(LOC_LAT,0));
-        pos.setLongitude(sharedPref.getFloat(LOC_LNG,0));
-        Set<AppDetails> allApps = this.appsManager.getAllApps(context.getPackageManager(), true);
-
-        for (AppDetails app : allApps) {
-            if(sharedPref.getBoolean(app.getPackageName(), false)) {
-                contextApps.add(app);
-            }
-        }
-
-        UserContext uc = new UserContext(contextName, contextApps);
-        uc.setTimes(start,end);
-        uc.setLocation(pos);
-        return uc;
-    }
-
-    public void saveContextSettings() {
-        for(UserContext userContext : contexts.values()) {
-            this.saveContextSettings(userContext);
-        }
-    }
-
-
-    public void saveContextSettings(UserContext userContext) {
-        SharedPreferences sharedPref = context.getSharedPreferences("Prefs_"+userContext.getContextName(), Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPref.edit();
-
-        editor.putString(CONTEXT_NAME, userContext.getContextName());
-
-        //Save time settings
-        editor.putLong(TIME_FROM, userContext.getInit().getTimeInMillis());
-        editor.putLong(TIME_TO, userContext.getEnd().getTimeInMillis());
-
-        //Save location
-        editor.putFloat(LOC_LAT,(float)userContext.getLocation().getLatitude());
-        editor.putFloat(LOC_LNG,(float)userContext.getLocation().getLongitude());
-
-        //Save Apps
-        for (AppDetails app : userContext.getContextApps()) {
-            editor.putBoolean(app.getPackageName(), true);
-        }
-
-        editor.apply();
-    }
-
 
     public Map<String, UserContext> getContexts() {
         return this.contexts;
@@ -167,15 +96,17 @@ public class Settings {
         this.contexts.put(c.getContextName(), c);
     }
 
-
-    public void resetSettings() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            for(String contextName: this.contexts.keySet()) {
-                context.deleteSharedPreferences("Prefs_"+contextName);
-            }
-        }
+    public void saveContextSettings(Context appContext) {
+        UserContextDAO userContextDAO = new SPUserContextDAO(appContext);
+        for(UserContext userContext : contexts.values())
+            userContextDAO.storeUserContext(userContext);
     }
 
+    /**
+     * Utility method to return all user contexts as an array
+     *
+     * @return An array with all user contexts
+     */
     public UserContext[] getUserContextsAsArray() {
         Collection collection = contexts.values();
         UserContext[] userContextsArray = new UserContext[collection.size()];
@@ -183,11 +114,16 @@ public class Settings {
         return userContextsArray;
     }
 
+    /**
+     * Utility method to compute the list of apps that don't belong in any context
+     *
+     * @return
+     */
     public UserContext getZeroContext() {
         Collection<UserContext> contexts = this.contexts.values();
         UserContext zeroContext = new UserContext("Other Apps", new ArrayList<>());
         int i;
-        Set<AppDetails> allApps = this.appsManager.getAllApps(this.packageManager, false);
+        Set<AppDetails> allApps = this.appsManager.getAllApps(this.packageManager, true);
         for (AppDetails app: allApps) {
             i = 0;
             for (UserContext context: contexts) {
