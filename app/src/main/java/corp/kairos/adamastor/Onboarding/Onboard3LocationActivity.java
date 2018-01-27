@@ -1,19 +1,11 @@
 package corp.kairos.adamastor.Onboarding;
 
-import android.Manifest;
-import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.location.Criteria;
 import android.location.Location;
-import android.location.LocationManager;
 import android.os.Bundle;
-import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
@@ -21,9 +13,7 @@ import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlacePicker;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.GoogleMapOptions;
 import com.google.android.gms.maps.MapView;
-import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
@@ -31,7 +21,6 @@ import java.util.Set;
 
 import corp.kairos.adamastor.R;
 import corp.kairos.adamastor.Settings.Settings;
-import corp.kairos.adamastor.UserContext;
 
 
 public class Onboard3LocationActivity extends AppCompatActivity{
@@ -111,7 +100,7 @@ public class Onboard3LocationActivity extends AppCompatActivity{
 
     private void showWorkMap(String address, LatLng pos) {
         findViewById(R.id.warning_location_work).setVisibility(View.INVISIBLE);
-        ((TextView)findViewById(R.id.work_location_label)).setTextSize(14);
+        ((TextView)findViewById(R.id.work_location_label)).setTextSize(15);
         ((TextView)findViewById(R.id.work_location_address)).setText(address);
         workplaceView.setVisibility(View.VISIBLE);
         workplaceView.setClickable(false);
@@ -129,7 +118,7 @@ public class Onboard3LocationActivity extends AppCompatActivity{
 
     private void showHomeMap(String address, LatLng pos) {
         findViewById(R.id.warning_location_home).setVisibility(View.INVISIBLE);
-        ((TextView)findViewById(R.id.home_location_label)).setTextSize(14);
+        ((TextView)findViewById(R.id.home_location_label)).setTextSize(15);
         ((TextView)findViewById(R.id.home_location_address)).setText(address);
         homeplaceView.setVisibility(View.VISIBLE);
         homeplaceView.setClickable(false);
