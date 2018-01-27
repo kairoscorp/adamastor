@@ -7,8 +7,9 @@
     android:background="@drawable/shape"
     >
 
+
     <GridView
-        android:id="@+id/allapps_menu"
+        android:id="@+id/allapps_grid"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:drawSelectorOnTop="true"

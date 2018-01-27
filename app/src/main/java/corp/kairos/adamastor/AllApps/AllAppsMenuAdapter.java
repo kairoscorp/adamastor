@@ -23,7 +23,7 @@ public class AllAppsMenuAdapter extends ArrayAdapter {
     protected Set<AppDetails> apps;
 
     public AllAppsMenuAdapter(Context context, Set apps) {
-        super(context, R.layout.allapps_menu);
+        super(context, R.layout.activity_allapps);
         this.context = context;
         this.apps = apps;
     }

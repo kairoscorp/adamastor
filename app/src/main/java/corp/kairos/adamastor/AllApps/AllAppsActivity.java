@@ -23,7 +23,7 @@ public class AllAppsActivity extends AnimationActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.allapps_menu);
+        setContentView(R.layout.activity_allapps);
 
         this.allAppsMenuView = findViewById(R.id.allapps_menu);
         // Managers
@@ -37,7 +37,17 @@ public class AllAppsActivity extends AnimationActivity {
         super.setAnimation("up");
         super.setUpActivity(HomeActivity.class);
 
-        // Views
+        // Load apps and views
+        loadApps();
+        loadListView();
+    }
+
+    private void loadApps(){
+        this.allApps = this.appsManager.getAllApps(packageManager, true);
+    }
+
+    private void loadListView(){
+        this.allAppsMenuView = findViewById(R.id.allapps_grid);
         AllAppsMenuAdapter adapter = new AllAppsMenuAdapter(this, this.allApps);
         this.allAppsMenuView.setAdapter(adapter);
     }
