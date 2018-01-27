@@ -168,9 +168,8 @@
             android:layout_alignParentBottom="true"
             android:onClick="goNext"
             android:padding="20dp"
-            android:text="Next"
-            android:visibility="visible"
-            />
+            android:text="@string/btn_next_label"
+            android:visibility="invisible" />
 
     </LinearLayout>
 
