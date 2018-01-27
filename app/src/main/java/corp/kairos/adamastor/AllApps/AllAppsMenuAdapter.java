@@ -3,6 +3,7 @@ package corp.kairos.adamastor.AllApps;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -44,23 +45,28 @@ public class AllAppsMenuAdapter extends ArrayAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        View row = convertView;
+        View item = convertView;
 
-        if (row == null)
+        if (item == null)
         {
             LayoutInflater inflater = ((Activity) context).getLayoutInflater();
-            row = inflater.inflate(R.layout.allapps_app, parent, false);
+            item = inflater.inflate(R.layout.allapps_app, parent, false);
         }
 
         AppDetails app = (AppDetails) getObjectByIndex(position, this.apps);
 
-        TextView textViewTitle = (TextView) row.findViewById(R.id.app_text);
-        ImageView imageViewIte = (ImageView) row.findViewById(R.id.app_image);
+        TextView textViewTitle = (TextView) item.findViewById(R.id.app_text);
+        ImageView imageViewIte = (ImageView) item.findViewById(R.id.app_image);
 
         textViewTitle.setText(app.getLabel());
         imageViewIte.setImageDrawable(app.getIcon());
 
+        item.setOnClickListener(view -> {
+            Intent i = this.context.getPackageManager().getLaunchIntentForPackage(app.getPackageName());
+            context.startActivity(i);
+        });
 
-        return row;
+        return item;
     }
+
 }

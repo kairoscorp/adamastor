@@ -47,6 +47,7 @@ public class HomeActivity extends AnimationCompactActivity {
     private PackageManager packageManager;
     private Settings userSettings;
     private AppsManager appsManager;
+    private BackgroundChanger backgroundChanger;
     private UserContext[] userContexts;
     private List<AppDetails> favouriteApps;
 
@@ -60,11 +61,7 @@ public class HomeActivity extends AnimationCompactActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        this.packageManager = getPackageManager();
         this.userSettings = Settings.getInstance(this);
-        this.appsManager = AppsManager.getInstance();
-        this.appsManager.setupApps(packageManager);
 
         if (! userSettings.isOnboardingDone()) {
             // Set animation
@@ -74,6 +71,10 @@ public class HomeActivity extends AnimationCompactActivity {
             startActivity(i);
             finish();
         } else {
+            this.packageManager = getPackageManager();
+            this.appsManager = AppsManager.getInstance();
+            this.appsManager.setupApps(packageManager);
+            this.backgroundChanger = BackgroundChanger.getInstance();
             setContentView(R.layout.activity_home);
             this.viewPager = (ViewPager) findViewById(R.id.home_view_pager);
             this.tabLayout = (TabLayout) findViewById(R.id.context_tabs);
@@ -130,7 +131,7 @@ public class HomeActivity extends AnimationCompactActivity {
             img.setImageDrawable(app.getIcon());
             img.setOnClickListener(v -> {
                 Intent intent = getPackageManager().getLaunchIntentForPackage(app.getPackageName());
-                HomeActivity.this.startActivity(intent);
+                this.startActivity(intent);
             });
             parentLayout.addView(img);
             i++;
@@ -183,6 +184,7 @@ public class HomeActivity extends AnimationCompactActivity {
             tab.setIcon(iconCode);
             Drawable icon = tab.getIcon();
             icon = DrawableCompat.wrap(icon);
+            tab.setTag(context.getContextName());
             DrawableCompat.setTintList(icon, getResources().getColorStateList(R.color.main_screen_tab_icon_colors));
             i++;
         }
@@ -190,19 +192,31 @@ public class HomeActivity extends AnimationCompactActivity {
         addTabEventListener(this.tabLayout);
         // TODO: Set last active context
         // TODO: Substitute for the persisted
-        Util.setBackground(getApplicationContext(), R.drawable.commute_background);
+        backgroundChanger.changeBackground(getApplicationContext(), R.drawable.commute_background);
     }
 
     private void addTabEventListener(TabLayout tabLayout) {
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-                int backgroundResource, tabPosition = tab.getPosition();
-                if (tabPosition == 0) backgroundResource = R.drawable.commute_background;
-                else if (tabPosition == 1) backgroundResource = R.drawable.leisure_background;
-                    // Default
-                else backgroundResource = R.drawable.work_background;
-                Util.setBackground(getApplicationContext(), backgroundResource);
+                int backgroundResource;
+                String tabTag = (String) tab.getTag();
+                assert tabTag != null;
+                switch (tabTag) {
+                    case "Work":
+                        backgroundResource = R.drawable.work_background;
+                        break;
+                    case "Travel":
+                    case "Commute":
+                        backgroundResource = R.drawable.commute_background;
+                        break;
+                    case "Home":
+                    case "Leisure":
+                    default:
+                        backgroundResource = R.drawable.leisure_background;
+                }
+
+                backgroundChanger.changeBackground(getApplicationContext(), backgroundResource);
             }
 
             @Override
