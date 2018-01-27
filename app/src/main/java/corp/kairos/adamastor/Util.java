@@ -1,17 +1,12 @@
 package corp.kairos.adamastor;
 
-import android.app.WallpaperManager;
-import android.content.Context;
 import android.content.pm.PackageManager;
-import android.os.AsyncTask;
 import android.util.Log;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.ThreadPoolExecutor;
 
 public class Util {
     public static Object getObjectByIndex(int position, Set set) {

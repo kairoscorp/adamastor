@@ -37,7 +37,6 @@ import corp.kairos.adamastor.Settings.ContextRelated.ContextRelatedSettingsActiv
 import corp.kairos.adamastor.Settings.Settings;
 import corp.kairos.adamastor.Statistics.StatisticsActivity;
 import corp.kairos.adamastor.UserContext;
-import corp.kairos.adamastor.Util;
 
 public class HomeActivity extends AnimationCompactActivity {
 
@@ -74,7 +73,6 @@ public class HomeActivity extends AnimationCompactActivity {
             this.packageManager = getPackageManager();
             this.appsManager = AppsManager.getInstance();
             this.appsManager.setupApps(packageManager);
-            this.backgroundChanger = BackgroundChanger.getInstance();
             setContentView(R.layout.activity_home);
             this.viewPager = (ViewPager) findViewById(R.id.home_view_pager);
             this.tabLayout = (TabLayout) findViewById(R.id.context_tabs);
@@ -86,6 +84,7 @@ public class HomeActivity extends AnimationCompactActivity {
                 bindCollectorService();
 
             // Set navigation
+            super.setAnimation("up");
             this.setDownActivity(AllAppsActivity.class);
             this.setLeftActivity(StatisticsActivity.class);
             this.setRightActivity(ContextListActivity.class);
@@ -113,7 +112,6 @@ public class HomeActivity extends AnimationCompactActivity {
         // Load favorite apps
         FavouriteAppsDAO favAppsDAO = new StaticFavouriteAppsDAO(getPackageManager());
         this.favouriteApps = favAppsDAO.getFavouriteApps();
-        Log.i("setupFavouriteApps", Integer.toString(favouriteApps.size()));
 
         // Pass favourite apps to the views
         int maxAppsPerSide = this.favouriteApps.size() / 2;
@@ -179,44 +177,28 @@ public class HomeActivity extends AnimationCompactActivity {
                     iconCode = R.drawable.ic_settings_black_24dp;
             }
 
-            // Setup Icon Colors
+            // Setup Icon and Tab Tag
             TabLayout.Tab tab = this.tabLayout.getTabAt(i);
             tab.setIcon(iconCode);
             Drawable icon = tab.getIcon();
             icon = DrawableCompat.wrap(icon);
             tab.setTag(context.getContextName());
-            DrawableCompat.setTintList(icon, getResources().getColorStateList(R.color.main_screen_tab_icon_colors));
+            DrawableCompat.setTintList(icon, getResources().getColorStateList(R.color.main_screen_tab_icon_colors, null));
             i++;
         }
 
         addTabEventListener(this.tabLayout);
         // TODO: Set last active context
         // TODO: Substitute for the persisted
-        backgroundChanger.changeBackground(getApplicationContext(), R.drawable.commute_background);
+        int starterBackground = getSelectedTabBackground(this.tabLayout.getTabAt(0));
+        BackgroundChanger.changeWallpaper(getApplicationContext(), starterBackground);
     }
 
     private void addTabEventListener(TabLayout tabLayout) {
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-                int backgroundResource;
-                String tabTag = (String) tab.getTag();
-                assert tabTag != null;
-                switch (tabTag) {
-                    case "Work":
-                        backgroundResource = R.drawable.work_background;
-                        break;
-                    case "Travel":
-                    case "Commute":
-                        backgroundResource = R.drawable.commute_background;
-                        break;
-                    case "Home":
-                    case "Leisure":
-                    default:
-                        backgroundResource = R.drawable.leisure_background;
-                }
-
-                backgroundChanger.changeBackground(getApplicationContext(), backgroundResource);
+                BackgroundChanger.changeWallpaper(getApplicationContext(), getSelectedTabBackground(tab));
             }
 
             @Override
@@ -229,6 +211,22 @@ public class HomeActivity extends AnimationCompactActivity {
                 // Do Nothing
             }
         });
+    }
+
+    private int getSelectedTabBackground(TabLayout.Tab tab) {
+        String tabTag = (String) tab.getTag();
+        assert tabTag != null;
+        switch (tabTag) {
+            case "Work":
+                return R.drawable.work_background;
+            case "Travel":
+            case "Commute":
+                return R.drawable.commute_background;
+            case "Home":
+            case "Leisure":
+            default:
+                return R.drawable.leisure_background;
+        }
     }
 
     @Override
