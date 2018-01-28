@@ -78,6 +78,8 @@ public class SetContext extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        getActivity().getWindow().setNavigationBarColor(getResources().getColor(R.color.black_overlay));
+        getActivity().getWindow().setStatusBarColor(getResources().getColor(R.color.black_overlay));
         CheckBox cWork = getActivity().findViewById(R.id.checkBox_Work);
         CheckBox cLeisure = getActivity().findViewById(R.id.checkBox_Leisure);
         CheckBox cCommute =getActivity().findViewById(R.id.checkBox_Commute);
@@ -95,6 +97,8 @@ public class SetContext extends Fragment {
         View frame = getActivity().findViewById(R.id.select_context);
 
         cancel.setOnClickListener(v1 -> {
+            getActivity().getWindow().setStatusBarColor(0);
+            getActivity().getWindow().setNavigationBarColor(0);
             ((ViewGroup) frame.getParent()).removeView(frame);
         });
         Button ok = getActivity().findViewById(R.id.ok);
@@ -140,6 +144,8 @@ public class SetContext extends Fragment {
     @Override
     public void onDetach() {
         super.onDetach();
+        getActivity().getWindow().setStatusBarColor(0);
+        getActivity().getWindow().setNavigationBarColor(0);
         mListener = null;
     }
 

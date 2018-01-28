@@ -64,7 +64,6 @@ public class AllAppsActivity extends AnimationActivity {
         this.allAppsMenuView.setOnItemLongClickListener((parent, view, position, id) -> {
             AppDetails app = (AppDetails) getObjectByIndex(position, allApps);
             FrameLayout optionMenu = new FrameLayout(getApplicationContext());
-
             optionMenu.setBackgroundResource(android.R.color.transparent);
             FrameLayout.LayoutParams params =  new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT);
             params.gravity= Gravity.BOTTOM;
@@ -85,5 +84,12 @@ public class AllAppsActivity extends AnimationActivity {
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
         transaction.replace(viewId,options);
         transaction.commit();
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (getFragmentManager().getBackStackEntryCount() > 0)
+           getFragmentManager().popBackStackImmediate();
+        else super.onBackPressed();
     }
 }

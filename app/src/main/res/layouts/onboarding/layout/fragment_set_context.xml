@@ -110,6 +110,8 @@
                 android:layout_alignParentRight="true"
                 android:layout_marginRight="16dp"
                 android:layout_marginLeft="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
                 android:backgroundTint="@color/primaryColor"
                 style="@style/Widget.AppCompat.Button.Colored"
                 android:text="OK"/>
@@ -119,6 +121,8 @@
                 android:layout_height="wrap_content"
                 android:layout_toLeftOf="@id/ok"
                 android:textColor="@color/primaryColor"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
                 style="@style/Widget.AppCompat.Button.Borderless.Colored"
                 android:text="Cancel"/>
 
