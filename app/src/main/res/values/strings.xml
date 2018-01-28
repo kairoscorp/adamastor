@@ -44,8 +44,14 @@
     <string name="add_app_contexts_description_commute">Please select the apps related to your commute context</string>
 
     <string name="dummy_context_name">Context 1</string>
+
     <string name="onboarding_finish_text1">All done!</string>
     <string name="onboarding_finish_text2">You\'ve successfully completed the onboarding! You\'re now ready o boost your produtivity to a whole new level!</string>
     <string name="onboarding_finish_text3">We hope you enjoy and make good use of Kairos!</string>
 
+    <string name="settings_icon_accessibility">Settings Icon</string>
+    <string name="all_apps_button">Button to take you to the all applications screen.</string>
+    <string name="favourite_icon">Favourite icon</string>
+    <string name="month_day_dummy_text">Month Day</string>
+    <string name="weekday_year_dummy_text">Weekday Year</string>
 </resources>

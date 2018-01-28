@@ -1,8 +1,6 @@
 package corp.kairos.adamastor;
 
-import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
-import android.graphics.drawable.Drawable;
 import android.util.Log;
 
 import java.util.ArrayList;
@@ -36,23 +34,16 @@ public class Util {
         // These loops just associate different apps with different contexts
         int n = 0;
         for(List<String> appsList : apps){
-            List<AppDetails> appDetails = new ArrayList<>();
+            List<AppDetails> appDetailsList = new ArrayList<>();
             for(String p: appsList){
                 try {
-                    ApplicationInfo ai = pm.getApplicationInfo(p,0);
-
-                    String label = (String) pm.getApplicationLabel(ai);
-                    String name = ai.packageName;
-                    Drawable icon = pm.getApplicationIcon(ai);
-
-                    AppDetails app = new AppDetails(label, name, icon);
-                    appDetails.add(app);
+                    appDetailsList.add(new AppDetails(pm, p));
                 } catch (PackageManager.NameNotFoundException e) {
                     Log.e(ActivityTAG, "App not found");
                     e.printStackTrace();
                 }
             }
-            staticContexts[n] = new UserContext("Context " + n, appDetails);
+            staticContexts[n] = new UserContext("Context " + n, appDetailsList);
             n++;
         }
         return staticContexts;
