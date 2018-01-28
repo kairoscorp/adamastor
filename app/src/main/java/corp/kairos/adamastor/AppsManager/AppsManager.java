@@ -18,6 +18,7 @@ import corp.kairos.adamastor.Settings.Settings;
 import corp.kairos.adamastor.Statistics.StatisticsManager.RealStatisticsDAO;
 import corp.kairos.adamastor.Statistics.StatisticsManager.StatisticsDAO;
 import corp.kairos.adamastor.Statistics.StatisticsManager.RandomStatisticsDAO;
+import corp.kairos.adamastor.Util;
 
 public class AppsManager {
     private Map<String, AppDetails> allAppsDetails;
@@ -67,7 +68,8 @@ public class AppsManager {
             String label = ri.loadLabel(packageManager).toString();
             String name = ri.activityInfo.packageName;
             Drawable icon = ri.activityInfo.loadIcon(packageManager);
-            AppDetails app = new AppDetails(label, name, icon);
+            boolean system = !Util.isUserApp(ri.activityInfo.applicationInfo);
+            AppDetails app = new AppDetails(label, name, icon,system);
             allAppsDetails.put(name, app);
             appsDetailsWithoutLauncher.put(name, app);
         }

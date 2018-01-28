@@ -11,6 +11,7 @@ import android.app.Fragment;
 import android.provider.Settings;
 import android.support.annotation.Nullable;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -94,12 +95,23 @@ public class OptionsMenu extends Fragment {
         Button uninstall = getActivity().findViewById(R.id.uninstall_button);
         Button appInfo =getActivity().findViewById(R.id.app_info_button);
         Button context = getActivity().findViewById(R.id.set_context_button);
-
+        TextView lastUsed =getActivity().findViewById(R.id.lastUsed);
+        TextView timeUsed =getActivity().findViewById(R.id.timeUsed);
+        //lastUsed.setText();
+        //timeUsed.setText();
+        getActivity().getWindow().setNavigationBarColor(getResources().getColor(R.color.black_overlay));
+        getActivity().getWindow().setStatusBarColor(getResources().getColor(R.color.black_overlay));
+        iv.setBackgroundColor(getResources().getColor(R.color.black_overlay));
         icon.setImageDrawable(appDetail.getIcon());
+        if(appDetail.isSystem()){
+            uninstall.setVisibility(View.GONE);
+        }
         getActivity().getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         iv.setOnClickListener(v -> {
             View frame = getActivity().findViewById(R.id.view_option);
             ((ViewGroup)frame.getParent()).removeView(frame);
+            getActivity().getWindow().setStatusBarColor(0);
+            getActivity().getWindow().setNavigationBarColor(0);
         });
         uninstall.setOnClickListener(v -> {
             View frame = getActivity().findViewById(R.id.view_option);
@@ -123,12 +135,16 @@ public class OptionsMenu extends Fragment {
             FrameLayout.LayoutParams params =  new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT);
             contextSelect.setOnClickListener(v1 -> {
                 ((ViewGroup)contextSelect.getParent()).removeView(contextSelect);
+                getActivity().getWindow().setStatusBarColor(0);
+                getActivity().getWindow().setNavigationBarColor(0);
             });
             params.gravity= Gravity.CENTER;
             contextSelect.setLayoutParams(params);
             ViewGroup parentView =  getActivity().findViewById(android.R.id.content);
             parentView.addView(contextSelect);
             contextSelect.setId(R.id.select_context);
+            contextSelect.setBackgroundColor(getResources().getColor(R.color.black_overlay));
+
             showSetContext(appDetail,R.id.select_context);
         });
 
@@ -168,6 +184,7 @@ public class OptionsMenu extends Fragment {
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
         transaction.replace(viewId,options);
         transaction.commit();
+
     }
 
 }

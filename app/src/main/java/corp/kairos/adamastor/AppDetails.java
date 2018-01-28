@@ -16,12 +16,14 @@ public class AppDetails implements Comparable,Serializable{
     private String packageName;
     private Drawable icon;
     private Long usageStatistics;
+    private boolean system;
 
-    public AppDetails(String label, String packageName, Drawable icon) {
+    public AppDetails(String label, String packageName, Drawable icon, boolean system) {
         this.label = label;
         this.packageName = packageName;
         this.icon = icon;
         this.usageStatistics = 0L;
+        this.system= system;
     }
 
     public AppDetails(AppDetails appDetail) {
@@ -29,6 +31,7 @@ public class AppDetails implements Comparable,Serializable{
         this.packageName = appDetail.getPackageName();
         this.icon = appDetail.getIcon();
         this.usageStatistics = appDetail.getUsageStatistics();
+        this.system = appDetail.isSystem();
     }
 
     public AppDetails(PackageManager pm, String packageName) throws PackageManager.NameNotFoundException {
@@ -76,6 +79,9 @@ public class AppDetails implements Comparable,Serializable{
         this.usageStatistics = usageStatistics;
     }
 
+    public boolean isSystem() {
+        return system;
+    }
 
     public AppDetails clone() {
         return new AppDetails(this);

@@ -36,7 +36,14 @@ public class Util {
             List<AppDetails> appDetailsList = new ArrayList<>();
             for(String p: appsList){
                 try {
-                    appDetailsList.add(new AppDetails(pm, p));
+                    ApplicationInfo ai = pm.getApplicationInfo(p,0);
+
+                    String label = (String) pm.getApplicationLabel(ai);
+                    String name = ai.packageName;
+                    Drawable icon = pm.getApplicationIcon(ai);
+                    boolean system = !isUserApp(ai);
+                    AppDetails app = new AppDetails(label, name, icon,system);
+                    appDetails.add(app);
                 } catch (PackageManager.NameNotFoundException e) {
                     Log.e(ActivityTAG, "App not found");
                     e.printStackTrace();
@@ -46,5 +53,9 @@ public class Util {
             n++;
         }
         return staticContexts;
+    }
+    public static boolean isUserApp(ApplicationInfo ai) {
+        int mask = ApplicationInfo.FLAG_SYSTEM | ApplicationInfo.FLAG_UPDATED_SYSTEM_APP;
+        return (ai.flags & mask) == 0;
     }
 }
