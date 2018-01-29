@@ -2,8 +2,8 @@ package corp.kairos.adamastor.AllApps;
 
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.GridView;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.widget.SearchView;
 
 import java.util.Set;
@@ -14,6 +14,8 @@ import corp.kairos.adamastor.AppsManager.AppsManager;
 import corp.kairos.adamastor.Home.HomeActivity;
 import corp.kairos.adamastor.R;
 
+import static corp.kairos.adamastor.ContextList.ContextListActivity.NUMBER_OF_COLUMNS;
+
 public class AllAppsActivity extends AnimationActivity {
     private PackageManager packageManager;
     private AppsManager appsManager;
@@ -21,15 +23,15 @@ public class AllAppsActivity extends AnimationActivity {
     private Set<AppDetails> allApps;
 
     private SearchView searchView;
-    private GridView allAppsMenuView;
+    private RecyclerView allAppsMenuView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_allapps);
 
-        this.allAppsMenuView = findViewById(R.id.allapps_grid);
         this.searchView = findViewById(R.id.search_view);
+        this.allAppsMenuView = findViewById(R.id.allapps_grid);
 
         // Managers
         this.appsManager = AppsManager.getInstance();
@@ -43,7 +45,8 @@ public class AllAppsActivity extends AnimationActivity {
 
         // Setup views
         this.allAppsMenuView = findViewById(R.id.allapps_grid);
-        AllAppsMenuAdapter adapter = new AllAppsMenuAdapter(this, this.allApps);
+        this.allAppsMenuView.setLayoutManager(new GridLayoutManager(this, NUMBER_OF_COLUMNS));
+        AllAppsRecyclerViewAdapter adapter = new AllAppsRecyclerViewAdapter(AllAppsActivity.this, this.allApps);
         this.allAppsMenuView.setAdapter(adapter);
 
         this.searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {

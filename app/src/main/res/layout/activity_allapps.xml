@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:layout_margin="6dp">
+    android:layout_margin="6dp"
+    android:background="@drawable/round_shape"
+    >
 
     <SearchView
         android:id="@+id/search_view"
@@ -16,20 +18,21 @@
         android:searchIcon="@null"
         />
 
-    <GridView
+    <View
+        android:background="#C4CDE0"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        />
+
+    <android.support.v7.widget.RecyclerView
         android:id="@+id/allapps_grid"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:drawSelectorOnTop="true"
-        android:numColumns="4"
-        android:columnWidth="100dp"
-        android:stretchMode="columnWidth"
-        android:gravity="center"
         android:scrollbars="vertical"
         android:fadeScrollbars="false"
         android:scrollbarFadeDuration="0"
         android:scrollbarThumbVertical="@drawable/scrollbar_vertical"
-        android:background="#ffffff"
         />
+
 
 </LinearLayout>
