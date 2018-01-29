@@ -127,7 +127,9 @@
             </intent-filter>
         </receiver>
 
-        <activity android:name=".ContextList.SelectContextAppsActivity" />
+        <activity
+            android:name=".ContextList.EditContextAppsActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
     </application>
 
 </manifest>

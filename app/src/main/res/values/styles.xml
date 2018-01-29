@@ -53,14 +53,12 @@
         <!-- No Action Bars -->
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowActionBar">false</item>
-        <item name="android:windowContentOverlay">@null</item>
 
         <!-- Background Wallpaper -->
         <item name="android:windowBackground">@android:color/transparent</item>
         <item name="android:windowShowWallpaper">true</item>
 
         <!-- Make System Bars Transparent -->
-        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:navigationBarColor">@android:color/transparent</item>
         <item name="android:windowTranslucentStatus">false</item>

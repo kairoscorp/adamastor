@@ -1,8 +1,10 @@
 package corp.kairos.adamastor.ContextList;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
 
 import org.apache.commons.lang3.ArrayUtils;
 
@@ -37,6 +39,12 @@ public class ContextListActivity extends AnimationActivity {
         setupViews();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        setupViews();
+    }
+
     private void setupViews() {
         mAdapter = new SectionedRecyclerViewAdapter();
 
@@ -68,6 +76,11 @@ public class ContextListActivity extends AnimationActivity {
 
         mRecyclerView.setLayoutManager(glm);
         mRecyclerView.setAdapter(mAdapter);
+    }
+
+    public void selectContextApps(View v) {
+        startActivity(new Intent(getApplicationContext(),EditContextAppsActivity.class));
+
     }
 
 }

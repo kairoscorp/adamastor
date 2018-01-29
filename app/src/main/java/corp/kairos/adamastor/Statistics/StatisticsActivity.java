@@ -9,7 +9,6 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -63,7 +62,7 @@ public class StatisticsActivity extends AnimationCompactActivity {
         super.setRightActivity(HomeActivity.class);
 
         setContentView(R.layout.activity_statistics);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_contexts);
         setSupportActionBar(toolbar);
 
         mChart = findViewById(R.id.stats_context);
