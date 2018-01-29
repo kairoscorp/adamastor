@@ -1,7 +1,7 @@
 <resources>
 
     <string name="app_name">Kairos</string>
-    <string name="google_android_map_api_key">AIzaSyD9GnbGKudeaNFVXWUftSla7Wfr6JGg_BU</string>
+    <string name="google_android_places_api_key">AIzaSyD9GnbGKudeaNFVXWUftSla7Wfr6JGg_BU</string>
 
     <!-- Buttons -->
     <string name="btn_next_label">Next</string>
@@ -48,6 +48,13 @@
     <string name="onboarding_finish_text1">All done!</string>
     <string name="onboarding_finish_text2">You\'ve successfully completed the onboarding! You\'re now ready o boost your produtivity to a whole new level!</string>
     <string name="onboarding_finish_text3">We hope you enjoy and make good use of Kairos!</string>
+
+    <string name="onboarding_location_description">Kairos needs to know your work and home location so it can better define your context depending on your location.</string>
+    <string name="btn_set_location">Set Location</string>
+    <string name="onboarding_location_work_label">Work address</string>
+    <string name="onboarding_location_default_address">No location selected.</string>
+    <string name="onboarding_location_home_label">Home address</string>
+    <string name="onboarding_no_location">Not currently set</string>
 
     <string name="settings_icon_accessibility">Settings Icon</string>
     <string name="all_apps_button">Button to take you to the all applications screen.</string>
