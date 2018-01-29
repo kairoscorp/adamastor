@@ -2,11 +2,15 @@ package corp.kairos.adamastor.Home;
 
 
 import android.Manifest;
-import android.content.Context;
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.graphics.drawable.DrawableCompat;
+import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,12 +18,19 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+
 import corp.kairos.adamastor.AllApps.AllAppsActivity;
-import corp.kairos.adamastor.Animation.AnimationActivity;
+import corp.kairos.adamastor.Animation.AnimationCompactActivity;
 import corp.kairos.adamastor.AppDetails;
 import corp.kairos.adamastor.AppsManager.AppsManager;
 import corp.kairos.adamastor.Collector.CollectorService;
 import corp.kairos.adamastor.ContextList.ContextListActivity;
+import corp.kairos.adamastor.Home.dao.FavouriteAppsDAO;
+import corp.kairos.adamastor.Home.dao.StaticFavouriteAppsDAO;
 import corp.kairos.adamastor.Onboarding.Onboard1WelcomeActivity;
 import corp.kairos.adamastor.R;
 import corp.kairos.adamastor.Settings.ContextRelated.ContextRelatedSettingsActivity;
@@ -27,95 +38,204 @@ import corp.kairos.adamastor.Settings.Settings;
 import corp.kairos.adamastor.Statistics.StatisticsActivity;
 import corp.kairos.adamastor.UserContext;
 
-public class HomeActivity extends AnimationActivity {
+public class HomeActivity extends AnimationCompactActivity {
 
-    private static final String TAG = HomeActivity.class.getName();
+    public static final String TAG = HomeActivity.class.toString();
+    public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
 
-    private UserContext currentContext;
-    private int currentContextIndex;
-    private View.OnClickListener clickHandler;
     private PackageManager packageManager;
-    private Settings settingsUser;
+    private Settings userSettings;
     private AppsManager appsManager;
+    private BackgroundChanger backgroundChanger;
+    private UserContext[] userContexts;
+    private List<AppDetails> favouriteApps;
 
+    private TabLayout tabLayout;
+    private ViewPager viewPager;
+    private TextView monthDayTextView;
+    private TextView weekdayYearTextView;
 
     private boolean permissionsGranted = false;
-    public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        this.userSettings = Settings.getInstance(this);
 
-        this.packageManager = getPackageManager();
-        this.settingsUser = Settings.getInstance(this);
-        this.appsManager = AppsManager.getInstance();
-        this.appsManager.setupApps(packageManager);
-        if (!settingsUser.isOnboardingDone()) {
+        if (! userSettings.isOnboardingDone()) {
             // Set animation
             super.setAnimation("up");
 
             Intent i = new Intent(this, Onboard1WelcomeActivity.class);
             startActivity(i);
             finish();
-
         } else {
+            this.packageManager = getPackageManager();
+            this.appsManager = AppsManager.getInstance();
+            this.appsManager.setupApps(packageManager);
             setContentView(R.layout.activity_home);
+            this.viewPager = (ViewPager) findViewById(R.id.home_view_pager);
+            this.tabLayout = (TabLayout) findViewById(R.id.context_tabs);
+            this.monthDayTextView = (TextView) findViewById(R.id.month_day_text_view);
+            this.weekdayYearTextView = (TextView) findViewById(R.id.weekday_year_text_view);
 
-            // Setup contexts
-            this.currentContextIndex = 0;
-            this.currentContext = settingsUser.getCurrentUserContext();
+            checkPermissions();
+            if (permissionsGranted)
+                bindCollectorService();
 
-            addClickListener();
-            adjustScreenToContext();
-
-            // Set animations
+            // Set navigation
+            super.setAnimation("up");
             this.setDownActivity(AllAppsActivity.class);
             this.setLeftActivity(StatisticsActivity.class);
             this.setRightActivity(ContextListActivity.class);
 
-            checkPermissions();
-            if (permissionsGranted) {
-                bindCollectorService();
-            }
+            setupDates();
+
+            setupFavouriteApps();
+
+            setupContextDisplayer();
         }
     }
 
-    private void addClickListener() {
-        clickHandler = v -> {
-            super.setAnimation("right");
-            HomeApp ha = (HomeApp) v;
-            Intent i = packageManager.getLaunchIntentForPackage(ha.getPackageName());
-            this.startActivity(i);
-        };
+    @SuppressLint("SimpleDateFormat")
+    private void setupDates() {
+        Date time = Calendar.getInstance().getTime();
+         SimpleDateFormat df = new SimpleDateFormat("MMMM dd");
+        this.monthDayTextView.setText(df.format(time));
+
+        df = new SimpleDateFormat("EEEE, yyyy");
+        this.weekdayYearTextView.setText(df.format(time));
     }
 
-    /*
-    * This method should be called when the home screen needs to change in order to show the
-    * correct apps for the current context*/
-    private void adjustScreenToContext() {
-        TextView contextOnScreen = ((TextView) findViewById(R.id.id_context_label));
 
-        //Just refresh the view if the context actually changed
-        if (!(contextOnScreen.getText().equals(currentContext.getContextName()))) {
-            LinearLayout contextAppsList = findViewById(R.id.id_context_apps_list);
-            contextAppsList.removeAllViews();
-            contextOnScreen.setText(currentContext.getContextName());
+    private void setupFavouriteApps() {
+        // Load favorite apps
+        FavouriteAppsDAO favAppsDAO = new StaticFavouriteAppsDAO(getPackageManager());
+        this.favouriteApps = favAppsDAO.getFavouriteApps();
 
-            for (AppDetails app : currentContext.getContextApps()) {
-                LayoutInflater inflater = LayoutInflater.from(this);
-                HomeApp inflatedView = (HomeApp) inflater.inflate(R.layout.home_app, null);
+        // Pass favourite apps to the views
+        int maxAppsPerSide = this.favouriteApps.size() / 2;
+        LayoutInflater layoutInflater = getLayoutInflater();
+        LinearLayout leftLinearLayout = findViewById(R.id.left_side_favourites);
+        LinearLayout rightLinearLayout = findViewById(R.id.right_side_favourites);
 
-                inflatedView.setPackageName(app.getPackageName());
-                TextView textViewTitle = (TextView) inflatedView.findViewById(R.id.app_text);
-                ImageView imageViewIte = (ImageView) inflatedView.findViewById(R.id.app_image);
+        int i = 1;
+        for (AppDetails app : this.favouriteApps) {
+            // Choose what layout to fill
+            LinearLayout parentLayout = i <= maxAppsPerSide ? leftLinearLayout : rightLinearLayout;
 
-                textViewTitle.setText(app.getLabel());
-                imageViewIte.setImageDrawable(app.getIcon());
-                inflatedView.setOnClickListener(clickHandler);
-
-                contextAppsList.addView(inflatedView);
-            }
+            // Create new Image view for this fav app
+            ImageView img = (ImageView) layoutInflater.inflate(R.layout.favourite_app_icon, parentLayout, false);
+            img.setImageDrawable(app.getIcon());
+            img.setOnClickListener(v -> {
+                Intent intent = getPackageManager().getLaunchIntentForPackage(app.getPackageName());
+                this.startActivity(intent);
+            });
+            parentLayout.addView(img);
+            i++;
         }
+
+    }
+
+    private void setupContextDisplayer() {
+        // TODO: Make this method get last active context
+        this.userContexts = userSettings.getUserContextsAsArray();
+
+        setupViewPager();
+
+        setupTabs();
+    }
+
+    private void setupViewPager() {
+        ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
+
+        for (UserContext context : this.userContexts)
+            adapter.addFrag(PlaceholderFragment.newInstance(context));
+
+        this.viewPager.setAdapter(adapter);
+    }
+
+    private void setupTabs() {
+        this.tabLayout.setupWithViewPager(this.viewPager);
+        int i = 0;
+        for (UserContext context : this.userContexts) {
+            int iconCode;
+            // TODO: make contexts carry their own icon
+            switch (context.getContextName()) {
+                case "Work":
+                    iconCode = R.drawable.ic_work_black_24dp;
+                    break;
+                case "Home":
+                case "Leisure":
+                    iconCode = R.drawable.ic_leisure_black_24dp;
+                    break;
+                case "Travel":
+                case "Commute":
+                    iconCode = R.drawable.ic_commute_black_24dp;
+                    break;
+                default:
+                    iconCode = R.drawable.ic_settings_black_24dp;
+            }
+
+            // Setup Icon and Tab Tag
+            TabLayout.Tab tab = this.tabLayout.getTabAt(i);
+            tab.setIcon(iconCode);
+            Drawable icon = tab.getIcon();
+            icon = DrawableCompat.wrap(icon);
+            tab.setTag(context.getContextName());
+            DrawableCompat.setTintList(icon, getResources().getColorStateList(R.color.main_screen_tab_icon_colors, null));
+            i++;
+        }
+
+        addTabEventListener(this.tabLayout);
+        // TODO: Set last active context
+        // TODO: Substitute for the persisted
+        int starterBackground = getSelectedTabBackground(this.tabLayout.getTabAt(0));
+        BackgroundChanger.changeWallpaper(getApplicationContext(), starterBackground);
+    }
+
+    private void addTabEventListener(TabLayout tabLayout) {
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                BackgroundChanger.changeWallpaper(getApplicationContext(), getSelectedTabBackground(tab));
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+                // Do Nothing
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+                // Do Nothing
+            }
+        });
+    }
+
+    private int getSelectedTabBackground(TabLayout.Tab tab) {
+        String tabTag = (String) tab.getTag();
+        assert tabTag != null;
+        switch (tabTag) {
+            case "Work":
+                return R.drawable.work_background;
+            case "Travel":
+            case "Commute":
+                return R.drawable.commute_background;
+            case "Home":
+            case "Leisure":
+            default:
+                return R.drawable.leisure_background;
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        checkPermissions();
+        if (permissionsGranted)
+            bindCollectorService();
     }
 
     public void showAllAppsMenu(View v) {
@@ -130,17 +250,6 @@ public class HomeActivity extends AnimationActivity {
         startActivity(i);
     }
 
-    /*
-    * The mechanism for manual context change is pressing the context label.
-    * This method is called when the context label is pressed.
-    */
-    public void changeContext(View view) {
-        this.currentContextIndex = (this.currentContextIndex + 1) % settingsUser.getContextNames().size();
-        this.currentContext = settingsUser.getUserContext(currentContextIndex);
-        adjustScreenToContext();
-    }
-
-    //KAIROS
     private void checkPermissions() {
         if ((ActivityCompat.checkSelfPermission(this,
                 android.Manifest.permission.ACCESS_FINE_LOCATION)
@@ -155,8 +264,7 @@ public class HomeActivity extends AnimationActivity {
                         Manifest.permission.GET_ACCOUNTS)
                         != PackageManager.PERMISSION_GRANTED)) {
 
-
-            requestPremissions();
+            requestPermissions();
 
         } else {
             Log.i(TAG, "permissions OK");
@@ -164,8 +272,7 @@ public class HomeActivity extends AnimationActivity {
         }
     }
 
-    //KAIROS
-    private void requestPremissions() {
+    private void requestPermissions() {
         ActivityCompat.requestPermissions(this,
                 new String[]{Manifest.permission.ACCESS_COARSE_LOCATION,
                         Manifest.permission.ACCESS_FINE_LOCATION,
@@ -176,7 +283,6 @@ public class HomeActivity extends AnimationActivity {
                 MY_PERMISSIONS_REQUEST_LOCATION);
     }
 
-    //KAIROS
     private void bindCollectorService() {
         Log.i(TAG, "Binding Service");
         Intent intent = new Intent(this, CollectorService.class);
@@ -185,13 +291,11 @@ public class HomeActivity extends AnimationActivity {
     }
 
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        if (requestCode == MY_PERMISSIONS_REQUEST_LOCATION) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+        if(requestCode == MY_PERMISSIONS_REQUEST_LOCATION)
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
                 permissionsGranted = true;
-            } else {
+            else
                 permissionsGranted = false;
-            }
-        }
     }
 
 }

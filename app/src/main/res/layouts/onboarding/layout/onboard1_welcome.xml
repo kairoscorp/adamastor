@@ -47,8 +47,9 @@
                 android:layout_height="40dp"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentTop="true"
-                android:layout_weight="1"
-                app:srcCompat="@drawable/ic_work_black" />
+                app:srcCompat="@drawable/ic_work_black_24dp"
+                android:tint="@color/secondaryLightColor"
+                />
 
             <TextView
                 android:id="@+id/work_label"
@@ -57,7 +58,6 @@
                 android:layout_alignParentTop="true"
                 android:layout_marginStart="24dp"
                 android:layout_toEndOf="@+id/image_work"
-                android:layout_weight="1"
                 android:text="@string/work_name"
                 android:textColor="@android:color/black"
                 android:textAppearance="@android:style/TextAppearance.Material.Medium" />
@@ -69,7 +69,6 @@
                 android:layout_below="@id/work_label"
                 android:layout_marginStart="24dp"
                 android:layout_toEndOf="@+id/image_work"
-                android:layout_weight="1"
                 android:text="@string/onboarding_work_description"
                 android:textAppearance="@android:style/TextAppearance.Material.Small" />
         </RelativeLayout>
@@ -85,8 +84,9 @@
                 android:layout_height="40dp"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentTop="true"
-                android:layout_weight="1"
-                app:srcCompat="@drawable/ic_home_black" />
+                app:srcCompat="@drawable/ic_leisure_black_24dp"
+                android:tint="@color/secondaryLightColor"
+                />
 
             <TextView
                 android:id="@+id/home_label"
@@ -124,8 +124,9 @@
                 android:layout_height="40dp"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentTop="true"
-                android:layout_weight="1"
-                app:srcCompat="@drawable/ic_commute_black" />
+                app:srcCompat="@drawable/ic_commute_black_24dp"
+                android:tint="@color/secondaryLightColor"
+                />
 
             <TextView
                 android:id="@+id/commute_label"
@@ -134,7 +135,6 @@
                 android:layout_alignParentTop="true"
                 android:layout_marginStart="24dp"
                 android:layout_toEndOf="@+id/image_commute"
-                android:layout_weight="1"
                 android:text="@string/commute_name"
                 android:textColor="@android:color/black"
                 android:textAppearance="@android:style/TextAppearance.Material.Medium" />
@@ -146,7 +146,6 @@
                 android:layout_below="@+id/commute_label"
                 android:layout_marginStart="24dp"
                 android:layout_toEndOf="@+id/image_commute"
-                android:layout_weight="1"
                 android:text="@string/onboarding_commute_description"
                 android:textAppearance="@android:style/TextAppearance.Material.Small" />
 

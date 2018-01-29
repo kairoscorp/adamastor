@@ -2,7 +2,6 @@ package corp.kairos.adamastor.ContextList;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -49,7 +48,7 @@ public class ContextSection extends StatelessSection {
 
     @Override
     public RecyclerView.ViewHolder getItemViewHolder(View view) {
-        return new AppViewHolder(view);
+        return new AppViewHolder(view, this.appContext);
     }
 
     @Override
@@ -60,12 +59,6 @@ public class ContextSection extends StatelessSection {
         itemHolder.iconView.setImageDrawable(currentItem.getIcon());
         itemHolder.labelView.setText(currentItem.getLabel());
         itemHolder.packageName = currentItem.getPackageName();
-
-        itemHolder.rootView.setOnClickListener((View v) -> {
-            Intent i = this.appContext.getPackageManager().getLaunchIntentForPackage(currentItem.getPackageName());
-            this.appContext.startActivity(i);
-
-        });
     }
 
     @Override
@@ -80,36 +73,6 @@ public class ContextSection extends StatelessSection {
         headerHolder.contextTitleView.setText(this.contextName);
         if (contextApps.size() <= MAX_NUMBER_OF_APPS_COMPRESSED)
             headerHolder.expandArrowView.setVisibility(View.GONE);
-
-        headerHolder.rootView.setOnClickListener((View v) -> {
-            isExpanded = !isExpanded;
-            headerHolder.expandArrowView.setImageResource(
-                    isExpanded ? R.drawable.ic_keyboard_arrow_up_black_24dp : R.drawable.ic_keyboard_arrow_down_black_24dp
-            );
-            mAdapter.notifyDataSetChanged();
-        });
-    }
-
-
-    private class AppViewHolder extends RecyclerView.ViewHolder {
-        View rootView;
-        TextView labelView;
-        ImageView iconView;
-        String packageName;
-
-        AppViewHolder(View itemView) {
-            super(itemView);
-
-            rootView = itemView;
-            iconView = (ImageView) itemView.findViewById(R.id.app_image);
-            labelView = (TextView) itemView.findViewById(R.id.app_text);
-            // TODO: Make design default like this
-            labelView.setTextColor(
-                ResourcesCompat.getColor(
-                    appContext.getResources(), R.color.secondaryTextColor, null
-                ));
-            labelView.setTextSize(18);
-        }
     }
 
     private class HeaderViewHolder extends RecyclerView.ViewHolder {
@@ -123,6 +86,14 @@ public class ContextSection extends StatelessSection {
             rootView = view;
             contextTitleView = (TextView) view.findViewById(R.id.context_title);
             expandArrowView = (ImageView) view.findViewById(R.id.expand_arrow);
+
+            view.setOnClickListener(v -> {
+                isExpanded = !isExpanded;
+                expandArrowView.setImageResource(
+                        isExpanded ? R.drawable.ic_expand_less_black_24dp : R.drawable.ic_expand_more_black_24dp
+                );
+                mAdapter.notifyDataSetChanged();
+            });
         }
     }
 }

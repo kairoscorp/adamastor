@@ -1,52 +1,72 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".Home.HomeActivity"
-    android:id="@+id/homeActivity">
+    android:id="@+id/home_activity"
+    android:orientation="vertical"
+    >
 
-    <TextView
-        android:id="@+id/id_context_label"
-        android:layout_width="wrap_content"
+    <include layout="@layout/status_bar_space" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:onClick="changeContext"
-        android:text="Hello"
-        android:textColor="@android:color/white"
-        android:textSize="30sp"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="70dp"/>
+        android:orientation="horizontal"
+        android:layout_weight="1"
+        >
 
-    <ImageView
-        android:id="@+id/config_btn"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_gravity="center_vertical"
-        android:contentDescription="Settings Icon"
-        android:onClick="showSettings"
-        android:src="@drawable/ic_settings_black_24dp"
-        android:tint="@color/secondaryColor"
-        android:layout_alignParentEnd="true"
-        android:layout_marginEnd="20dp"
-        android:layout_marginTop="50dp"/>
+        <ImageView
+            android:id="@+id/show_settings_icon"
+            android:layout_width="90dp"
+            android:layout_height="80dp"
+            android:layout_alignParentStart="true"
+            android:layout_marginTop="30dp"
+            android:contentDescription="@string/settings_icon_accessibility"
+            android:onClick="showSettings"
+            android:src="@drawable/kairos_sticker_red"
+            />
 
-    <Button
-        android:id="@+id/id_all_apps_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:background="@drawable/ic_allapps"
-        android:clickable="true"
-        android:onClick="showAllAppsMenu"
-        android:focusable="true" />
+        <TextView
+            android:id="@+id/month_day_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="36sp"
+            android:layout_alignParentEnd="true"
+            android:textColor="@color/primaryTextColor"
+            android:layout_marginEnd="16dp"
+            android:layout_marginTop="30dp"
+            android:text="@string/month_day_dummy_text"
+            />
+
+        <TextView
+            android:id="@+id/weekday_year_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:layout_alignParentEnd="true"
+            android:layout_below="@id/month_day_text_view"
+            android:textColor="@color/primaryTextColor"
+            android:layout_marginEnd="16dp"
+            android:text="@string/weekday_year_dummy_text"
+            />
 
 
-    <LinearLayout
-        android:id="@+id/id_context_apps_list"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/id_all_apps_button"
-        android:orientation="horizontal">
-    </LinearLayout>
-</RelativeLayout>
+    </RelativeLayout>
+
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1.5"
+        />
+
+    <include layout="@layout/context_displayer" />
+
+    <include layout="@layout/favourite_bar" />
+
+    <include layout="@layout/navigation_bar_space" />
+
+</LinearLayout>
