@@ -51,8 +51,8 @@
 
     <string name="onboarding_location_description">Kairos needs to know your work and home location so it can better define your context depending on your location.</string>
     <string name="btn_set_location">Set Location</string>
-    <string name="onboarding_location_work_label">Work address:</string>
-    <string name="onboarding_location_default_address">no location selected...</string>
-    <string name="onboarding_location_home_label">Home address:</string>
+    <string name="onboarding_location_work_label">Work address</string>
+    <string name="onboarding_location_default_address">No location selected.</string>
+    <string name="onboarding_location_home_label">Home address</string>
     <string name="onboarding_no_location">Not currently set</string>
 </resources>
