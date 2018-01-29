@@ -13,6 +13,7 @@ import java.util.List;
 
 import corp.kairos.adamastor.AppDetails;
 import corp.kairos.adamastor.R;
+import corp.kairos.adamastor.UserContext;
 import io.github.luizgrp.sectionedrecyclerviewadapter.SectionParameters;
 import io.github.luizgrp.sectionedrecyclerviewadapter.SectionedRecyclerViewAdapter;
 import io.github.luizgrp.sectionedrecyclerviewadapter.StatelessSection;
@@ -20,7 +21,7 @@ import io.github.luizgrp.sectionedrecyclerviewadapter.StatelessSection;
 
 public class ContextSection extends StatelessSection {
     // TODO: Make this a metric with the screen height and the number of sections
-    public static int MAX_NUMBER_OF_APPS_COMPRESSED = 4;
+    public static int MAX_NUMBER_OF_APPS_COMPRESSED = 0;
     public static boolean INITIAL_EXPANDED_STATE = false;
 
     private Context appContext;
@@ -71,8 +72,13 @@ public class ContextSection extends StatelessSection {
         HeaderViewHolder headerHolder = (HeaderViewHolder) holder;
 
         headerHolder.contextTitleView.setText(this.contextName);
+        int iconId = UserContext.getContextIcon(this.contextName);
+        headerHolder.contextTitleView.setCompoundDrawablesWithIntrinsicBounds(iconId, 0, 0, 0);
+
         if (contextApps.size() <= MAX_NUMBER_OF_APPS_COMPRESSED)
             headerHolder.expandArrowView.setVisibility(View.GONE);
+
+
     }
 
     private class HeaderViewHolder extends RecyclerView.ViewHolder {

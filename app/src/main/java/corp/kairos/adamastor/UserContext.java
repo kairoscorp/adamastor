@@ -105,5 +105,20 @@ public class UserContext implements Parcelable {
             return new UserContext[size];
         }
     };
+
+    // TODO: make contexts carry their own icon
+    public static int getContextIcon(String contextName) {
+        switch (contextName) {
+            case "Work":
+                return R.drawable.ic_work_black_24dp;
+            case "Home":
+            case "Leisure":
+                return R.drawable.ic_leisure_black_24dp;
+            case "Travel":
+            case "Commute":
+                return R.drawable.ic_commute_black_24dp;
+        }
+        return R.drawable.ic_settings_black_24dp;
+    }
 }
 
