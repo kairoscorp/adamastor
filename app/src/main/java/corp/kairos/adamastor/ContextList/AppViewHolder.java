@@ -22,12 +22,11 @@ public class AppViewHolder extends RecyclerView.ViewHolder {
         rootView = itemView;
         iconView = (ImageView) itemView.findViewById(R.id.app_image);
         labelView = (TextView) itemView.findViewById(R.id.app_text);
-        // TODO: Make design default like this
+
         labelView.setTextColor(
                 ResourcesCompat.getColor(
                         appContext.getResources(), R.color.secondaryTextColor, null
                 ));
-        labelView.setTextSize(18);
 
         rootView.setOnClickListener(v -> {
             Intent i = appContext.getPackageManager().getLaunchIntentForPackage(this.packageName);

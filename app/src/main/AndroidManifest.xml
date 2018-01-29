@@ -53,7 +53,7 @@
 
         <activity
             android:name=".AllApps.AllAppsActivity"
-            android:theme="@android:style/Theme.Material.Wallpaper" />
+            android:theme="@style/LauncherTheme" />
 
         <activity
             android:name=".Settings.ContextRelated.ContextRelatedSettingsActivity"

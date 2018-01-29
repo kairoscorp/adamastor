@@ -2,7 +2,9 @@ package corp.kairos.adamastor.AllApps;
 
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.GridView;
+import android.widget.SearchView;
 
 import java.util.Set;
 
@@ -18,6 +20,7 @@ public class AllAppsActivity extends AnimationActivity {
 
     private Set<AppDetails> allApps;
 
+    private SearchView searchView;
     private GridView allAppsMenuView;
 
     @Override
@@ -25,11 +28,12 @@ public class AllAppsActivity extends AnimationActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_allapps);
 
-        this.allAppsMenuView = findViewById(R.id.allapps_menu);
+        this.allAppsMenuView = findViewById(R.id.allapps_grid);
+        this.searchView = findViewById(R.id.search_view);
+
         // Managers
         this.appsManager = AppsManager.getInstance();
         this.packageManager = getPackageManager();
-
 
         this.allApps = this.appsManager.getAllApps(packageManager, true);
 
@@ -37,19 +41,23 @@ public class AllAppsActivity extends AnimationActivity {
         super.setAnimation("up");
         super.setUpActivity(HomeActivity.class);
 
-        // Load apps and views
-        loadApps();
-        loadListView();
-    }
-
-    private void loadApps(){
-        this.allApps = this.appsManager.getAllApps(packageManager, true);
-    }
-
-    private void loadListView(){
+        // Setup views
         this.allAppsMenuView = findViewById(R.id.allapps_grid);
         AllAppsMenuAdapter adapter = new AllAppsMenuAdapter(this, this.allApps);
         this.allAppsMenuView.setAdapter(adapter);
+
+        this.searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String query) {
+                adapter.getFilter().filter(query);
+                return false;
+            }
+        });
     }
 
 }

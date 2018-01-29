@@ -71,8 +71,8 @@ public class PlaceholderFragment extends Fragment {
 
     private class CustomAdapter extends AllAppsMenuAdapter {
 
-        public CustomAdapter(Context context, Set apps) {
-            super(context, apps);
+        public CustomAdapter(Context context, Set allApps) {
+            super(context, allApps);
         }
 
         @Override
