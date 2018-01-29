@@ -182,7 +182,8 @@ public class OptionsMenu extends Fragment {
         Fragment options = new SetContext();
         options.setArguments(bundle);
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
-        transaction.replace(viewId,options);
+        transaction.replace(viewId,options,"CONTEXT");
+        transaction.addToBackStack("CONTEXT");
         transaction.commit();
 
     }

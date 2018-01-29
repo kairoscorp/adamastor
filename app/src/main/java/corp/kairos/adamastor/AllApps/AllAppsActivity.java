@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.Gravity;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.GridView;
@@ -63,15 +64,7 @@ public class AllAppsActivity extends AnimationActivity {
         });
         this.allAppsMenuView.setOnItemLongClickListener((parent, view, position, id) -> {
             AppDetails app = (AppDetails) getObjectByIndex(position, allApps);
-            FrameLayout optionMenu = new FrameLayout(getApplicationContext());
-            optionMenu.setBackgroundResource(android.R.color.transparent);
-            FrameLayout.LayoutParams params =  new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT);
-            params.gravity= Gravity.BOTTOM;
-            optionMenu.setLayoutParams(params);
-            ViewGroup parentView =  findViewById(android.R.id.content);
-            parentView.addView(optionMenu);
-            optionMenu.setId(R.id.view_option);
-            showOptionMenu(app,R.id.view_option);
+            showOptions(app);
             return true;
         });
     }
@@ -82,14 +75,44 @@ public class AllAppsActivity extends AnimationActivity {
         Fragment options = new OptionsMenu();
         options.setArguments(bundle);
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
-        transaction.replace(viewId,options);
+        transaction.replace(viewId,options,"OPTIONS");
+        transaction.addToBackStack("OPTIONS");
         transaction.commit();
     }
 
+
+
+    public  void showOptions(AppDetails app){
+        FrameLayout optionMenu = new FrameLayout(getApplicationContext());
+        optionMenu.setBackgroundResource(android.R.color.transparent);
+        FrameLayout.LayoutParams params =  new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT);
+        params.gravity= Gravity.BOTTOM;
+        optionMenu.setLayoutParams(params);
+        ViewGroup parentView =  findViewById(android.R.id.content);
+        parentView.addView(optionMenu);
+        optionMenu.setId(R.id.view_option);
+        showOptionMenu(app,R.id.view_option);
+    }
+    public void nothingCLickListener(View v){
+
+    }
     @Override
     public void onBackPressed() {
-        if (getFragmentManager().getBackStackEntryCount() > 0)
-           getFragmentManager().popBackStackImmediate();
-        else super.onBackPressed();
+        if (getFragmentManager().getBackStackEntryCount() > 0) {
+            if(getFragmentManager().findFragmentByTag("OPTIONS")!= null) {
+                getFragmentManager().beginTransaction().remove(getFragmentManager().findFragmentByTag("OPTIONS")).commit();
+            }
+            if(getFragmentManager().findFragmentByTag("CONTEXT")!= null) {
+                getFragmentManager().beginTransaction().remove(getFragmentManager().findFragmentByTag("CONTEXT")).commit();
+            }
+           if(findViewById(R.id.select_context)!= null){
+               ((ViewGroup) findViewById(R.id.select_context).getParent()).removeView(findViewById(R.id.select_context));
+               getWindow().setStatusBarColor(0);
+               getWindow().setNavigationBarColor(0);
+           }
+
+        } else {
+            super.onBackPressed();
+        }
     }
 }
