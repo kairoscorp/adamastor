@@ -8,20 +8,22 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import corp.kairos.adamastor.AppDetails;
+import corp.kairos.adamastor.Home.HomeActivity;
 import corp.kairos.adamastor.R;
 
 public class AppViewHolder extends RecyclerView.ViewHolder {
     public View rootView;
     public TextView labelView;
     public ImageView iconView;
-    public String packageName;
+    public AppDetails app;
 
     public AppViewHolder(View itemView, Context appContext) {
         super(itemView);
 
         rootView = itemView;
-        iconView = (ImageView) itemView.findViewById(R.id.app_image);
-        labelView = (TextView) itemView.findViewById(R.id.app_text);
+        iconView = itemView.findViewById(R.id.app_image);
+        labelView = itemView.findViewById(R.id.app_text);
         // TODO: Make design default like this
         labelView.setTextColor(
                 ResourcesCompat.getColor(
@@ -30,8 +32,12 @@ public class AppViewHolder extends RecyclerView.ViewHolder {
         labelView.setTextSize(18);
 
         rootView.setOnClickListener(v -> {
-            Intent i = appContext.getPackageManager().getLaunchIntentForPackage(this.packageName);
+            Intent i = appContext.getPackageManager().getLaunchIntentForPackage(this.app.getPackageName());
             appContext.startActivity(i);
+        });
+        rootView.setOnLongClickListener(v -> {
+            HomeActivity.showOptions(appContext, rootView.getRootView(), app);
+            return true;
         });
 
     }

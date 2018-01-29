@@ -3,6 +3,7 @@ package corp.kairos.adamastor.ContextList;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.ViewGroup;
 
 import org.apache.commons.lang3.ArrayUtils;
 
@@ -70,4 +71,23 @@ public class ContextListActivity extends AnimationActivity {
         mRecyclerView.setAdapter(mAdapter);
     }
 
+    @Override
+    public void onBackPressed() {
+        if (getFragmentManager().getBackStackEntryCount() > 0) {
+            if (getFragmentManager().findFragmentByTag("OPTIONS") != null) {
+                getFragmentManager().beginTransaction().remove(getFragmentManager().findFragmentByTag("OPTIONS")).commit();
+            }
+            if (getFragmentManager().findFragmentByTag("CONTEXT") != null) {
+                getFragmentManager().beginTransaction().remove(getFragmentManager().findFragmentByTag("CONTEXT")).commit();
+            }
+            if (findViewById(R.id.select_context) != null) {
+                ((ViewGroup) findViewById(R.id.select_context).getParent()).removeView(findViewById(R.id.select_context));
+                getWindow().setStatusBarColor(0);
+                getWindow().setNavigationBarColor(0);
+            }
+
+        } else {
+            super.onBackPressed();
+        }
+    }
 }

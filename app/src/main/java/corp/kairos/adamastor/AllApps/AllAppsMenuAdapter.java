@@ -47,8 +47,7 @@ public class AllAppsMenuAdapter extends ArrayAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         View item = convertView;
 
-        if (item == null)
-        {
+        if (item == null) {
             LayoutInflater inflater = ((Activity) context).getLayoutInflater();
             item = inflater.inflate(R.layout.allapps_app, parent, false);
         }
@@ -68,5 +67,6 @@ public class AllAppsMenuAdapter extends ArrayAdapter {
 
         return item;
     }
+
 
 }
