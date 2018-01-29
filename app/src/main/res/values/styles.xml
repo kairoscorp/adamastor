@@ -24,7 +24,6 @@
     </style>
 
     <style name="LauncherTheme.SearchView" parent="Widget.AppCompat.SearchView">
-        <item name="android:background">#fff</item>
         <item name="searchHintIcon">@null</item>
         <item name="searchIcon">@null</item>
 
