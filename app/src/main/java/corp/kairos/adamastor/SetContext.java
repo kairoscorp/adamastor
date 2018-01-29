@@ -23,12 +23,10 @@ import corp.kairos.adamastor.Settings.Settings;
  * create an instance of this fragment.
  */
 public class SetContext extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
-    // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
 
@@ -47,7 +45,6 @@ public class SetContext extends Fragment {
      * @param param2 Parameter 2.
      * @return A new instance of fragment SetContext.
      */
-    // TODO: Rename and change types and number of parameters
     public static SetContext newInstance(String param1, String param2) {
         SetContext fragment = new SetContext();
         Bundle args = new Bundle();
@@ -95,7 +92,8 @@ public class SetContext extends Fragment {
         cLeisure.setChecked(leisureIs);
         cCommute.setChecked(commuteIs);
         View frame = getActivity().findViewById(R.id.select_context);
-
+        View fragment = getActivity().findViewById(R.id.frame_context);
+        fragment.setOnKeyListener(null);
         cancel.setOnClickListener(v1 -> {
             getActivity().getWindow().setStatusBarColor(0);
             getActivity().getWindow().setNavigationBarColor(0);
@@ -129,7 +127,6 @@ public class SetContext extends Fragment {
         );
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {
             mListener.onFragmentInteraction(uri);
@@ -143,10 +140,7 @@ public class SetContext extends Fragment {
 
     @Override
     public void onDetach() {
-        super.onDetach();
-        getActivity().getWindow().setStatusBarColor(0);
-        getActivity().getWindow().setNavigationBarColor(0);
-        mListener = null;
+        super.onDetach();;
     }
 
     /**
@@ -160,7 +154,7 @@ public class SetContext extends Fragment {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
+
 }
