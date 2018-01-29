@@ -1,7 +1,6 @@
 package corp.kairos.adamastor.ContextList;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
@@ -30,8 +29,8 @@ public class ContextSection extends StatelessSection {
 
 
     public ContextSection(Context appContext, SectionedRecyclerViewAdapter adapter,
-                          String contextName, List<AppDetails> contextApps, boolean initialExpanded) {
-    super(new SectionParameters.Builder(R.layout.allapps_app)
+                          String contextName, List<AppDetails> contextApps) {
+        super(new SectionParameters.Builder(R.layout.allapps_app)
                 .headerResourceId(R.layout.context_header)
                 .footerResourceId(R.layout.context_footer)
                 .build());
@@ -69,7 +68,7 @@ public class ContextSection extends StatelessSection {
 
         itemHolder.iconView.setImageDrawable(currentItem.getIcon());
         itemHolder.labelView.setText(currentItem.getLabel());
-        itemHolder.packageName = currentItem.getPackageName();
+        itemHolder.app = currentItem;
     }
 
     @Override
@@ -78,7 +77,7 @@ public class ContextSection extends StatelessSection {
     }
 
     @Override
-    public void onBindHeaderViewHolder(RecyclerView.ViewHolder holder){
+    public void onBindHeaderViewHolder(RecyclerView.ViewHolder holder) {
         HeaderViewHolder headerHolder = (HeaderViewHolder) holder;
 
         headerHolder.contextTitleView.setText(this.mContextName);

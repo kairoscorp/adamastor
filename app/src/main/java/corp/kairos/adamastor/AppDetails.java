@@ -2,8 +2,6 @@ package corp.kairos.adamastor;
 
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -11,7 +9,7 @@ import android.support.annotation.NonNull;
 
 import java.io.Serializable;
 
-public class AppDetails implements Comparable,Serializable{
+public class AppDetails implements Comparable,Serializable,Parcelable{
     private String label;
     private String packageName;
     private Drawable icon;
@@ -128,7 +126,7 @@ public class AppDetails implements Comparable,Serializable{
         dest.writeString(packageName);
     }
 
-    public static final Creator<AppDetails> CREATOR = new Creator<AppDetails>() {
+    public static final Parcelable.Creator<AppDetails> CREATOR = new Parcelable.Creator<AppDetails>() {
         @Override
         public AppDetails createFromParcel(Parcel in) {
             return new AppDetails(in);

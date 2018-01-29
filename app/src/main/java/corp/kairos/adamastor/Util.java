@@ -1,6 +1,8 @@
 package corp.kairos.adamastor;
 
+import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
+import android.graphics.drawable.Drawable;
 import android.util.Log;
 
 import java.util.ArrayList;
@@ -32,18 +34,18 @@ public class Util {
 
         // These loops just associate different apps with different contexts
         int n = 0;
-        for(List<String> appsList : apps){
+        for (List<String> appsList : apps) {
             List<AppDetails> appDetailsList = new ArrayList<>();
-            for(String p: appsList){
+            for (String p : appsList) {
                 try {
-                    ApplicationInfo ai = pm.getApplicationInfo(p,0);
+                    ApplicationInfo ai = pm.getApplicationInfo(p, 0);
 
                     String label = (String) pm.getApplicationLabel(ai);
                     String name = ai.packageName;
                     Drawable icon = pm.getApplicationIcon(ai);
                     boolean system = !isUserApp(ai);
-                    AppDetails app = new AppDetails(label, name, icon,system);
-                    appDetails.add(app);
+                    AppDetails app = new AppDetails(label, name, icon, system);
+                    appDetailsList.add(app);
                 } catch (PackageManager.NameNotFoundException e) {
                     Log.e(ActivityTAG, "App not found");
                     e.printStackTrace();
@@ -54,6 +56,7 @@ public class Util {
         }
         return staticContexts;
     }
+
     public static boolean isUserApp(ApplicationInfo ai) {
         int mask = ApplicationInfo.FLAG_SYSTEM | ApplicationInfo.FLAG_UPDATED_SYSTEM_APP;
         return (ai.flags & mask) == 0;

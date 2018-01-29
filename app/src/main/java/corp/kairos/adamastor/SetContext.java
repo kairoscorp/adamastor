@@ -1,9 +1,9 @@
 package corp.kairos.adamastor;
 
+import android.app.Fragment;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
-import android.app.Fragment;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -75,19 +75,22 @@ public class SetContext extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        getActivity().findViewById(R.id.frame_context).setOnClickListener(view -> {
+            nothingCLickListener(view);
+        });
         getActivity().getWindow().setNavigationBarColor(getResources().getColor(R.color.black_overlay));
         getActivity().getWindow().setStatusBarColor(getResources().getColor(R.color.black_overlay));
         CheckBox cWork = getActivity().findViewById(R.id.checkBox_Work);
         CheckBox cLeisure = getActivity().findViewById(R.id.checkBox_Leisure);
-        CheckBox cCommute =getActivity().findViewById(R.id.checkBox_Commute);
+        CheckBox cCommute = getActivity().findViewById(R.id.checkBox_Commute);
         Button cancel = getActivity().findViewById(R.id.cancel);
-        Settings s =Settings.getInstance(this.getActivity());
+        Settings s = Settings.getInstance(this.getActivity());
         UserContext work = s.getUserContext(getActivity().getResources().getString(R.string.work_name));
         UserContext leisure = s.getUserContext(getActivity().getResources().getString(R.string.leisure_name));
         UserContext commute = s.getUserContext(getActivity().getResources().getString(R.string.commute_name));
-        Boolean workIs =work.appExists(appDetail);
-        Boolean leisureIs =leisure.appExists(appDetail);
-        Boolean commuteIs =commute.appExists(appDetail);
+        Boolean workIs = work.appExists(appDetail);
+        Boolean leisureIs = leisure.appExists(appDetail);
+        Boolean commuteIs = commute.appExists(appDetail);
         cWork.setChecked(workIs);
         cLeisure.setChecked(leisureIs);
         cCommute.setChecked(commuteIs);
@@ -100,30 +103,28 @@ public class SetContext extends Fragment {
             ((ViewGroup) frame.getParent()).removeView(frame);
         });
         Button ok = getActivity().findViewById(R.id.ok);
-        ok.setOnClickListener(v2->{
-                    if(cWork.isChecked()){
+        ok.setOnClickListener(v2 -> {
+                    if (cWork.isChecked()) {
                         work.addApp(appDetail);
-                    }
-                    else {
+                    } else {
                         work.removeApp(appDetail);
                     }
-                    if(cLeisure.isChecked()){
+                    if (cLeisure.isChecked()) {
                         leisure.addApp(appDetail);
-                    }
-                    else {
+                    } else {
                         leisure.removeApp(appDetail);
                     }
-                     if(cCommute.isChecked()){
+                    if (cCommute.isChecked()) {
                         commute.addApp(appDetail);
-                    }  else {
-                         commute.removeApp(appDetail);
-                     }
-            s.setUserContext(work);
-            s.setUserContext(commute);
-            s.setUserContext(leisure);
-            s.saveContextSettings();
-            ((ViewGroup) frame.getParent()).removeView(frame);
-        }
+                    } else {
+                        commute.removeApp(appDetail);
+                    }
+                    s.setUserContext(work);
+                    s.setUserContext(commute);
+                    s.setUserContext(leisure);
+                    s.saveContextSettings();
+                    ((ViewGroup) frame.getParent()).removeView(frame);
+                }
         );
     }
 
@@ -140,7 +141,8 @@ public class SetContext extends Fragment {
 
     @Override
     public void onDetach() {
-        super.onDetach();;
+        super.onDetach();
+        ;
     }
 
     /**
@@ -155,6 +157,10 @@ public class SetContext extends Fragment {
      */
     public interface OnFragmentInteractionListener {
         void onFragmentInteraction(Uri uri);
+    }
+
+    public void nothingCLickListener(View v) {
+
     }
 
 }
