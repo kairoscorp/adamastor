@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+<<<<<<< HEAD
     android:fitsSystemWindows="true"
     tools:context="corp.kairos.adamastor.Statistics.StatisticsActivity">
 
@@ -32,6 +32,9 @@
 
         </android.support.design.widget.CollapsingToolbarLayout>
     </android.support.design.widget.AppBarLayout>
+=======
+    android:fitsSystemWindows="true">
+>>>>>>> 193bc52... Add fragment list apps view
 
     <include
         android:id="@+id/contexts_stats"
@@ -39,28 +42,16 @@
 
     <include
         android:id="@+id/applications_stats"
-        layout="@layout/statistics_apps" />
-
-
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/id_stats_swich_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/stats_button_margin"
-        app:layout_anchor="@id/app_bar"
-        app:layout_anchorGravity="bottom|end"
-        app:backgroundTint="@color/primaryDarkColor"
-        app:srcCompat="@drawable/ic_pie_chart" />
+        layout="@layout/statistics_applications" />
 
     <android.support.design.widget.FloatingActionButton
-        android:id="@+id/id_stats_refresh_button"
+        android:id="@+id/id_statistics_swap_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/stats_button_margin"
         app:backgroundTint="@color/secondaryColor"
         app:layout_anchor="@+id/contexts_stats"
         app:layout_anchorGravity="right|bottom"
-        app:srcCompat="@android:drawable/stat_notify_sync" />
-
+        app:srcCompat="@drawable/ic_pie_chart" />
 
 </android.support.design.widget.CoordinatorLayout>

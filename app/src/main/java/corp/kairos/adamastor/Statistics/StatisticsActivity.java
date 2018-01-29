@@ -1,59 +1,57 @@
 package corp.kairos.adamastor.Statistics;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
 import android.app.usage.UsageStatsManager;
 import android.content.Context;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
-import android.os.Bundle;
+import android.support.design.widget.TabItem;
+import android.support.design.widget.TabLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager;
+import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
+import android.view.ViewGroup;
+
 import android.widget.ListView;
+import android.widget.TextView;
 
-import com.github.mikephil.charting.charts.PieChart;
-import com.github.mikephil.charting.components.Description;
-import com.github.mikephil.charting.data.PieData;
-import com.github.mikephil.charting.data.PieDataSet;
-import com.github.mikephil.charting.data.PieEntry;
-import com.github.mikephil.charting.utils.ColorTemplate;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.TimeUnit;
 
 import corp.kairos.adamastor.Animation.AnimationCompatActivity;
 import corp.kairos.adamastor.AppDetails;
 import corp.kairos.adamastor.AppsManager.AppsManager;
-import corp.kairos.adamastor.Home.HomeActivity;
 import corp.kairos.adamastor.R;
+import corp.kairos.adamastor.Settings.Settings;
+import corp.kairos.adamastor.Statistics.StatisticsAppsMenuAdapter;
+import corp.kairos.adamastor.UserContext;
 
 public class StatisticsActivity extends AnimationCompatActivity {
 
-    private PackageManager packageManager;
 
-    private View mFromView;
-    private View mToView;
-    private PieChart mChart;
-    private ListView mList;
-    private FloatingActionButton mSwitch;
-    private FloatingActionButton mRefresh;
-    private int mShortAnimationDuration;
-    private boolean isShowingGraph = true;
-    private AppsManager appsManager;
-    // private int measure = 0; // 0 - HOURS | 1 - MINUTES | 2 - SECONDS | 3 - MILLISECONDS
-    private Measure measure = Measure.HOURS; // 0 - HOURS | 1 - MINUTES | 2 - SECONDS | 3 - MILLISECONDS
+    private SectionsPagerAdapter mSectionsPagerAdapter;
 
-    private static final String TAG = StatisticsActivity.class.getName();
+    private ViewPager mViewPager;
+
+    private static PackageManager packageManager;
+    private static AppsManager appsManager;
+    private static Settings settings;
+    private static UsageStatsManager usageStatsManager;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         this.packageManager = this.getPackageManager();
         this.appsManager = AppsManager.getInstance();
         
@@ -65,206 +63,148 @@ public class StatisticsActivity extends AnimationCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_contexts);
         setSupportActionBar(toolbar);
 
-        mChart = findViewById(R.id.stats_context);
-        mList = findViewById(R.id.stats_apps_list);
+        packageManager = this.getPackageManager();
+        appsManager = AppsManager.getInstance();
+        settings = Settings.getInstance(this);
+        usageStatsManager = (UsageStatsManager) getSystemService(Context.USAGE_STATS_SERVICE);
 
-        mToView = mChart;
-        mFromView = mList;
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
-        mSwitch = (FloatingActionButton) findViewById(R.id.id_stats_swich_button);
-        mRefresh = (FloatingActionButton) findViewById(R.id.id_stats_refresh_button);
+        // Create the adapter that will return a fragment for each of the three
+        // primary sections of the activity.
+        mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
-        // Initially hide the content view.
-        mToView.setVisibility(View.GONE);
+        // Set up the ViewPager with the sections adapter.
+        mViewPager = (ViewPager) findViewById(R.id.container);
+        mViewPager.setAdapter(mSectionsPagerAdapter);
 
-        // Retrieve and cache the system's default "short" animation time.
-        mShortAnimationDuration = getResources().getInteger(
-                android.R.integer.config_shortAnimTime);
+        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
 
-        mSwitch.setOnClickListener(view -> {
-            crossFade();
-        });
-        mRefresh.setOnClickListener(view -> {
-            loadAppsStatistics();
-            loadContextStatistics();
+        TextView homeTab = (TextView) LayoutInflater.from(this).inflate(R.layout.custom_tab, null);
+        homeTab.setText("Home"); //tab label txt
+        homeTab.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_work_white, 0, 0, 0);
+        tabLayout.getTabAt(0).setCustomView(homeTab);
 
-            Animation anim = AnimationUtils.loadAnimation(this, R.anim.fade_in);
+        TextView leisureTab = (TextView) LayoutInflater.from(this).inflate(R.layout.custom_tab, null);
+        leisureTab.setText("Leisure");
+        leisureTab.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_leisure_white, 0, 0, 0);
+        tabLayout.getTabAt(1).setCustomView(leisureTab);
 
-            mChart.animate();
-            mList.startAnimation(anim);
-        });
+        TextView commuteTab = (TextView) LayoutInflater.from(this).inflate(R.layout.custom_tab, null);
+        commuteTab.setText("Commute");
+        commuteTab.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_commute_white, 0, 0, 0);
+        tabLayout.getTabAt(2).setCustomView(commuteTab);
 
-        // Load Application Statistics View
-        loadAppsStatistics();
+        mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
+        tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mViewPager));
 
-        // Load Context Statistics View
-        loadContextStatistics();
+        FloatingActionButton swapButton =  findViewById(R.id.id_statistics_swap_button);
+        swapButton.setOnClickListener(view -> Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                .setAction("Action", null).show());
+
     }
 
-    private void loadAppsStatistics() {
-        Set<AppDetails> stats = this.appsManager.getAppsStatistics(packageManager, (UsageStatsManager) getSystemService(Context.USAGE_STATS_SERVICE));
 
-        // Load view
-        loadListView(stats);
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_statistics_activity, menu);
+        return true;
     }
 
-    private void loadContextStatistics() {
-        Map<String, Long> contextStats = this.appsManager.getContextStatistics();
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
 
-        // Load view
-        loadGraphView(contextStats);
-    }
-
-    private void crossFade() {
-        // Set the content view to 0% opacity but visible, so that it is visible
-        // (but fully transparent) during the animation.
-        mToView.setAlpha(0f);
-        mToView.setVisibility(View.VISIBLE);
-
-        // Animate the content view to 100% opacity, and clear any animation
-        // listener set on the view.
-        mToView.animate()
-                .alpha(1f)
-                .setDuration(mShortAnimationDuration)
-                .setListener(null);
-
-        // Animate the loading view to 0% opacity. After the animation ends,
-        // set its visibility to GONE as an optimization step (it won't
-        // participate in layout passes, etc.)
-        mFromView.animate()
-                .alpha(0f)
-                .setDuration(mShortAnimationDuration)
-                .setListener(new AnimatorListenerAdapter() {
-                    @Override
-                    public void onAnimationEnd(Animator animation) {
-                        mFromView.setVisibility(View.GONE);
-
-                        // Swap the views
-                        View temp = mToView;
-                        mToView = mFromView;
-                        mFromView = temp;
-                        if(isShowingGraph) {
-                            mSwitch.setImageResource(R.drawable.ic_list);
-                        } else {
-                            mSwitch.setImageResource(R.drawable.ic_pie_chart);
-                        }
-                        isShowingGraph = !isShowingGraph;
-                    }
-                });
-    }
-
-    private void loadListView(Set<AppDetails> appsStats){
-        StatisticsAppsMenuAdapter adapter = new StatisticsAppsMenuAdapter(this, appsStats);
-        mList.setAdapter(adapter);
-    }
-
-    private void loadGraphView(Map<String, Long> contextStats){
-        List<PieEntry> pieEntries = new ArrayList<>();
-        this.measure = Measure.HOURS;
-        long percentage, finalTotal = 0;
-        long timeInHours, timeInMinutes, timeInSeconds;
-        for (Map.Entry<String, Long> stat : contextStats.entrySet()) {
-            finalTotal += stat.getValue();
-            timeInHours = TimeUnit.MILLISECONDS.toHours(stat.getValue());
-            if(timeInHours < 1) {
-                timeInMinutes = TimeUnit.MILLISECONDS.toMinutes(stat.getValue());
-                measure = measure.max(Measure.MINUTES.id);
-                if(timeInMinutes < 1) {
-                    timeInSeconds = TimeUnit.MILLISECONDS.toSeconds(stat.getValue());
-                    measure = measure.max(Measure.SECONDS.id);
-                    if(timeInSeconds < 1) {
-                        measure = measure.max(Measure.MILLISECONDS.id);
-                    }
-                }
-            }
-        }
-        long value = 0;
-        for (Map.Entry<String, Long> stat : contextStats.entrySet()) {
-            value = measure.getValue(stat.getValue());
-            percentage = (stat.getValue() * 100) / finalTotal;
-            pieEntries.add(new PieEntry(value, stat.getKey() + " ("+percentage+"%)"));
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_settings) {
+            return true;
         }
 
-        PieDataSet dataSet = new PieDataSet(pieEntries, "");
-        dataSet.setColors(ColorTemplate.JOYFUL_COLORS);
-
-        // Data
-        PieData pieData = new PieData(dataSet);
-        pieData.setValueFormatter((value1, entry, dataSetIndex, viewPortHandler) -> Math.round(value1) + " " + measure.name);
-        pieData.setValueTextSize(12f);
-
-        Description description = new Description();
-        description.setText("Applications usage by context.");
-        mChart.setDescription(description);
-        mChart.setCenterText("Usage Context");
-
-        mChart.setEntryLabelColor(Color.DKGRAY);
-        mChart.setCenterTextColor(Color.BLACK);
-        mChart.setCenterTextSize(15f);
-        mChart.animateY(800);
-        mChart.setData(pieData);
-
-        // undo all highlights
-        mChart.highlightValues(null);
-        mChart.invalidate();
+        return super.onOptionsItemSelected(item);
     }
 
-    private enum Measure {
+    /**
+     * A placeholder fragment containing a simple view.
+     */
+    public static class PlaceholderFragment extends Fragment {
+        /**
+         * The fragment argument representing the section number for this
+         * fragment.
+         */
+        private static final String ARG_SECTION_NUMBER = "section_number";
 
-        HOURS, MINUTES, SECONDS, MILLISECONDS;
-
-        private int id;
-        private String name;
-
-        static {
-            HOURS.id = 0;
-            HOURS.name = "hours";
-
-            MINUTES.id = 1;
-            MINUTES.name = "minutes";
-
-            SECONDS.id = 2;
-            SECONDS.name = "seconds";
-
-            MILLISECONDS.id = 3;
-            MILLISECONDS.name = "milliseconds";
+        public PlaceholderFragment() {
         }
 
-        public long getValue(long value) {
-            switch (this.id) {
-                case 0:
-                    return TimeUnit.MILLISECONDS.toHours(value);
+        /**
+         * Returns a new instance of this fragment for the given section
+         * number.
+         */
+        public static PlaceholderFragment newInstance(int sectionNumber) {
+            PlaceholderFragment fragment = new PlaceholderFragment();
+            Bundle args = new Bundle();
+
+            switch (sectionNumber) {
                 case 1:
-                    return TimeUnit.MILLISECONDS.toMinutes(value);
+                    args.putString(ARG_SECTION_NUMBER, "Work");
+                    break;
+
                 case 2:
-                    return TimeUnit.MILLISECONDS.toSeconds(value);
-                case 3:
-                    return value;
+                    args.putString(ARG_SECTION_NUMBER, "Home");
+                    break;
 
                 default:
-                    return 0;
+                    args.putString(ARG_SECTION_NUMBER, "Commute");
+                    break;
             }
+            fragment.setArguments(args);
+            return fragment;
         }
 
-        private Measure getMeasure(int id) {
-            switch (id) {
-                case 0:
-                    return HOURS;
-                case 1:
-                    return MINUTES;
-                case 2:
-                    return SECONDS;
-                case 3:
-                    return MILLISECONDS;
+        @Override
+        public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                                 Bundle savedInstanceState) {
+            View rootView = inflater.inflate(R.layout.fragment_statistics_activity, container, false);
 
-                default:
-                    return HOURS;
-            }
+            UserContext context = settings.getUserContext(getArguments().getString(ARG_SECTION_NUMBER));
+            Set<AppDetails> stats = appsManager.getAppStatisticsByContext(context, packageManager, usageStatsManager);
+
+            StatisticsAppsMenuAdapter adapter = new StatisticsAppsMenuAdapter(this.getContext(), stats);
+
+            ListView list = rootView.findViewById(R.id.stats_apps_list);
+
+            list.setAdapter(adapter);
+
+            return rootView;
+        }
+    }
+
+    /**
+     * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
+     * one of the sections/tabs/pages.
+     */
+    public class SectionsPagerAdapter extends FragmentPagerAdapter {
+
+        public SectionsPagerAdapter(FragmentManager fm) {
+            super(fm);
         }
 
-        public Measure max(int id) {
-            return getMeasure(Math.max(this.id, id));
+        @Override
+        public Fragment getItem(int position) {
+            // getItem is called to instantiate the fragment for the given page.
+            // Return a PlaceholderFragment (defined as a static inner class below).
+            return PlaceholderFragment.newInstance(position + 1);
         }
 
+        @Override
+        public int getCount() {
+            // Show 3 total pages.
+            return 3;
+        }
     }
 }

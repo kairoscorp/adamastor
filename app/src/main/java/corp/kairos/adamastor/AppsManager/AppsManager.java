@@ -15,10 +15,12 @@ import java.util.TreeSet;
 
 import corp.kairos.adamastor.AppDetails;
 import corp.kairos.adamastor.Settings.Settings;
+import corp.kairos.adamastor.Statistics.StatisticsAppDetailsComparator;
 import corp.kairos.adamastor.Statistics.StatisticsManager.RealStatisticsDAO;
 import corp.kairos.adamastor.Statistics.StatisticsManager.StatisticsDAO;
 import corp.kairos.adamastor.Statistics.StatisticsManager.RandomStatisticsDAO;
 import corp.kairos.adamastor.Util;
+import corp.kairos.adamastor.UserContext;
 
 public class AppsManager {
     private Map<String, AppDetails> allAppsDetails;
@@ -84,12 +86,33 @@ public class AppsManager {
         this.force = false;
     }
 
+    public AppDetails getAppStatistics(String packageName, PackageManager packageManager, UsageStatsManager usm) {
+         Set<AppDetails> statistics = this.getAppsStatistics(packageManager, usm);
+         for(AppDetails app : statistics) {
+             if(app.getPackageName().equals(packageName)) {
+                 return app;
+             }
+         }
+         return null;
+    }
+
     public Set<AppDetails> getAppsStatistics(PackageManager packageManager, UsageStatsManager usm) {
         if(this.needToLoad()) {
             setupApps(packageManager);
         }
 
         return statisticsManager.getAppsStatistics(this.allAppsDetails, this.appsDetailsWithoutLauncher, usm);
+    }
+
+    public Set<AppDetails> getAppStatisticsByContext(UserContext userContext, PackageManager packageManager, UsageStatsManager usm) {
+        Set<AppDetails> result = new TreeSet<>();
+        Set<AppDetails> statistics = this.getAppsStatistics(packageManager, usm);
+        for(AppDetails app : statistics) {
+            if(userContext.appExists(app)) {
+                result.add(app);
+            }
+        }
+        return result;
     }
 
     public Map<String, Long> getContextStatistics() {

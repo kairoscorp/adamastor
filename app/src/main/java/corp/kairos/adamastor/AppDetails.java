@@ -93,16 +93,7 @@ public class AppDetails implements Comparable,Serializable,Parcelable{
         AppDetails that = (AppDetails) o;
 
         if (!label.equals(that.label)) return false;
-        if (!packageName.equals(that.packageName)) return false;
-        return usageStatistics != null ? usageStatistics.equals(that.usageStatistics) : that.usageStatistics == null;
-    }
-
-    @Override
-    public int hashCode() {
-        int result = label.hashCode();
-        result = 31 * result + packageName.hashCode();
-        result = 31 * result + (usageStatistics != null ? usageStatistics.hashCode() : 0);
-        return result;
+        return packageName.equals(that.packageName);
     }
 
     @Override

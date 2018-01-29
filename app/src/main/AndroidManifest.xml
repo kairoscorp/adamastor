@@ -155,6 +155,14 @@
             android:name=".Settings.KairosSettingsActivity"
             android:label="Kairos Settings"></activity>
         <activity android:name=".Settings.ScheduleSettingsActivity" />
+    
+        <activity
+            android:name=".ContextList.EditContextAppsActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+            
+        <activity
+            android:name=".StatisticsActivity2"
+            android:label="@string/title_activity_statistics2"
+            android:theme="@style/AppTheme.NoActionBar" />
     </application>
-
 </manifest>
