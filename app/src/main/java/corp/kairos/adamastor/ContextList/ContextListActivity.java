@@ -7,7 +7,6 @@ import android.view.ViewGroup;
 
 import org.apache.commons.lang3.ArrayUtils;
 
-import corp.kairos.adamastor.AllApps.AllAppsActivity;
 import corp.kairos.adamastor.Animation.AnimationActivity;
 import corp.kairos.adamastor.Home.HomeActivity;
 import corp.kairos.adamastor.R;
@@ -41,15 +40,15 @@ public class ContextListActivity extends AnimationActivity {
     private void setupViews() {
         mAdapter = new SectionedRecyclerViewAdapter();
 
-        for (UserContext aContext: userContexts) {
+        for (UserContext aContext : userContexts) {
             if (aContext.getContextApps().size() > 0)
                 mAdapter.addSection(
-                    new ContextSection(
-                        this,
-                        this.mAdapter,
-                        aContext.getContextName(),
-                        aContext.getContextApps()
-                    )
+                        new ContextSection(
+                                this,
+                                this.mAdapter,
+                                aContext.getContextName(),
+                                aContext.getContextApps()
+                        )
                 );
         }
 
@@ -58,7 +57,7 @@ public class ContextListActivity extends AnimationActivity {
         glm.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
             @Override
             public int getSpanSize(int position) {
-                switch(mAdapter.getSectionItemViewType(position)) {
+                switch (mAdapter.getSectionItemViewType(position)) {
                     case SectionedRecyclerViewAdapter.VIEW_TYPE_HEADER:
                         return NUMBER_OF_COLUMNS;
                     default:
@@ -82,9 +81,11 @@ public class ContextListActivity extends AnimationActivity {
             }
             if (findViewById(R.id.select_context) != null) {
                 ((ViewGroup) findViewById(R.id.select_context).getParent()).removeView(findViewById(R.id.select_context));
-                getWindow().setStatusBarColor(0);
-                getWindow().setNavigationBarColor(0);
+
             }
+            getWindow().setStatusBarColor(0);
+            getWindow().setNavigationBarColor(0);
+            getFragmentManager().popBackStack();
 
         } else {
             super.onBackPressed();

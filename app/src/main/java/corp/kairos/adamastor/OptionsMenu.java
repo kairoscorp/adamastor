@@ -132,9 +132,7 @@ public class OptionsMenu extends Fragment {
             FrameLayout contextSelect = new FrameLayout(getActivity().getApplicationContext());
             FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT);
             contextSelect.setOnClickListener(v1 -> {
-                ((ViewGroup) contextSelect.getParent()).removeView(contextSelect);
-                getActivity().getWindow().setStatusBarColor(0);
-                getActivity().getWindow().setNavigationBarColor(0);
+                getActivity().onBackPressed();
             });
             params.gravity = Gravity.CENTER;
             contextSelect.setLayoutParams(params);
@@ -143,7 +141,6 @@ public class OptionsMenu extends Fragment {
             parentView.addView(contextSelect);
             contextSelect.setId(R.id.select_context);
             contextSelect.setBackgroundColor(getResources().getColor(R.color.black_overlay));
-
             showSetContext(appDetail, R.id.select_context);
         });
 
