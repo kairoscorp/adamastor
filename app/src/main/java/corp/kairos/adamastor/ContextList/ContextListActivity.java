@@ -79,7 +79,6 @@ public class ContextListActivity extends AnimationActivity {
         mRecyclerView.setAdapter(mAdapter);
     }
 
-
     public void selectContextApps(View v) {
         startActivity(new Intent(getApplicationContext(),EditContextAppsActivity.class));
 
@@ -96,9 +95,11 @@ public class ContextListActivity extends AnimationActivity {
             }
             if (findViewById(R.id.select_context) != null) {
                 ((ViewGroup) findViewById(R.id.select_context).getParent()).removeView(findViewById(R.id.select_context));
-                getWindow().setStatusBarColor(0);
-                getWindow().setNavigationBarColor(0);
+
             }
+            getWindow().setStatusBarColor(0);
+            getWindow().setNavigationBarColor(0);
+            getFragmentManager().popBackStack();
 
         } else {
             super.onBackPressed();

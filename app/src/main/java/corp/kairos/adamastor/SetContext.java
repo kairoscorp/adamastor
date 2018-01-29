@@ -100,7 +100,10 @@ public class SetContext extends Fragment {
         cancel.setOnClickListener(v1 -> {
             getActivity().getWindow().setStatusBarColor(0);
             getActivity().getWindow().setNavigationBarColor(0);
-            ((ViewGroup) frame.getParent()).removeView(frame);
+            //((ViewGroup) frame.getParent()).removeView(frame);
+            getActivity().onBackPressed();
+            getFragmentManager().popBackStack();
+
         });
         Button ok = getActivity().findViewById(R.id.ok);
         ok.setOnClickListener(v2 -> {
@@ -123,7 +126,7 @@ public class SetContext extends Fragment {
                     s.setUserContext(commute);
                     s.setUserContext(leisure);
                     s.saveContextSettings();
-                    ((ViewGroup) frame.getParent()).removeView(frame);
+                    getFragmentManager().popBackStack();
                 }
         );
     }
