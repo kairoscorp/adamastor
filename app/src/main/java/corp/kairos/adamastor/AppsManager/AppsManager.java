@@ -16,6 +16,7 @@ import java.util.TreeSet;
 
 import corp.kairos.adamastor.AppDetails;
 import corp.kairos.adamastor.Settings.Settings;
+import corp.kairos.adamastor.Statistics.StatisticsAppDetailsComparator;
 import corp.kairos.adamastor.Statistics.StatisticsManager.RealStatisticsDAO;
 import corp.kairos.adamastor.Statistics.StatisticsManager.StatisticsDAO;
 import corp.kairos.adamastor.Statistics.StatisticsManager.RandomStatisticsDAO;
@@ -89,12 +90,12 @@ public class AppsManager {
         if(this.needToLoad()) {
             setupApps(packageManager);
         }
-        TreeSet<AppDetails> result = new TreeSet<>();
+        TreeSet<AppDetails> result = new TreeSet<>(new StatisticsAppDetailsComparator());
         result.addAll(statisticsManager.getAppsStatistics(this.allAppsDetails, this.appsDetailsWithoutLauncher, usm, withLaunchers));
         return result;
     }
 
-    public AppDetails getAppStatistics(String packageName, PackageManager packageManager, UsageStatsManager usm) {
+    public AppDetails getSingleAppStatistics(String packageName, PackageManager packageManager, UsageStatsManager usm) {
         Set<AppDetails> statistics = this.getAppsStatistics(packageManager, usm, true);
         for(AppDetails app : statistics) {
 

@@ -108,7 +108,7 @@ public class OptionsMenu extends Fragment {
         TextView lastUsed = getActivity().findViewById(R.id.lastUsed);
         TextView timeUsed = getActivity().findViewById(R.id.timeUsed);
 
-        AppDetails statsApp = appsManager.getAppStatistics(appDetail.getPackageName(), getActivity().getPackageManager(), (UsageStatsManager) getActivity().getSystemService(Context.USAGE_STATS_SERVICE));
+        AppDetails statsApp = appsManager.getSingleAppStatistics(appDetail.getPackageName(), getActivity().getPackageManager(), (UsageStatsManager) getActivity().getSystemService(Context.USAGE_STATS_SERVICE));
 
         if(statsApp != null) {
             Pair<Long, String> measure = Util.Measure.getValueAndMeasure(statsApp.getTotalUsedTime());
