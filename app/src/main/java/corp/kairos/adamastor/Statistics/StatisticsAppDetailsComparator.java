@@ -8,6 +8,6 @@ import corp.kairos.adamastor.AppDetails;
 public class StatisticsAppDetailsComparator implements Comparator<AppDetails>, Serializable{
     @Override
     public int compare(AppDetails o1, AppDetails o2) {
-        return o2.getTotalUsedTime().compareTo(o1.getTotalUsedTime());
+        return o2.getUsageStatistics().compareTo(o1.getUsageStatistics());
     }
 }
