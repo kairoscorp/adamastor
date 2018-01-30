@@ -1,9 +1,7 @@
 package corp.kairos.adamastor.Statistics.StatisticsManager;
 
 import android.app.usage.UsageStatsManager;
-import android.util.Log;
 
-import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
@@ -37,19 +35,16 @@ public class RandomStatisticsDAO implements StatisticsDAO {
     }
 
     @Override
-    public Collection<AppDetails> getAppsStatistics(Map<String, AppDetails> allAppsDetails, Map<String, AppDetails> appsDetailsWithoutLauncher, UsageStatsManager usm, boolean withLaunchers) {
+    public Set<AppDetails> getAppsStatistics(Map<String, AppDetails> allAppsDetails, Map<String, AppDetails> appsDetailsWithoutLauncher, UsageStatsManager usm) {
         Map<String, AppDetails> appStatsMap = new TreeMap<>();
-        long minLastUsed = TimeUnit.MINUTES.toMillis(0);
-        long maxLastUsed = TimeUnit.MINUTES.toMillis(2);
-        long minTotalUsed = TimeUnit.MINUTES.toMillis(0);
-        long maxTotalUsed = TimeUnit.MINUTES.toMillis(50);
-        Map<String, AppDetails> searchApps = withLaunchers ? allAppsDetails : appsDetailsWithoutLauncher;
-        for(AppDetails appDetails : searchApps.values()) {
-            long lastUsedTime = ThreadLocalRandom.current().nextLong(minLastUsed, maxLastUsed);
-            long totalUsedTime = ThreadLocalRandom.current().nextLong(minTotalUsed, maxTotalUsed);
+        long min = TimeUnit.MINUTES.toMillis(0);
+        long max = TimeUnit.MINUTES.toMillis(50);
+        long randomTime = 0;
+
+        for(AppDetails appDetails : allAppsDetails.values()) {
+            randomTime = ThreadLocalRandom.current().nextLong(min, max);
             AppDetails app = appDetails.clone();
-            app.setLastUsedTime(lastUsedTime);
-            app.setTotalUsedTime(totalUsedTime);
+            app.setUsageStatistics(randomTime);
             appStatsMap.put(app.getPackageName(), app);
         }
 

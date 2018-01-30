@@ -30,7 +30,7 @@ public class StatisticsAppsMenuAdapter extends ArrayAdapter {
         this.apps = apps;
         finalTotal = 0;
         for(AppDetails app : apps) {
-            finalTotal += app.getTotalUsedTime();
+            finalTotal += app.getUsageStatistics();
         }
     }
 
@@ -65,12 +65,12 @@ public class StatisticsAppsMenuAdapter extends ArrayAdapter {
         appLabel.setText(app.getLabel());
 
         ProgressBar appProgressBar = (ProgressBar)convertView.findViewById(R.id.app_stats_progress_bar);
-        long percentage = (app.getTotalUsedTime() * 100) / finalTotal;
+        long percentage = (app.getUsageStatistics() * 100) / finalTotal;
         appProgressBar.setProgress((int) percentage);
 
         TextView appTimeUsage = (TextView)convertView.findViewById(R.id.app_stats_usage_time);
 
-        appTimeUsage.setText(TimeUnit.MILLISECONDS.toMinutes(app.getTotalUsedTime()) + " minutes");
+        appTimeUsage.setText(TimeUnit.MILLISECONDS.toMinutes(app.getUsageStatistics()) + " minutes");
 
         TextView appPercentage = (TextView)convertView.findViewById(R.id.app_stats_percentage);
         String percentageText = percentage + " %";
