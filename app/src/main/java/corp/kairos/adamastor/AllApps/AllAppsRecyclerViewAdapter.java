@@ -18,38 +18,36 @@ import corp.kairos.adamastor.R;
 
 public class AllAppsRecyclerViewAdapter extends RecyclerView.Adapter<AppViewHolder> implements Filterable {
 
-    private Context appContext;
-    private List<AppDetails> appsToDisplay;
-    private final List<AppDetails> initialApps;
-    private final LayoutInflater inflater;
+    private Context mAppContext;
+    private List<AppDetails> mAppsToDisplay;
+    private final List<AppDetails> mInitialApps;
+    private final LayoutInflater mInflater;
 
     public AllAppsRecyclerViewAdapter(Context appContext, Set<AppDetails> appsToDisplay) {
-        this.appContext = appContext;
-        this.inflater = LayoutInflater.from(appContext);
-        List<AppDetails> apps = new ArrayList<>(appsToDisplay);
-        this.initialApps = apps;
-        this.appsToDisplay = apps;
+        this.mAppContext = appContext;
+        this.mInflater = LayoutInflater.from(appContext);
+        this.mInitialApps = new ArrayList<>(appsToDisplay);
+        this.mAppsToDisplay = new ArrayList<>(appsToDisplay);
     }
 
     @Override
     public AppViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = inflater.inflate(R.layout.allapps_app, parent, false);
-        return new AppViewHolder(view, this.appContext);
+        View view = mInflater.inflate(R.layout.allapps_app, parent, false);
+        return new AppViewHolder(view, this.mAppContext);
     }
 
     @Override
     public void onBindViewHolder(AppViewHolder holder, int position) {
-        AppViewHolder itemHolder = (AppViewHolder) holder;
-        AppDetails currentItem = this.appsToDisplay.get(position);
+        AppDetails currentItem = this.mAppsToDisplay.get(position);
 
-        itemHolder.iconView.setImageDrawable(currentItem.getIcon());
-        itemHolder.labelView.setText(currentItem.getLabel());
-        itemHolder.packageName = currentItem.getPackageName();
+        holder.iconView.setImageDrawable(currentItem.getIcon());
+        holder.labelView.setText(currentItem.getLabel());
+        holder.packageName = currentItem.getPackageName();
     }
 
     @Override
     public int getItemCount() {
-        return appsToDisplay.size();
+        return mAppsToDisplay.size();
     }
 
     @Override
@@ -59,14 +57,14 @@ public class AllAppsRecyclerViewAdapter extends RecyclerView.Adapter<AppViewHold
             protected FilterResults performFiltering(CharSequence charSequence) {
                 FilterResults results = new FilterResults();
 
-                //If there's nothing to filter on, return the original data for your list
+                // If there's nothing to filter on, return the original data for your list
                 if(charSequence == null || charSequence.length() == 0) {
-                    results.values = initialApps;
-                    results.count = initialApps.size();
+                    results.values = mInitialApps;
+                    results.count = mInitialApps.size();
                 } else {
                     List<AppDetails> filterResults = new ArrayList<>();
 
-                    for (AppDetails app : initialApps)
+                    for (AppDetails app : mInitialApps)
                         if (app.getLabel().toLowerCase().contains(charSequence.toString().toLowerCase()))
                             filterResults.add(app);
 
@@ -79,9 +77,57 @@ public class AllAppsRecyclerViewAdapter extends RecyclerView.Adapter<AppViewHold
 
             @Override
             protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
-                appsToDisplay = (List<AppDetails>) filterResults.values;
-                notifyDataSetChanged();
+                List<AppDetails> filteredApps = (List<AppDetails>) filterResults.values;
+                applyAndAnimateRemovals(filteredApps);
+                applyAndAnimateAdditions(filteredApps);
+                applyAndAnimateMovedItems(filteredApps);
             }
         };
     }
+
+    /**
+     * Animate Filter Logic
+     */
+    private void applyAndAnimateRemovals(List<AppDetails> newModels) {
+        for (int i = mAppsToDisplay.size() - 1; i >= 0; i--) {
+            final AppDetails model = mAppsToDisplay.get(i);
+            if (!newModels.contains(model)) {
+                removeItem(i);
+            }
+        }
+    }
+
+    private void applyAndAnimateAdditions(List<AppDetails> newModels) {
+        for (int i = 0, count = newModels.size(); i < count; i++) {
+            final AppDetails model = newModels.get(i);
+            if (!mAppsToDisplay.contains(model))
+                addItem(i, model);
+        }
+    }
+
+    private void applyAndAnimateMovedItems(List<AppDetails> newModels) {
+        for (int toPosition = newModels.size() - 1; toPosition >= 0; toPosition--) {
+            final AppDetails model = newModels.get(toPosition);
+            final int fromPosition = mAppsToDisplay.indexOf(model);
+            if (fromPosition >= 0 && fromPosition != toPosition)
+                moveItem(fromPosition, toPosition);
+        }
+    }
+
+    private void removeItem(int position) {
+        mAppsToDisplay.remove(position);
+        notifyItemRemoved(position);
+    }
+
+    private void addItem(int position, AppDetails model) {
+        mAppsToDisplay.add(position, model);
+        notifyItemInserted(position);
+    }
+
+    private void moveItem(int fromPosition, int toPosition) {
+        final AppDetails model = mAppsToDisplay.remove(fromPosition);
+        mAppsToDisplay.add(toPosition, model);
+        notifyItemMoved(fromPosition, toPosition);
+    }
+
 }

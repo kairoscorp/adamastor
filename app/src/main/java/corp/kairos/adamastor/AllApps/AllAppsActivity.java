@@ -24,32 +24,33 @@ public class AllAppsActivity extends AnimationActivity {
 
     private SearchView searchView;
     private RecyclerView allAppsMenuView;
+    private AllAppsRecyclerViewAdapter mAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_allapps);
 
-        this.searchView = findViewById(R.id.search_view);
-        this.allAppsMenuView = findViewById(R.id.allapps_grid);
+        searchView = findViewById(R.id.search_view);
+        allAppsMenuView = findViewById(R.id.allapps_grid);
 
         // Managers
-        this.appsManager = AppsManager.getInstance();
-        this.packageManager = getPackageManager();
+        appsManager = AppsManager.getInstance();
+        packageManager = getPackageManager();
 
-        this.allApps = this.appsManager.getAllApps(packageManager, true);
+        allApps = appsManager.getAllApps(packageManager, true);
 
         // Set animations
         super.setAnimation("up");
         super.setUpActivity(HomeActivity.class);
 
         // Setup views
-        this.allAppsMenuView = findViewById(R.id.allapps_grid);
-        this.allAppsMenuView.setLayoutManager(new GridLayoutManager(this, NUMBER_OF_COLUMNS));
-        AllAppsRecyclerViewAdapter adapter = new AllAppsRecyclerViewAdapter(AllAppsActivity.this, this.allApps);
-        this.allAppsMenuView.setAdapter(adapter);
+        allAppsMenuView = findViewById(R.id.allapps_grid);
+        allAppsMenuView.setLayoutManager(new GridLayoutManager(AllAppsActivity.this, NUMBER_OF_COLUMNS));
+        mAdapter = new AllAppsRecyclerViewAdapter(AllAppsActivity.this, allApps);
+        allAppsMenuView.setAdapter(mAdapter);
 
-        this.searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 return false;
@@ -57,10 +58,10 @@ public class AllAppsActivity extends AnimationActivity {
 
             @Override
             public boolean onQueryTextChange(String query) {
-                adapter.getFilter().filter(query);
+                mAdapter.getFilter().filter(query);
+                allAppsMenuView.scrollToPosition(0);
                 return false;
             }
         });
     }
-
 }

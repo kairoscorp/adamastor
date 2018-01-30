@@ -24,13 +24,11 @@
     </style>
 
     <style name="LauncherTheme.SearchView" parent="Widget.AppCompat.SearchView">
-        <item name="searchHintIcon">@null</item>
-        <item name="searchIcon">@null</item>
-
         <item name="android:color">@color/secondaryLightColor</item>
         <item name="android:textColor">@color/secondaryLightColor</item>
         <item name="android:textColorHint">@color/secondaryLightColor</item>
         <item name="android:editTextColor">@color/secondaryLightColor</item>
+        <item name="android:tint">@color/secondaryLightColor</item>
     </style>
 
     <style name="AppTheme.NoActionBar">

@@ -15,7 +15,6 @@
         android:queryHint="@string/search_hint"
         android:focusable="false"
         android:iconifiedByDefault="false"
-        android:searchIcon="@null"
         />
 
     <View
