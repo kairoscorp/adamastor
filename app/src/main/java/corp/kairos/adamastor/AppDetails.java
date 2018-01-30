@@ -13,14 +13,16 @@ public class AppDetails implements Comparable,Serializable,Parcelable{
     private String label;
     private String packageName;
     private Drawable icon;
-    private Long usageStatistics;
+    private Long totalUsedTime;
+    private Long lastUsedTime;
     private boolean system;
 
     public AppDetails(String label, String packageName, Drawable icon, boolean system) {
         this.label = label;
         this.packageName = packageName;
         this.icon = icon;
-        this.usageStatistics = 0L;
+        this.totalUsedTime = 0L;
+        this.lastUsedTime = 0L;
         this.system= system;
     }
 
@@ -28,7 +30,8 @@ public class AppDetails implements Comparable,Serializable,Parcelable{
         this.label = appDetail.getLabel();
         this.packageName = appDetail.getPackageName();
         this.icon = appDetail.getIcon();
-        this.usageStatistics = appDetail.getUsageStatistics();
+        this.totalUsedTime = appDetail.getTotalUsedTime();
+        this.lastUsedTime = appDetail.getLastUsedTime();
         this.system = appDetail.isSystem();
     }
 
@@ -43,6 +46,22 @@ public class AppDetails implements Comparable,Serializable,Parcelable{
     protected AppDetails(Parcel in) {
         this.label = in.readString();
         this.packageName = in.readString();
+    }
+
+    public Long getTotalUsedTime() {
+        return totalUsedTime;
+    }
+
+    public void setTotalUsedTime(Long totalUsedTime) {
+        this.totalUsedTime = totalUsedTime;
+    }
+
+    public Long getLastUsedTime() {
+        return lastUsedTime;
+    }
+
+    public void setLastUsedTime(Long lastUsedTime) {
+        this.lastUsedTime = lastUsedTime;
     }
 
     public String getLabel() {
@@ -69,14 +88,6 @@ public class AppDetails implements Comparable,Serializable,Parcelable{
         this.icon = icon;
     }
 
-    public Long getUsageStatistics() {
-        return usageStatistics;
-    }
-
-    public void setUsageStatistics(Long usageStatistics) {
-        this.usageStatistics = usageStatistics;
-    }
-
     public boolean isSystem() {
         return system;
     }
@@ -93,15 +104,13 @@ public class AppDetails implements Comparable,Serializable,Parcelable{
         AppDetails that = (AppDetails) o;
 
         if (!label.equals(that.label)) return false;
-        if (!packageName.equals(that.packageName)) return false;
-        return usageStatistics != null ? usageStatistics.equals(that.usageStatistics) : that.usageStatistics == null;
+        return packageName.equals(that.packageName);
     }
 
     @Override
     public int hashCode() {
         int result = label.hashCode();
         result = 31 * result + packageName.hashCode();
-        result = 31 * result + (usageStatistics != null ? usageStatistics.hashCode() : 0);
         return result;
     }
 

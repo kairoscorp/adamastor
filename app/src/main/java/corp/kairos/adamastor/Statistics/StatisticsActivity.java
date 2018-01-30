@@ -33,6 +33,7 @@ import corp.kairos.adamastor.AppDetails;
 import corp.kairos.adamastor.AppsManager.AppsManager;
 import corp.kairos.adamastor.Home.HomeActivity;
 import corp.kairos.adamastor.R;
+import corp.kairos.adamastor.Util;
 
 public class StatisticsActivity extends AnimationCompactActivity {
 
@@ -48,7 +49,7 @@ public class StatisticsActivity extends AnimationCompactActivity {
     private boolean isShowingGraph = true;
     private AppsManager appsManager;
     // private int measure = 0; // 0 - HOURS | 1 - MINUTES | 2 - SECONDS | 3 - MILLISECONDS
-    private Measure measure = Measure.HOURS; // 0 - HOURS | 1 - MINUTES | 2 - SECONDS | 3 - MILLISECONDS
+    private Util.Measure measure = Util.Measure.HOURS; // 0 - HOURS | 1 - MINUTES | 2 - SECONDS | 3 - MILLISECONDS
 
     private static final String TAG = StatisticsActivity.class.getName();
 
@@ -103,7 +104,7 @@ public class StatisticsActivity extends AnimationCompactActivity {
     }
 
     private void loadAppsStatistics() {
-        Set<AppDetails> stats = this.appsManager.getAppsStatistics(packageManager, (UsageStatsManager) getSystemService(Context.USAGE_STATS_SERVICE));
+        Set<AppDetails> stats = this.appsManager.getAppsStatistics(packageManager, (UsageStatsManager) getSystemService(Context.USAGE_STATS_SERVICE), false);
 
         // Load view
         loadListView(stats);
@@ -161,7 +162,7 @@ public class StatisticsActivity extends AnimationCompactActivity {
 
     private void loadGraphView(Map<String, Long> contextStats){
         List<PieEntry> pieEntries = new ArrayList<>();
-        this.measure = Measure.HOURS;
+        this.measure = Util.Measure.HOURS;
         long percentage, finalTotal = 0;
         long timeInHours, timeInMinutes, timeInSeconds;
         for (Map.Entry<String, Long> stat : contextStats.entrySet()) {
@@ -169,12 +170,12 @@ public class StatisticsActivity extends AnimationCompactActivity {
             timeInHours = TimeUnit.MILLISECONDS.toHours(stat.getValue());
             if(timeInHours < 1) {
                 timeInMinutes = TimeUnit.MILLISECONDS.toMinutes(stat.getValue());
-                measure = measure.max(Measure.MINUTES.id);
+                measure = measure.max(Util.Measure.MINUTES.id);
                 if(timeInMinutes < 1) {
                     timeInSeconds = TimeUnit.MILLISECONDS.toSeconds(stat.getValue());
-                    measure = measure.max(Measure.SECONDS.id);
+                    measure = measure.max(Util.Measure.SECONDS.id);
                     if(timeInSeconds < 1) {
-                        measure = measure.max(Measure.MILLISECONDS.id);
+                        measure = measure.max(Util.Measure.MILLISECONDS.id);
                     }
                 }
             }
@@ -210,62 +211,5 @@ public class StatisticsActivity extends AnimationCompactActivity {
         mChart.invalidate();
     }
 
-    private enum Measure {
 
-        HOURS, MINUTES, SECONDS, MILLISECONDS;
-
-        private int id;
-        private String name;
-
-        static {
-            HOURS.id = 0;
-            HOURS.name = "hours";
-
-            MINUTES.id = 1;
-            MINUTES.name = "minutes";
-
-            SECONDS.id = 2;
-            SECONDS.name = "seconds";
-
-            MILLISECONDS.id = 3;
-            MILLISECONDS.name = "milliseconds";
-        }
-
-        public long getValue(long value) {
-            switch (this.id) {
-                case 0:
-                    return TimeUnit.MILLISECONDS.toHours(value);
-                case 1:
-                    return TimeUnit.MILLISECONDS.toMinutes(value);
-                case 2:
-                    return TimeUnit.MILLISECONDS.toSeconds(value);
-                case 3:
-                    return value;
-
-                default:
-                    return 0;
-            }
-        }
-
-        private Measure getMeasure(int id) {
-            switch (id) {
-                case 0:
-                    return HOURS;
-                case 1:
-                    return MINUTES;
-                case 2:
-                    return SECONDS;
-                case 3:
-                    return MILLISECONDS;
-
-                default:
-                    return HOURS;
-            }
-        }
-
-        public Measure max(int id) {
-            return getMeasure(Math.max(this.id, id));
-        }
-
-    }
 }

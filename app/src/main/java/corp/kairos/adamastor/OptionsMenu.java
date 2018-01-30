@@ -2,6 +2,7 @@ package corp.kairos.adamastor;
 
 import android.app.Fragment;
 import android.app.FragmentTransaction;
+import android.app.usage.UsageStatsManager;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -10,6 +11,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.annotation.Nullable;
+import android.util.Pair;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,6 +20,13 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import java.text.DateFormatSymbols;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
+import corp.kairos.adamastor.AppsManager.AppsManager;
 
 
 /**
@@ -39,6 +48,8 @@ public class OptionsMenu extends Fragment {
     private OnFragmentInteractionListener mListener;
     private AppDetails appDetail;
     private View frameLayout;
+    private AppsManager appsManager;
+
 
     public OptionsMenu() {
         // Required empty public constructor
@@ -64,6 +75,7 @@ public class OptionsMenu extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        this.appsManager = AppsManager.getInstance();
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
@@ -95,8 +107,17 @@ public class OptionsMenu extends Fragment {
         Button context = getActivity().findViewById(R.id.set_context_button);
         TextView lastUsed = getActivity().findViewById(R.id.lastUsed);
         TextView timeUsed = getActivity().findViewById(R.id.timeUsed);
-        //lastUsed.setText();
-        //timeUsed.setText();
+
+        AppDetails statsApp = appsManager.getSingleAppStatistics(appDetail.getPackageName(), getActivity().getPackageManager(), (UsageStatsManager) getActivity().getSystemService(Context.USAGE_STATS_SERVICE));
+
+        if(statsApp != null) {
+            Pair<Long, String> measure = Util.Measure.getValueAndMeasure(statsApp.getTotalUsedTime());
+            SimpleDateFormat dateFormat =
+                    new SimpleDateFormat("dd/MM/yyyy hh'h'mm");
+            lastUsed.setText("Last Used: "+dateFormat.format(new Date(System.currentTimeMillis() - statsApp.getLastUsedTime())));
+            timeUsed.setText("Time Used: " + measure.first + " " + measure.second);
+        }
+
         getActivity().getWindow().setNavigationBarColor(getResources().getColor(R.color.black_overlay));
         getActivity().getWindow().setStatusBarColor(getResources().getColor(R.color.black_overlay));
         iv.setBackgroundColor(getResources().getColor(R.color.black_overlay));
@@ -185,6 +206,4 @@ public class OptionsMenu extends Fragment {
         transaction.commit();
 
     }
-
-
 }
