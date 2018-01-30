@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.drawable.Drawable;
+import android.util.Log;
 
 import java.util.List;
 import java.util.Map;
@@ -15,6 +16,7 @@ import java.util.TreeSet;
 
 import corp.kairos.adamastor.AppDetails;
 import corp.kairos.adamastor.Settings.Settings;
+import corp.kairos.adamastor.Statistics.StatisticsAppDetailsComparator;
 import corp.kairos.adamastor.Statistics.StatisticsManager.RealStatisticsDAO;
 import corp.kairos.adamastor.Statistics.StatisticsManager.StatisticsDAO;
 import corp.kairos.adamastor.Statistics.StatisticsManager.RandomStatisticsDAO;
@@ -84,12 +86,24 @@ public class AppsManager {
         this.force = false;
     }
 
-    public Set<AppDetails> getAppsStatistics(PackageManager packageManager, UsageStatsManager usm) {
+    public Set<AppDetails> getAppsStatistics(PackageManager packageManager, UsageStatsManager usm, boolean withLaunchers) {
         if(this.needToLoad()) {
             setupApps(packageManager);
         }
+        TreeSet<AppDetails> result = new TreeSet<>(new StatisticsAppDetailsComparator());
+        result.addAll(statisticsManager.getAppsStatistics(this.allAppsDetails, this.appsDetailsWithoutLauncher, usm, withLaunchers));
+        return result;
+    }
 
-        return statisticsManager.getAppsStatistics(this.allAppsDetails, this.appsDetailsWithoutLauncher, usm);
+    public AppDetails getSingleAppStatistics(String packageName, PackageManager packageManager, UsageStatsManager usm) {
+        Set<AppDetails> statistics = this.getAppsStatistics(packageManager, usm, true);
+        for(AppDetails app : statistics) {
+
+            if(app.getPackageName().equals(packageName)) {
+                return app;
+            }
+        }
+        return null;
     }
 
     public Map<String, Long> getContextStatistics() {
