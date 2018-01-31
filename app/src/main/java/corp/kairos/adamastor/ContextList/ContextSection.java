@@ -28,11 +28,11 @@ public class ContextSection extends StatelessSection {
     private SectionedRecyclerViewAdapter mAdapter;
     private String contextName;
     private List<AppDetails> contextApps;
-    private boolean isExpanded = INITIAL_EXPANDED_STATE;
+    private boolean isExpanded;
 
 
     public ContextSection(Context appContext, SectionedRecyclerViewAdapter adapter,
-                          String contextName, List<AppDetails> contextApps) {
+                          String contextName, List<AppDetails> contextApps, boolean initialExpanded) {
     super(new SectionParameters.Builder(R.layout.allapps_app)
                 .headerResourceId(R.layout.context_header)
                 .build());
@@ -40,6 +40,7 @@ public class ContextSection extends StatelessSection {
         this.mAdapter = adapter;
         this.contextName = contextName;
         this.contextApps = contextApps;
+        this.isExpanded = initialExpanded;
     }
 
     @Override

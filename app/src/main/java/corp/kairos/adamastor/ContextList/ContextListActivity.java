@@ -48,15 +48,18 @@ public class ContextListActivity extends AnimationActivity {
 
     private void setupViews() {
         mAdapter = new SectionedRecyclerViewAdapter();
-
-        for (UserContext aContext: userContexts) {
+        // TODO: Reorder contexts by active first
+        // TODO: Reorder apps by most relevant first
+        for (int i = 0; i < userContexts.length; i++) {
+            UserContext aContext = userContexts[i];
             if (aContext.getContextApps().size() > 0)
                 mAdapter.addSection(
                     new ContextSection(
                         this,
                         this.mAdapter,
                         aContext.getContextName(),
-                        aContext.getContextApps()
+                        aContext.getContextApps(),
+                        (i == 0 || i == userContexts.length-1)
                     )
                 );
         }
