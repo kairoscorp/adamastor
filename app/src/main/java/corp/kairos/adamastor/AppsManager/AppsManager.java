@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.drawable.Drawable;
+import android.util.Log;
 
 import java.util.List;
 import java.util.Map;
@@ -15,6 +16,7 @@ import java.util.TreeSet;
 
 import corp.kairos.adamastor.AppDetails;
 import corp.kairos.adamastor.Settings.Settings;
+import corp.kairos.adamastor.Statistics.StatisticsActivity;
 import corp.kairos.adamastor.Statistics.StatisticsAppDetailsComparator;
 import corp.kairos.adamastor.Statistics.StatisticsManager.RealStatisticsDAO;
 import corp.kairos.adamastor.Statistics.StatisticsManager.StatisticsDAO;
@@ -34,7 +36,7 @@ public class AppsManager {
     private static final String TAG = AppsManager.class.getName();
 
     private AppsManager(){
-        this.statisticsManager = new RandomStatisticsDAO();
+        this.statisticsManager = new RealStatisticsDAO();
         this.allAppsDetails = new TreeMap<>();
         this.appsDetailsWithoutLauncher = new TreeMap<>();
         this.force = true;
@@ -85,18 +87,8 @@ public class AppsManager {
 
         this.force = false;
     }
-
-    public AppDetails getAppStatistics(String packageName, PackageManager packageManager, UsageStatsManager usm) {
-         Set<AppDetails> statistics = this.getAppsStatistics(packageManager, usm);
-         for(AppDetails app : statistics) {
-             if(app.getPackageName().equals(packageName)) {
-                 return app;
-             }
-         }
-         return null;
-    }
-
-    public Set<AppDetails> getAppsStatistics(PackageManager packageManager, UsageStatsManager usm) {
+    
+    public Map<String, AppDetails> getAppsStatistics(PackageManager packageManager, UsageStatsManager usm) {
         if(this.needToLoad()) {
             setupApps(packageManager);
         }
@@ -105,11 +97,11 @@ public class AppsManager {
     }
 
     public Set<AppDetails> getAppStatisticsByContext(UserContext userContext, PackageManager packageManager, UsageStatsManager usm) {
-        Set<AppDetails> result = new TreeSet<>();
-        Set<AppDetails> statistics = this.getAppsStatistics(packageManager, usm);
-        for(AppDetails app : statistics) {
-            if(userContext.appExists(app)) {
-                result.add(app);
+        Set<AppDetails> result = new TreeSet<>(new StatisticsAppDetailsComparator());
+        Map<String, AppDetails> statistics = this.getAppsStatistics(packageManager, usm);
+        for(AppDetails app : userContext.getContextApps()) {
+            if(statistics.containsKey(app.getPackageName())) {
+                result.add(statistics.get(app.getPackageName()));
             }
         }
         return result;

@@ -57,9 +57,6 @@ public class RandomStatisticsDAO implements StatisticsDAO {
             app.setUsageStatistics(randomTime);
             appStatsMap.put(app.getPackageName(), app);
         }
-
-        Set<AppDetails> resultSet = new TreeSet<>(new StatisticsAppDetailsComparator());
-        resultSet.addAll(appStatsMap.values());
-        return resultSet;
+        return appStatsMap;
     }
 }

@@ -2,6 +2,7 @@ package corp.kairos.adamastor.Statistics.StatisticsManager;
 
 import android.app.usage.UsageStats;
 import android.app.usage.UsageStatsManager;
+import android.util.Log;
 
 import java.util.List;
 import java.util.Map;
@@ -62,8 +63,6 @@ public class RealStatisticsDAO implements StatisticsDAO {
             }
         }
 
-        Set<AppDetails> resultSet = new TreeSet<>(new StatisticsAppDetailsComparator());
-        resultSet.addAll(appStatsMap.values());
-        return resultSet;
+        return appStatsMap;
     }
 }

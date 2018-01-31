@@ -15,23 +15,23 @@ import java.util.concurrent.TimeUnit;
 
 import corp.kairos.adamastor.AppDetails;
 import corp.kairos.adamastor.R;
+import corp.kairos.adamastor.Util;
 
 import static corp.kairos.adamastor.Util.getObjectByIndex;
 
 
 public class StatisticsAppsMenuAdapter extends ArrayAdapter {
+    private final Util.Measure measure;
     private Context context;
     private Set<AppDetails> apps;
     private long finalTotal;
 
-    public StatisticsAppsMenuAdapter(Context context, Set<AppDetails> apps) {
+    public StatisticsAppsMenuAdapter(Context context, Set<AppDetails> apps, Util.Measure measure) {
         super(context, R.layout.activity_allapps);
         this.context = context;
         this.apps = apps;
-        finalTotal = 0;
-        for(AppDetails app : apps) {
-            finalTotal += app.getUsageStatistics();
-        }
+        this.finalTotal = apps.iterator().hasNext() ? apps.iterator().next().getUsageStatistics() : 0L;
+        this.measure = measure;
     }
 
     @Override
@@ -70,7 +70,7 @@ public class StatisticsAppsMenuAdapter extends ArrayAdapter {
 
         TextView appTimeUsage = (TextView)convertView.findViewById(R.id.app_statistcs_time);
 
-        appTimeUsage.setText(TimeUnit.MILLISECONDS.toMinutes(app.getUsageStatistics()) + " minutes");
+        appTimeUsage.setText(measure.getValue(app.getUsageStatistics()) + " " + measure.getName());
 
         return convertView;
     }
