@@ -37,7 +37,7 @@ public class RealStatisticsDAO implements StatisticsDAO {
 
 
     @Override
-    public Set<AppDetails> getAppsStatistics(Map<String, AppDetails> allAppsDetails, Map<String, AppDetails> appsDetailsWithoutLauncher, UsageStatsManager usm) {
+    public Map<String, AppDetails> getAppsStatistics(Map<String, AppDetails> allAppsDetails, UsageStatsManager usm) {
         Map<String, AppDetails> appStatsMap = new TreeMap<>();
         long time = System.currentTimeMillis();
         List<UsageStats> appList = usm.queryUsageStats(UsageStatsManager.INTERVAL_DAILY,  time - 10000000, time);
@@ -50,7 +50,7 @@ public class RealStatisticsDAO implements StatisticsDAO {
                 if(allAppsDetails.containsKey(appName)) {
                     AppDetails appDetails = allAppsDetails.get(appName);
                     appDetails.setUsageStatistics(appTotalTime);
-                    if(appTotalTime > 0 && appsDetailsWithoutLauncher.containsKey(appName)) {
+                    if(appTotalTime > 0) {
                         if(appStatsMap.containsKey(appName)) {
                             appDetails.setUsageStatistics(appTotalTime + appStatsMap.get(appName).getUsageStatistics());
                         }

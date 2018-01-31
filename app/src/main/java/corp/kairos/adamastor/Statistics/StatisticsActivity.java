@@ -87,6 +87,7 @@ public class StatisticsActivity extends AnimationCompatActivity {
         packageManager = this.getPackageManager();
         appsManager = AppsManager.getInstance();
         settings = Settings.getInstance(this);
+        setContentView(R.layout.statistics_activity);
 
         // Set animations
         super.setAnimation("right");
@@ -112,6 +113,15 @@ public class StatisticsActivity extends AnimationCompatActivity {
         mSwitch.setOnClickListener(view -> {
             crossFade();
         });
+    }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+
+        packageManager = this.getPackageManager();
+        appsManager = AppsManager.getInstance();
+        settings = Settings.getInstance(this);
 
         // Load Application Statistics View
         loadAppsStatistics();
@@ -129,23 +139,6 @@ public class StatisticsActivity extends AnimationCompatActivity {
         // Set up the ViewPager with the sections adapter.
         mViewPager = (ViewPager) findViewById(R.id.stats_applications);
         mViewPager.setAdapter(mSectionsPagerAdapter);
-
-        /*
-        TextView homeTab = (TextView) LayoutInflater.from(this).inflate(R.layout.custom_tab, null);
-        homeTab.setText("Home"); //tab label txt
-        homeTab.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_work_white, 0, 0, 0);
-        tabLayout.getTabAt(0).setCustomView(homeTab);
-
-        TextView leisureTab = (TextView) LayoutInflater.from(this).inflate(R.layout.custom_tab, null);
-        leisureTab.setText("Leisure");
-        leisureTab.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_leisure_white, 0, 0, 0);
-        tabLayout.getTabAt(1).setCustomView(leisureTab);
-
-        TextView commuteTab = (TextView) LayoutInflater.from(this).inflate(R.layout.custom_tab, null);
-        commuteTab.setText("Commute");
-        commuteTab.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_commute_white, 0, 0, 0);
-        tabLayout.getTabAt(2).setCustomView(commuteTab);
-        */
 
         mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mViewPager));
@@ -187,6 +180,7 @@ public class StatisticsActivity extends AnimationCompatActivity {
         chart.setCenterText("");
         chart.setData(pieData);
         LinearLayout customLegend = findViewById(R.id.legend_list);
+        customLegend.removeAllViews();
         for(LegendEntry l : chart.getLegend().getEntries()) {
             LayoutInflater vi = (LayoutInflater) getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             View v = vi.inflate(R.layout.custom_legend, null);
@@ -336,24 +330,8 @@ public class StatisticsActivity extends AnimationCompatActivity {
 
             UserContext context = settings.getUserContext(getArguments().getString(ARG_SECTION_NUMBER));
             Set<AppDetails> stats = appsManager.getAppStatisticsByContext(context, packageManager, (UsageStatsManager) getActivity().getSystemService(Context.USAGE_STATS_SERVICE));
-            long timeInHours, timeInMinutes, timeInSeconds;
-            Util.Measure measure = Util.Measure.HOURS;
-            for(AppDetails app : stats) {
-                timeInHours = TimeUnit.MILLISECONDS.toHours(app.getUsageStatistics());
-                if(timeInHours < 1) {
-                    timeInMinutes = TimeUnit.MILLISECONDS.toMinutes(app.getUsageStatistics());
-                    measure = measure.max(Util.Measure.MINUTES.getId());
-                    if(timeInMinutes < 1) {
-                        timeInSeconds = TimeUnit.MILLISECONDS.toSeconds(app.getUsageStatistics());
-                        measure = measure.max(Util.Measure.SECONDS.getId());
-                        if(timeInSeconds < 1) {
-                            measure = measure.max(Util.Measure.MILLISECONDS.getId());
-                        }
-                    }
-                }
-            }
 
-            StatisticsAppsMenuAdapter adapter = new StatisticsAppsMenuAdapter(this.getContext(), stats, measure);
+            StatisticsAppsMenuAdapter adapter = new StatisticsAppsMenuAdapter(this.getContext(), stats);
 
             ListView list = rootView.findViewById(R.id.stats_apps_list);
 

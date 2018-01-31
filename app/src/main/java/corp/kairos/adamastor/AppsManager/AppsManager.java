@@ -88,23 +88,43 @@ public class AppsManager {
         this.force = false;
     }
     
-    public Map<String, AppDetails> getAppsStatistics(PackageManager packageManager, UsageStatsManager usm) {
+    public Map<String, AppDetails> getAppsStatistics(PackageManager packageManager, UsageStatsManager usm, Boolean withLaunchers) {
         if(this.needToLoad()) {
             setupApps(packageManager);
         }
-
-        return statisticsManager.getAppsStatistics(this.allAppsDetails, this.appsDetailsWithoutLauncher, usm);
+        Map<String, AppDetails> statistics = statisticsManager.getAppsStatistics(this.allAppsDetails, usm);
+        if(! withLaunchers) {
+            Map<String, AppDetails> result = new TreeMap<>();
+            for(Map.Entry<String, AppDetails> app : statistics.entrySet()) {
+                if(this.appsDetailsWithoutLauncher.containsKey(app.getKey())) {
+                    result.put(app.getKey(), app.getValue());
+                }
+            }
+            return result;
+        }
+        return statistics;
     }
 
     public Set<AppDetails> getAppStatisticsByContext(UserContext userContext, PackageManager packageManager, UsageStatsManager usm) {
         Set<AppDetails> result = new TreeSet<>(new StatisticsAppDetailsComparator());
-        Map<String, AppDetails> statistics = this.getAppsStatistics(packageManager, usm);
+        Map<String, AppDetails> statistics = this.getAppsStatistics(packageManager, usm, false);
         for(AppDetails app : userContext.getContextApps()) {
             if(statistics.containsKey(app.getPackageName())) {
                 result.add(statistics.get(app.getPackageName()));
             }
         }
         return result;
+    }
+
+    public AppDetails getAppStatisticsDetails(String packageName, UserContext userContext, PackageManager packageManager, UsageStatsManager usm) {
+        Map<String, AppDetails> statistics = this.getAppsStatistics(packageManager, usm, true);
+        if(statistics.containsKey(packageName)) {
+            return statistics.get(packageName);
+        } else {
+            AppDetails app = this.allAppsDetails.get(packageName);
+            app.setUsageStatistics(0L);
+            return app;
+        }
     }
 
     public Map<String, Long> getContextStatistics() {

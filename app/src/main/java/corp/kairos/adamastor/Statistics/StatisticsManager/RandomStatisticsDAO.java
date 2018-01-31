@@ -45,7 +45,7 @@ public class RandomStatisticsDAO implements StatisticsDAO {
     }
 
     @Override
-    public Set<AppDetails> getAppsStatistics(Map<String, AppDetails> allAppsDetails, Map<String, AppDetails> appsDetailsWithoutLauncher, UsageStatsManager usm) {
+    public Map<String, AppDetails> getAppsStatistics(Map<String, AppDetails> allAppsDetails, UsageStatsManager usm) {
         Map<String, AppDetails> appStatsMap = new TreeMap<>();
         long min = TimeUnit.MINUTES.toMillis(0);
         long max = TimeUnit.MINUTES.toMillis(50);

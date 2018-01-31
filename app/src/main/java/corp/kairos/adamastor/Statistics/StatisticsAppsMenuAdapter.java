@@ -21,17 +21,15 @@ import static corp.kairos.adamastor.Util.getObjectByIndex;
 
 
 public class StatisticsAppsMenuAdapter extends ArrayAdapter {
-    private final Util.Measure measure;
     private Context context;
     private Set<AppDetails> apps;
     private long finalTotal;
 
-    public StatisticsAppsMenuAdapter(Context context, Set<AppDetails> apps, Util.Measure measure) {
+    public StatisticsAppsMenuAdapter(Context context, Set<AppDetails> apps) {
         super(context, R.layout.activity_allapps);
         this.context = context;
         this.apps = apps;
         this.finalTotal = apps.iterator().hasNext() ? apps.iterator().next().getUsageStatistics() : 0L;
-        this.measure = measure;
     }
 
     @Override
@@ -70,7 +68,22 @@ public class StatisticsAppsMenuAdapter extends ArrayAdapter {
 
         TextView appTimeUsage = (TextView)convertView.findViewById(R.id.app_statistcs_time);
 
-        appTimeUsage.setText(measure.getValue(app.getUsageStatistics()) + " " + measure.getName());
+        String measure = "hours";
+        long time = TimeUnit.MILLISECONDS.toHours(app.getUsageStatistics());
+        if(time < 1) {
+            time = TimeUnit.MILLISECONDS.toMinutes(app.getUsageStatistics());
+            measure = "minutes";
+            if(time < 1) {
+                time = TimeUnit.MILLISECONDS.toSeconds(app.getUsageStatistics());
+                measure = "seconds";
+                if(time < 1) {
+                    time = app.getUsageStatistics();
+                    measure = "milliseconds";
+                }
+            }
+        }
+
+        appTimeUsage.setText(time + " " + measure);
 
         return convertView;
     }
