@@ -88,13 +88,13 @@ public class AppsManager {
         this.force = false;
     }
     
-    public Map<String, AppDetails> getAppsStatistics(PackageManager packageManager, UsageStatsManager usm, Boolean withLaunchers) {
+    public Map<String, AppDetails> getAppsStatistics(PackageManager packageManager, UsageStatsManager usm, Boolean filtered) {
         if(this.needToLoad()) {
             setupApps(packageManager);
         }
         Map<String, AppDetails> statistics = statisticsManager.getAppsStatistics(this.allAppsDetails, usm);
-        if(! withLaunchers) {
-            Map<String, AppDetails> result = new TreeMap<>();
+        Map<String, AppDetails> result = new TreeMap<>();
+        if(filtered) {
             for(Map.Entry<String, AppDetails> app : statistics.entrySet()) {
                 if(this.appsDetailsWithoutLauncher.containsKey(app.getKey())) {
                     result.put(app.getKey(), app.getValue());
@@ -107,7 +107,7 @@ public class AppsManager {
 
     public Set<AppDetails> getAppStatisticsByContext(UserContext userContext, PackageManager packageManager, UsageStatsManager usm) {
         Set<AppDetails> result = new TreeSet<>(new StatisticsAppDetailsComparator());
-        Map<String, AppDetails> statistics = this.getAppsStatistics(packageManager, usm, false);
+        Map<String, AppDetails> statistics = this.getAppsStatistics(packageManager, usm, true);
         for(AppDetails app : userContext.getContextApps()) {
             if(statistics.containsKey(app.getPackageName())) {
                 result.add(statistics.get(app.getPackageName()));
@@ -117,7 +117,7 @@ public class AppsManager {
     }
 
     public AppDetails getAppStatisticsDetails(String packageName, UserContext userContext, PackageManager packageManager, UsageStatsManager usm) {
-        Map<String, AppDetails> statistics = this.getAppsStatistics(packageManager, usm, true);
+        Map<String, AppDetails> statistics = this.getAppsStatistics(packageManager, usm, false);
         if(statistics.containsKey(packageName)) {
             return statistics.get(packageName);
         } else {
