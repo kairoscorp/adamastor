@@ -46,7 +46,7 @@ public class OnBoardingTest {
      android.os.Process.myUid(), this.getPackageName());
      * throws nullpointerexception
      */
-    /*@Test
+    @Test
     public void onBoardingSpecialPermissionActivityTest() {
         this.onBoarding = Robolectric.setupActivity(Onboard2SpecialPermissionActivity.class);
         Button okButton = this.onBoarding.findViewById(R.id.okButtonOnBoard2);
@@ -54,7 +54,7 @@ public class OnBoardingTest {
 
         ShadowApplication application = shadowOf(RuntimeEnvironment.application);
         assertThat("Next activity has started", application.getNextStartedActivity(), is(notNullValue()));
-    }*/
+    }
 
     /**
      * Test will pass

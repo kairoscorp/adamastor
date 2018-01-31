@@ -25,11 +25,16 @@ public class Onboard2SpecialPermissionActivity extends AppCompatActivity{
     protected void onResume() {
         super.onResume();
         AppOpsManager appOps = (AppOpsManager) this.getSystemService(this.APP_OPS_SERVICE);
-        int mode = appOps.checkOpNoThrow(AppOpsManager.OPSTR_GET_USAGE_STATS,
-                android.os.Process.myUid(), this.getPackageName());
-        if(mode == AppOpsManager.MODE_ALLOWED) {
-            goNext();
+        try {
+            int mode = appOps.checkOpNoThrow(AppOpsManager.OPSTR_GET_USAGE_STATS,
+                    android.os.Process.myUid(), this.getPackageName());
+            if(mode == AppOpsManager.MODE_ALLOWED) {
+                goNext();
+            }
+        }catch(Exception e) {
+            Log.e("OnBoard2", e.toString());
         }
+
     }
 
     public void showUsageSettings(View v){
