@@ -2,7 +2,6 @@ package corp.kairos.adamastor.ContextList;
 
 import android.content.Context;
 import android.content.Intent;
-import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
@@ -22,12 +21,6 @@ public class AppViewHolder extends RecyclerView.ViewHolder {
         rootView = itemView;
         iconView = (ImageView) itemView.findViewById(R.id.app_image);
         labelView = (TextView) itemView.findViewById(R.id.app_text);
-        // TODO: Make design default like this
-        labelView.setTextColor(
-                ResourcesCompat.getColor(
-                        appContext.getResources(), R.color.secondaryTextColor, null
-                ));
-        labelView.setTextSize(18);
 
         rootView.setOnClickListener(v -> {
             Intent i = appContext.getPackageManager().getLaunchIntentForPackage(this.packageName);

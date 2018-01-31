@@ -25,7 +25,7 @@ public class StatisticsAppsMenuAdapter extends ArrayAdapter {
     private long finalTotal;
 
     public StatisticsAppsMenuAdapter(Context context, Set<AppDetails> apps) {
-        super(context, R.layout.allapps_menu);
+        super(context, R.layout.activity_allapps);
         this.context = context;
         this.apps = apps;
         finalTotal = 0;
