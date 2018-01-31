@@ -96,7 +96,6 @@ public class Onboard4ContextAppsActivity extends AppCompatActivity {
         } else {
             Intent i = new Intent(this,Onboard5ScheduleActivity.class);
             startActivity(i);
-            finish();
         }
     }
 

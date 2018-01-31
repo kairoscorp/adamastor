@@ -1,5 +1,6 @@
 package corp.kairos.adamastor.Onboarding;
 
+import android.app.AppOpsManager;
 import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
@@ -58,7 +59,19 @@ public class Onboard3LocationActivity extends AppCompatActivity{
         homeplaceView.onCreate(this.savedInstanceState);
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        AppOpsManager appOps = (AppOpsManager) this.getSystemService(this.APP_OPS_SERVICE);
+        int mode = appOps.checkOpNoThrow(AppOpsManager.OPSTR_GET_USAGE_STATS,
+                android.os.Process.myUid(), this.getPackageName());
+        if(mode == AppOpsManager.MODE_ALLOWED) {
+            startActivity(new Intent(getApplicationContext(),Onboard1WelcomeActivity.class));
+        }else {
+            startActivity(new Intent(getApplicationContext(),Onboard2SpecialPermissionActivity.class));
+        }
 
+    }
 
     public void pickHomeLocation(View v) {
         PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
@@ -156,6 +169,5 @@ public class Onboard3LocationActivity extends AppCompatActivity{
         this.settingsUser.setUserContext(workContext);
 
         startActivity(i);
-        finish();
     }
 }

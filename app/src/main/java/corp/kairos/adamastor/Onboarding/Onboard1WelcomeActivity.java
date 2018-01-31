@@ -34,7 +34,6 @@ public class Onboard1WelcomeActivity extends AppCompatActivity {
     public void start(View v) {
         Intent i = new Intent(this,Onboard2SpecialPermissionActivity.class);
         startActivity(i);
-        finish();
     }
 
     private void checkPermissions(){

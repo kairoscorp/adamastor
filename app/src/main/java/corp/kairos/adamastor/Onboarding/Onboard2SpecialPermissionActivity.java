@@ -38,6 +38,5 @@ public class Onboard2SpecialPermissionActivity extends AppCompatActivity{
 
     public void goNext() {
         startActivity(new Intent(this,Onboard3LocationActivity.class));
-        finish();
     }
 }
