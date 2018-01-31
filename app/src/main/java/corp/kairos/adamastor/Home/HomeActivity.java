@@ -3,12 +3,18 @@ package corp.kairos.adamastor.Home;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.NotificationCompat;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
@@ -57,9 +63,17 @@ public class HomeActivity extends AnimationCompactActivity {
 
     private boolean permissionsGranted = false;
 
+    private final String NO_ACTION = "NO_ACTION";
+    private final String YES_ACTION = "YES_ACTION";
+
+    private NotificationReceiver nr;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        this.nr = new NotificationReceiver();
+
         this.userSettings = Settings.getInstance(this);
 
         if (! userSettings.isOnboardingDone()) {
@@ -236,6 +250,64 @@ public class HomeActivity extends AnimationCompactActivity {
         checkPermissions();
         if (permissionsGranted)
             bindCollectorService();
+
+        //Get the current context from the service
+        String returnedContext = CollectorService.getCurrentContext();
+        switchContext(returnedContext);
+    }
+
+    private void switchContext(String newContext) {
+        Log.i(TAG, "Returned context: " + newContext);
+
+        String previousContext = (String) this.tabLayout.getTabAt(this.tabLayout.getSelectedTabPosition()).getTag();
+
+        //only change the selected tab if the returned context is different
+        if(!previousContext.equals(newContext)){
+            //iterate through the tabs to select the one corresponding to the desired context
+            for(int i = 0; i < this.tabLayout.getTabCount(); i++){
+                TabLayout.Tab t = this.tabLayout.getTabAt(i);
+                if(t.getTag().equals(newContext)){
+                    t.select();
+                }
+            }
+            displayNotification(newContext, previousContext);
+        }
+
+    }
+
+    private void displayNotification(String newContext, String previousContext) {
+        int notificationIcon = 0;
+        switch (newContext){
+            case "Work":
+                notificationIcon = R.drawable.ic_work_black;
+                break;
+            case "Home":
+                notificationIcon = R.drawable.ic_home_black;
+                break;
+            case "Commute":
+                notificationIcon = R.drawable.ic_commute_black;
+                break;
+        }
+
+        //No Intent
+        Intent noIntent = new Intent();
+        noIntent.setAction(NO_ACTION);
+        noIntent.putExtra("previousContext", previousContext);
+        PendingIntent noPendingIntent = PendingIntent.getBroadcast(this, 1, noIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+
+
+        NotificationCompat.Builder notificationBuilder =
+                new NotificationCompat.Builder(this)
+                        .setSmallIcon(notificationIcon)
+                        .setContentTitle("Switched context")
+                        .setContentText("We adjusted the context, are we right?")
+                        .addAction(R.drawable.ic_check, "Totally!", null)
+                        .addAction(R.drawable.shape, "No", noPendingIntent);
+
+        NotificationManager notificationManager =
+                (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+
+        notificationManager.notify(1, notificationBuilder.build());
     }
 
     public void showAllAppsMenu(View v) {
@@ -296,6 +368,24 @@ public class HomeActivity extends AnimationCompactActivity {
                 permissionsGranted = true;
             else
                 permissionsGranted = false;
+    }
+
+    public class NotificationReceiver extends BroadcastReceiver{
+
+        public NotificationReceiver() {
+        }
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            Log.i(TAG,  "Intent arrived");
+            if(action.equals(NO_ACTION)){
+                Log.i(TAG,  "NO_ACTION Intent arrived");
+                Bundle extras = intent.getExtras();
+                String previousContext = extras.getString("previousContext");
+                switchContext(previousContext);
+            }
+        }
     }
 
 }

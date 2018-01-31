@@ -39,6 +39,7 @@ import java.util.Calendar;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.concurrent.ThreadLocalRandom;
@@ -382,6 +383,25 @@ public class CollectorService extends Service implements GoogleApiClient.Connect
 
     public void dumpDatabaseToCSV(File path, String fileName){
         logDatabaseHelper.exportDatabaseCSV(path,fileName);
+    }
+
+    public static String getCurrentContext(){
+        Random r = new Random();
+        int contextNr = r.nextInt(3);
+        String res = null;
+        switch (contextNr){
+            case 0:
+                res = "Home";
+                break;
+            case 1:
+                res = "Work";
+                break;
+            case 2:
+                res = "Commute";
+                break;
+        }
+
+        return res;
     }
 
     /*public class ActivityMonitorReceiver extends ResultReceiver{
