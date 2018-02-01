@@ -79,9 +79,6 @@ public class HomeActivity extends AnimationCompactActivity {
             this.monthDayTextView = (TextView) findViewById(R.id.month_day_text_view);
             this.weekdayYearTextView = (TextView) findViewById(R.id.weekday_year_text_view);
 
-            checkPermissions();
-            if (permissionsGranted)
-                bindCollectorService();
 
             // Set navigation
             super.setAnimation("up");
@@ -94,6 +91,11 @@ public class HomeActivity extends AnimationCompactActivity {
             setupFavouriteApps();
 
             setupContextDisplayer();
+
+            checkPermissions();
+            if (permissionsGranted) {
+                bindCollectorService();
+            }
         }
     }
 
@@ -106,7 +108,6 @@ public class HomeActivity extends AnimationCompactActivity {
         df = new SimpleDateFormat("EEEE, yyyy");
         this.weekdayYearTextView.setText(df.format(time));
     }
-
 
     private void setupFavouriteApps() {
         // Load favorite apps
@@ -249,6 +250,7 @@ public class HomeActivity extends AnimationCompactActivity {
         Intent i = new Intent(this, ContextRelatedSettingsActivity.class);
         startActivity(i);
     }
+
 
     private void checkPermissions() {
         if ((ActivityCompat.checkSelfPermission(this,

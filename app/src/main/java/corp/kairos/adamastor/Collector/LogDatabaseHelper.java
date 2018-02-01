@@ -4,12 +4,18 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.database.sqlite.SQLiteStatement;
 import android.util.Log;
 
 import com.opencsv.CSVWriter;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.RandomAccessFile;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -17,7 +23,7 @@ import java.util.TreeMap;
 import java.util.concurrent.TimeUnit;
 
 public class LogDatabaseHelper extends SQLiteOpenHelper {
-    private static final String TAG = LogDatabaseHelper.class.getName();
+    private static final String TAG = "LogDatabaseLog";
 
     public LogDatabaseHelper(Context context) {
         super(context, "ActivityLog.db", null, 1);
@@ -201,6 +207,46 @@ public class LogDatabaseHelper extends SQLiteOpenHelper {
 
     }
 
+    public File exportDatabaseCSV(){
+        File file = new File("logdump.csv");
+        try
+        {
+            file.createNewFile();
+            CSVWriter csvWrite = new CSVWriter(new FileWriter(file));
+            SQLiteDatabase db = this.getReadableDatabase();
+            Cursor curCSV = db.rawQuery("SELECT * FROM ServiceLogs",null);
+            csvWrite.writeNext(curCSV.getColumnNames());
+
+            while(curCSV.moveToNext())
+            {
+                //Which column you want to exprort
+                String arrStr[] ={
+                        curCSV.getString(curCSV.getColumnIndex("id")),
+                        curCSV.getString(curCSV.getColumnIndex("timestamp")),
+                        String.valueOf(this.getAppKey(curCSV.getString(curCSV.getColumnIndex("foreground")))),
+                        curCSV.getString(curCSV.getColumnIndex("activity")),
+                        curCSV.getString(curCSV.getColumnIndex("screen_active")),
+                        curCSV.getString(curCSV.getColumnIndex("call_active")),
+                        curCSV.getString(curCSV.getColumnIndex("music_active")),
+                        curCSV.getString(curCSV.getColumnIndex("ring_mode")),
+                        curCSV.getString(curCSV.getColumnIndex("latitude")),
+                        curCSV.getString(curCSV.getColumnIndex("longitude")),
+                        curCSV.getString(curCSV.getColumnIndex("provider")),
+                        curCSV.getString(curCSV.getColumnIndex("account")),
+                        curCSV.getString(curCSV.getColumnIndex("context"))
+                };
+                csvWrite.writeNext(arrStr);
+            }
+            csvWrite.close();
+            curCSV.close();
+        }
+        catch(Exception sqlEx)
+        {
+            Log.e(TAG, sqlEx.getMessage(), sqlEx);
+        }
+        return file;
+    }
+
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
         //
@@ -241,5 +287,81 @@ public class LogDatabaseHelper extends SQLiteOpenHelper {
         }
 
         return result;
+    }
+
+    public boolean setModel(InputStream modelIS){
+
+        boolean result = true;
+
+        String NEWTABLE = "CREATE TABLE IF NOT EXISTS 'Models' "
+                + "( model BLOB "
+                + ");";
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL(NEWTABLE);
+
+        String CLEAR_MODELS = "DELETE FROM 'Models'";
+        db.execSQL(CLEAR_MODELS);
+        String sql = "INSERT INTO Models(model) VALUES(?)";
+        SQLiteStatement statement = db.compileStatement(sql);
+
+        try {
+            byte[] modelData = inputStreamToByteArray(modelIS);
+            statement.bindBlob(1,modelData);
+            statement.execute();
+        }catch (Exception e){
+            Log.i(TAG, "Error Loading Model");
+            result = false;
+        }
+
+        return result;
+    }
+
+    public InputStream getModel(){
+        InputStream result = null;
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        String query = "SELECT * FROM 'Models'";
+
+        Cursor cursor = db.rawQuery(query,null);
+
+        if(cursor.moveToFirst()){
+            result = new ByteArrayInputStream(cursor.getBlob(1));
+        }
+
+        return result;
+    }
+
+    private static byte[] readFile(File file) throws IOException {
+        // Open file
+        RandomAccessFile f = new RandomAccessFile(file, "r");
+        try {
+            // Get and check length
+            long longlength = f.length();
+            int length = (int) longlength;
+            if (length != longlength)
+                throw new IOException("File size >= 2 GB");
+            // Read file and return data
+            byte[] data = new byte[length];
+            f.readFully(data);
+            return data;
+        } finally {
+            f.close();
+        }
+    }
+
+    private static byte[] inputStreamToByteArray(InputStream is) throws IOException {
+        ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+
+        int nRead;
+        byte[] data = new byte[1638400];
+
+        while ((nRead = is.read(data, 0, data.length)) != -1) {
+            buffer.write(data, 0, nRead);
+        }
+
+        buffer.flush();
+
+        return buffer.toByteArray();
     }
 }

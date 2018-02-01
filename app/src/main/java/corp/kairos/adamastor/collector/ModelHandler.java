@@ -131,7 +131,7 @@ public class ModelHandler {
 
     public void setModel(InputStream is){
         try{
-            this. evaluator = this.createEvaluator(is);
+            this.evaluator = this.createEvaluator(is);
         }catch(Exception e){
             Log.i("CollectorServiceLog", "Error Reading Model");
         }
@@ -174,18 +174,18 @@ public class ModelHandler {
         locationNow.setLatitude(latNow);
         locationNow.setLongitude(logNow);
 
-        //Settings settings = Settings.getInstance(CollectorService.getInstance());
+        Settings settings = Settings.getInstance(CollectorService.getInstance());
 
-        //Location locationWork = settings.getUserContext("Work").getLocation();
-        //Location locationHome = settings.getUserContext("Leisure").getLocation();
+        Location locationWork = settings.getUserContext("Work").getLocation();
+        Location locationHome = settings.getUserContext("Home").getLocation();
 
-        Location locationWork = new Location("gps");
+        /*Location locationWork = new Location("gps");
         locationWork.setLatitude(41.559875);
         locationWork.setLatitude(-8.396974);
 
         Location locationHome = new Location("gps");
         locationHome.setLatitude(41.563344);
-        locationHome.setLatitude(-8.410564);
+        locationHome.setLatitude(-8.410564);*/
 
         double homeDistance = locationNow.distanceTo(locationHome);
         double workDistance = locationNow.distanceTo(locationWork);
