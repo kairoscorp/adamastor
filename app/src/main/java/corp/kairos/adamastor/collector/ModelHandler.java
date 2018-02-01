@@ -193,9 +193,9 @@ public class ModelHandler {
         if(homeDistance < range){
             result = 1;
         }else if(workDistance < range){
-            result = 3;
-        }else{
             result = 2;
+        }else{
+            result = 3;
         }
         Log.i("CollectorServiceLog", String.valueOf(result));
         return result;

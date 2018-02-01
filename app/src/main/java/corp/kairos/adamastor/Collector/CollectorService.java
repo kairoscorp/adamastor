@@ -118,6 +118,12 @@ public class CollectorService extends Service implements GoogleApiClient.Connect
             this.predictionActive = false;
         }
 
+        if(modelIS == null){
+
+            this.modelHandler.setModel(readModelFile());
+            this.predictionActive = true;
+        }
+
         this.skp();
 
         this.predictIteration =  predictInterval;
@@ -194,8 +200,9 @@ public class CollectorService extends Service implements GoogleApiClient.Connect
 
                 if(predictIteration >= predictInterval){
                     predictIteration = 0;
-
+                    Log.i(TAG,"loop ok");
                     if(this.predictionActive) {
+                        Log.i(TAG,"predictionActive");
                         context = this.getContext(localDate, appForeground, userActivityNow, phoneActivity, callActivity,
                                 playingMusic, ringMode, longitude, latitude, provider);
                         CollectorService.getInstance().setContext(context);

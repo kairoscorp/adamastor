@@ -212,8 +212,8 @@ public class MediatorService extends Service {
 
         }
 
-        return "{'working_hour_start':" + workStart + "," +
-                "'working_hour_end':" + workEnd + "}";
+        return "{\"working_hour_start\":" + workStart + "," +
+                "\"working_hour_end\":" + workEnd + "}";
     }
 
     private String locationJSON(){
@@ -239,10 +239,10 @@ public class MediatorService extends Service {
 
         }
 
-        return "{'work_location_latitude':" + workLocationLat + "," +
-                "'work_location_longitude':" + workLocationLong + "," +
-                "'home_location_latitude':" + homeLocationLat + "," +
-                "'home_location_longitude':" + homeLocationLong + "}";
+        return "{\"work_location_latitude\":" + workLocationLat + "," +
+                "\"work_location_longitude\":" + workLocationLong + "," +
+                "\"home_location_latitude\":" + homeLocationLat + "," +
+                "\"home_location_longitude\":" + homeLocationLong + "}";
     }
 
 }

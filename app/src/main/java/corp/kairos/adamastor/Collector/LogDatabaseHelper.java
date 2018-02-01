@@ -183,7 +183,7 @@ public class LogDatabaseHelper extends SQLiteOpenHelper {
                 String arrStr[] ={
                         curCSV.getString(curCSV.getColumnIndex("id")),
                         curCSV.getString(curCSV.getColumnIndex("timestamp")),
-                        curCSV.getString(curCSV.getColumnIndex("foreground")),
+                        String.valueOf(this.getAppKey(curCSV.getString(curCSV.getColumnIndex("foreground")))),
                         curCSV.getString(curCSV.getColumnIndex("activity")),
                         curCSV.getString(curCSV.getColumnIndex("screen_active")),
                         curCSV.getString(curCSV.getColumnIndex("call_active")),
@@ -318,6 +318,14 @@ public class LogDatabaseHelper extends SQLiteOpenHelper {
     }
 
     public InputStream getModel(){
+
+        String NEWTABLE = "CREATE TABLE IF NOT EXISTS 'Models' "
+                + "( model BLOB "
+                + ");";
+
+        SQLiteDatabase dbWrite = this.getWritableDatabase();
+        dbWrite.execSQL(NEWTABLE);
+
         InputStream result = null;
         SQLiteDatabase db = this.getReadableDatabase();
 
@@ -325,7 +333,7 @@ public class LogDatabaseHelper extends SQLiteOpenHelper {
 
         Cursor cursor = db.rawQuery(query,null);
 
-        if(cursor.moveToFirst()){
+        if(cursor.getCount()> 0 && cursor.moveToFirst()){
             result = new ByteArrayInputStream(cursor.getBlob(1));
         }
 
