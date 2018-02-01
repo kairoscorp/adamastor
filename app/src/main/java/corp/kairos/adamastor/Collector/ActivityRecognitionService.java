@@ -17,7 +17,6 @@ public class ActivityRecognitionService extends IntentService {
 
     private static final String TAG = ActivityRecognitionService.class.getName();
 
-
     public ActivityRecognitionService() {
         super("ActivityRecognitionService");
     }
@@ -30,7 +29,6 @@ public class ActivityRecognitionService extends IntentService {
     protected void onHandleIntent(@Nullable Intent intent) {
 
         if(ActivityRecognitionResult.hasResult(intent)) {
-            Log.i(TAG, "MonitorReceivesRequest");
             ActivityRecognitionResult result = ActivityRecognitionResult.extractResult(intent);
             handleDetectedActivities(result.getProbableActivities());
         }
@@ -46,8 +44,6 @@ public class ActivityRecognitionService extends IntentService {
                mostSignificantValue = activity.getConfidence();
            }
         }
-
-
 
         switch(mostSignificant){
             case DetectedActivity.IN_VEHICLE: result = 3 ;break;

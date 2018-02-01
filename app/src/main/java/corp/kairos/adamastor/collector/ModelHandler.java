@@ -179,14 +179,6 @@ public class ModelHandler {
         Location locationWork = settings.getUserContext("Work").getLocation();
         Location locationHome = settings.getUserContext("Home").getLocation();
 
-        /*Location locationWork = new Location("gps");
-        locationWork.setLatitude(41.559875);
-        locationWork.setLatitude(-8.396974);
-
-        Location locationHome = new Location("gps");
-        locationHome.setLatitude(41.563344);
-        locationHome.setLatitude(-8.410564);*/
-
         double homeDistance = locationNow.distanceTo(locationHome);
         double workDistance = locationNow.distanceTo(locationWork);
 

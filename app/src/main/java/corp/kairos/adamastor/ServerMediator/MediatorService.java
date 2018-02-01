@@ -68,7 +68,7 @@ public class MediatorService extends Service {
 
     @Override
     public void onCreate() {
-        Log.i(TAG,"MediatorServiceCreated");
+        Log.i(TAG,"Mediator Service Created");
         super.onCreate();
         this.client = new OkHttpClient();
         connectivityManager =
