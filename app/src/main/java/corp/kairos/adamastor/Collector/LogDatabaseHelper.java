@@ -49,7 +49,7 @@ public class LogDatabaseHelper extends SQLiteOpenHelper {
                 + "longitude REAL, "
                 + "provider TEXT, "
                 + "account TEXT,"
-                + "context TEXT"
+                + "context INTEGER"
                 + ");";
 
         db.execSQL(LogsTable);
@@ -67,7 +67,7 @@ public class LogDatabaseHelper extends SQLiteOpenHelper {
                             double longitude,
                             String provider,
                             String account,
-                            String context){
+                            int context){
 
         SQLiteDatabase activityLogDB = this.getWritableDatabase();
 
@@ -114,7 +114,7 @@ public class LogDatabaseHelper extends SQLiteOpenHelper {
         res.moveToFirst();
 
         while(!res.isAfterLast()) {
-            String context = res.getString(res.getColumnIndex("Context"));
+            String context = String.valueOf(res.getInt(res.getColumnIndex("Context")));
 
             // Each record means approximately 10 seconds in the context
             int timeSeconds = res.getInt(res.getColumnIndex("Times")) * 10;
@@ -204,5 +204,42 @@ public class LogDatabaseHelper extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
         //
+    }
+
+    public void addEntryAppLookUp(String app){
+        String NEWTABLE = "CREATE TABLE IF NOT EXISTS 'AppLookUp' "
+                + "( app TEXT PRIMARY KEY"
+                + ");";
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL(NEWTABLE);
+
+        String query = "SELECT * FROM AppLookUp where app = '" + app + "';";
+        SQLiteDatabase db2 = this.getReadableDatabase();
+        Cursor cursor = db2.rawQuery(query,null);
+        if(cursor.getCount() == 0){
+            String ENTRY = "INSERT INTO AppLookUp (" +
+                    "app" +
+                    ") VALUES ('"+
+                    app + "');";
+
+            db.execSQL(ENTRY);
+        }
+    }
+
+    public int getAppKey(String app){
+        String query = "SELECT rowid FROM AppLookUp WHERE app = '" + app + "';";
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(query,null);
+        int result = 0;
+
+        if(cursor.moveToFirst()){
+            result = cursor.getInt(cursor.getColumnIndex("rowid"));
+        }else{
+            addEntryAppLookUp(app);
+            result = getAppKey(app);
+        }
+
+        return result;
     }
 }

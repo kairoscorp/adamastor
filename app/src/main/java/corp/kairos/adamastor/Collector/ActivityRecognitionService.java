@@ -4,6 +4,7 @@ import android.app.IntentService;
 import android.content.Intent;
 import android.support.annotation.Nullable;
 import android.util.Log;
+import android.widget.Switch;
 
 import com.google.android.gms.location.ActivityRecognitionResult;
 import com.google.android.gms.location.DetectedActivity;
@@ -38,14 +39,31 @@ public class ActivityRecognitionService extends IntentService {
     private void handleDetectedActivities(List<DetectedActivity> probableActivities) {
         int mostSignificant = -1;
         int mostSignificantValue = 0;
+        int result;
         for( DetectedActivity activity : probableActivities ) {
            if(activity.getConfidence()>mostSignificantValue && activity.getType() != DetectedActivity.ON_FOOT) {
                mostSignificant = activity.getType();
+               mostSignificantValue = activity.getConfidence();
            }
         }
-        Intent result = new  Intent("kairos.CollectorService.ACTIVITY_MONITOR_RESULT");
-        result.putExtra("ActivityNow",mostSignificant);
-        sendBroadcast(result);
+
+
+
+        switch(mostSignificant){
+            case DetectedActivity.IN_VEHICLE: result = 3 ;break;
+            case DetectedActivity.ON_BICYCLE: result = 3 ;break;
+            case DetectedActivity.ON_FOOT: result = 2; break;
+            case DetectedActivity.STILL: result = 1; break;
+            case DetectedActivity.UNKNOWN: result = 1; break;
+            case DetectedActivity.TILTING: result = 1; break;
+            case DetectedActivity.WALKING: result = 2; break;
+            case DetectedActivity.RUNNING: result = 2; break;
+            default: result = 1; break;
+        }
+
+        Intent i = new  Intent("kairos.CollectorService.ACTIVITY_MONITOR_RESULT");
+        i.putExtra("ActivityNow",result);
+        sendBroadcast(i);
     }
 
 

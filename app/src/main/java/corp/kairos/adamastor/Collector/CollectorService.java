@@ -42,18 +42,28 @@ import java.util.Calendar;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 
-import corp.kairos.adamastor.Settings.Settings;
 
-public class CollectorService extends Service implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
+import corp.kairos.adamastor.Settings.Settings;
+import corp.kairos.adamastor.AppDetails;
+import corp.kairos.adamastor.AppsManager.AppsManager;
+import corp.kairos.adamastor.Collector.LogDatabaseHelper;
+import corp.kairos.adamastor.UserContext;
+
+
+public class CollectorService extends Service implements GoogleApiClient.ConnectionCallbacks,
+        GoogleApiClient.OnConnectionFailedListener {
 
     private static final String NULL_APP = "NULL";
 
-    private static final String TAG = ActivityRecognitionService.class.getName();
+    private static final String TAG = "CollectorServiceLog";
+
+    private static final int INTERVAL = 10000;
 
     private CollectorServiceBinder mCollectorServiceBinder = new CollectorServiceBinder();;
     private LocationManager locationManager;
@@ -65,7 +75,12 @@ public class CollectorService extends Service implements GoogleApiClient.Connect
     private boolean checkLocation = false;
     private static LogDatabaseHelper logDatabaseHelper;
     private GoogleApiClient googleApiClient;
-    private int userActivityNow = 4; // 4 is Detected activity UNKNOWN
+    private ModelHandler modelHandler;
+    private int userActivityNow = 1;
+    private int predictedContext = 1;
+    private int predictInterval = 2;
+    //private int predictInterval = 360;
+    private int predictIteration = 0;
 
     @Override
     public void onCreate(){
@@ -92,8 +107,12 @@ public class CollectorService extends Service implements GoogleApiClient.Connect
 
         googleApiClient.connect();
 
-        ModelHandler modelHandler = new ModelHandler();
-        modelHandler.setModel(this.readModelFile());
+        this.modelHandler = new ModelHandler();
+        this.modelHandler.setModel(this.readModelFile());
+
+        this.skp();
+
+        this.predictIteration =  predictInterval;
 
         new Thread(){
             public void run(){
@@ -102,12 +121,6 @@ public class CollectorService extends Service implements GoogleApiClient.Connect
         }.start();
     }
 
-    public static CollectorService getInstance(){
-        if(instance == null) {
-            instance = new CollectorService();
-        }
-        return instance;
-    }
 
     public Map<String, Long> getContextStatistics() {
         return logDatabaseHelper.getContextStatistics();
@@ -124,12 +137,13 @@ public class CollectorService extends Service implements GoogleApiClient.Connect
             try {
                 double latitude, longitude;
                 int phoneActivity, playingMusic;
-                String context = settingsUser.getCurrentUserContext().getContextName();
+                int context = 1;
                 int callActivity = getPhoneCallState();
                 int ringMode = getRingtoneMode();
                 String provider;
                 String account = getUsername();
-                String time = getTimeNow();
+                Calendar localDate = Calendar.getInstance();
+                String time = getTimeNow(localDate);
                 String appForeground = getForegroundTask();
 
                 if(isPhoneActive()){
@@ -156,6 +170,7 @@ public class CollectorService extends Service implements GoogleApiClient.Connect
                 }
 
                 Log.i(TAG,
+
                         time + "::"
                                 + appForeground + "::"
                                 + userActivityNow + "::"
@@ -167,19 +182,36 @@ public class CollectorService extends Service implements GoogleApiClient.Connect
                                 + longitude + "::"
                                 + provider + "::"
                                 + account + "::"
-                                + context);
-                logDatabaseHelper.addLogEntry(time, appForeground, userActivityNow,phoneActivity, callActivity, playingMusic, ringMode, latitude, longitude, provider, account, context);
+                                + predictedContext);
 
-                Thread.sleep(10000);
+
+                if(predictIteration >= predictInterval){
+                    predictIteration = 0;
+
+                    context = this.getContext(localDate,appForeground,userActivityNow,phoneActivity,callActivity,
+                            playingMusic,ringMode,longitude,latitude,provider);
+                    CollectorService.getInstance().setContext(context);
+                }
+
+
+                this.predictedContext = CollectorService.getInstance().getPredictedContext();
+
+
+                logDatabaseHelper.addLogEntry(time, appForeground, userActivityNow,phoneActivity,
+                        callActivity, playingMusic, ringMode, latitude, longitude,
+                        provider, account, predictedContext);
+
+                this.predictIteration++;
+
+                Thread.sleep(INTERVAL);
             }catch(InterruptedException ex){
                 Log.i(TAG, "Exception in Main Loop");
             }
         }
     }
 
-    private String getTimeNow(){
+    private String getTimeNow(Calendar localDate){
         //YYYY-MM-DD HH:MM:SS.SSS
-        Calendar localDate = Calendar.getInstance();
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
         return formatter.format(localDate.getTime());
     }
@@ -207,7 +239,8 @@ public class CollectorService extends Service implements GoogleApiClient.Connect
             currentApp = tasks.get(0).processName;
         }
         try{
-            result = (String) packageManager.getApplicationLabel(packageManager.getApplicationInfo(currentApp, PackageManager.GET_META_DATA));
+            result = (String) packageManager.getApplicationLabel(packageManager.getApplicationInfo(
+                    currentApp, PackageManager.GET_META_DATA));
         }catch(Exception e){
             result = currentApp;
         }
@@ -253,7 +286,7 @@ public class CollectorService extends Service implements GoogleApiClient.Connect
                 break;
             case TelephonyManager.CALL_STATE_OFFHOOK: result = 1;
                 break;
-            case TelephonyManager.CALL_STATE_RINGING: result = 2;
+            case TelephonyManager.CALL_STATE_RINGING: result = 1;
                 break;
             default : result = 0;
         }
@@ -265,13 +298,15 @@ public class CollectorService extends Service implements GoogleApiClient.Connect
         Criteria criteria = new Criteria();
         criteria.setAccuracy(Criteria.ACCURACY_FINE);
 
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             checkLocation = false;
         }else{
             checkLocation = true;
         }
 
-        lastLocation = locationManager.getLastKnownLocation(locationManager.getBestProvider(criteria,true));
+        lastLocation = locationManager.getLastKnownLocation(
+                locationManager.getBestProvider(criteria,true));
 
         if(lastLocation == null){
             checkLocation = false;
@@ -390,38 +425,71 @@ public class CollectorService extends Service implements GoogleApiClient.Connect
         logDatabaseHelper.exportDatabaseCSV(path,fileName);
     }
 
-    /*public class ActivityMonitorReceiver extends ResultReceiver{
-
-        public ActivityMonitorReceiver(Handler handler) {
-            super(handler);
-        }
-
-        @Override
-        protected void onReceiveResult(int resultCode, Bundle resultData) {
-            //super.onReceiveResult(resultCode, resultData);
-            userActivityNow = resultData.getInt("mostLikelyActivity");
-            Log.i("CollectorServiceLog", String.valueOf(userActivityNow));
-        }
-    }*/
-
     class ActivityMonitorReceiver extends BroadcastReceiver {
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            userActivityNow = intent.getIntExtra("ActivityNow" , 4);
+            userActivityNow = intent.getIntExtra("ActivityNow" , 1);
         }
     }
 
     private InputStream readModelFile(){
         FileInputStream fileInputStream = null;
         try {
-            File modelFile = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath() + File.separator + "model.ser");
+            File modelFile = new File(Environment.getExternalStoragePublicDirectory(
+                    Environment.DIRECTORY_DOWNLOADS).getAbsolutePath()
+                    + File.separator + "model.ser");
             fileInputStream = new FileInputStream(modelFile);
         }catch(Exception e){
             Log.i("CollectorServiceLog", "Error openeing file");
         }
 
         return fileInputStream;
+    }
+
+    public int getAppKey(String app){
+        return logDatabaseHelper.getAppKey(app);
+    }
+
+    private void skp(){
+        AppsManager appsManager = AppsManager.getInstance();
+        Set<AppDetails> allApps = appsManager.getAllApps(packageManager, true);
+        for(AppDetails ad : allApps){
+            this.logDatabaseHelper.addEntryAppLookUp(ad.getPackageName());
+        }
+    }
+
+    /**
+     * 0 - sleep
+     * 1 - leasure
+     * 2 - travel
+     * 3 - work
+     */
+    public int getContext(Calendar time, String foreground, int activity, int screen_active,
+                          int call_active, int music_active, int ring_mode, double longitute,
+                          double latitude, String provider){
+
+        int context = this.modelHandler.predictContext(time,foreground,activity,screen_active,
+                call_active, music_active,ring_mode,longitute,latitude,provider);
+
+        this.predictedContext = context;
+
+        return context;
+    }
+
+    public void setContext(int context){
+        this.predictedContext = context;
+    }
+
+    public int getPredictedContext(){
+        return this.predictedContext;
+    }
+
+    public static CollectorService getInstance(){
+        if(instance == null) {
+            instance = new CollectorService();
+        }
+        return instance;
     }
 
 }
