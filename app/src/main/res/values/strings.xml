@@ -71,4 +71,6 @@
     <string name="apps_explanation">Associate apps to your contexts</string>
 
     <string name="title_activity_statistics">Statistics</string>
+    <string name="no_stats_info_title">No statistics available.</string>
+    <string name="no_stats_info_subtitle">Start using your apps to check out your stats!</string>
 </resources>

@@ -161,8 +161,9 @@
             android:theme="@style/AppTheme.NoActionBar" />
             
         <activity
-            android:name=".StatisticsActivity2"
-            android:label="@string/title_activity_statistics2"
+            android:name=".Statistics.StatisticsActivity"
+            android:label="@string/title_activity_statistics"
             android:theme="@style/AppTheme.NoActionBar" />
+    
     </application>
 </manifest>

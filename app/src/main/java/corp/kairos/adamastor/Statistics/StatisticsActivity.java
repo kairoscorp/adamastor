@@ -25,6 +25,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.github.mikephil.charting.charts.PieChart;
@@ -38,7 +39,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.TimeUnit;
 
 import corp.kairos.adamastor.Animation.AnimationCompatActivity;
 import corp.kairos.adamastor.Animation.AnimationCompactActivity;
@@ -48,7 +48,6 @@ import corp.kairos.adamastor.Home.HomeActivity;
 import corp.kairos.adamastor.R;
 import corp.kairos.adamastor.Settings.Settings;
 import corp.kairos.adamastor.UserContext;
-import corp.kairos.adamastor.Util;
 
 public class StatisticsActivity extends AnimationCompatActivity {
 
@@ -65,6 +64,7 @@ public class StatisticsActivity extends AnimationCompatActivity {
     private PieChart chart;
     private View mList;
     private View mChart;
+    private static RelativeLayout mStatsInfo;
     private FloatingActionButton mSwitch;
     private int mShortAnimationDuration;
     private boolean isShowingGraph = true;
@@ -100,6 +100,7 @@ public class StatisticsActivity extends AnimationCompatActivity {
         chart = findViewById(R.id.pie_chart);
         mList = findViewById(R.id.stats_applications);
         mChart = findViewById(R.id.stats_contexts);
+        mStatsInfo = findViewById(R.id.no_stats_info);
 
         mSwitch = (FloatingActionButton) findViewById(R.id.id_statistics_swap_button);
 
@@ -331,11 +332,18 @@ public class StatisticsActivity extends AnimationCompatActivity {
             UserContext context = settings.getUserContext(getArguments().getString(ARG_SECTION_NUMBER));
             Set<AppDetails> stats = appsManager.getAppStatisticsByContext(context, packageManager, (UsageStatsManager) getActivity().getSystemService(Context.USAGE_STATS_SERVICE));
 
-            StatisticsAppsMenuAdapter adapter = new StatisticsAppsMenuAdapter(this.getContext(), stats);
-
+            RelativeLayout no_stats = rootView.findViewById(R.id.no_stats_info);
             ListView list = rootView.findViewById(R.id.stats_apps_list);
 
-            list.setAdapter(adapter);
+            if(stats.isEmpty()) {
+                no_stats.setVisibility(View.VISIBLE);
+                list.setVisibility(View.INVISIBLE);
+            } else {
+                list.setVisibility(View.VISIBLE);
+                no_stats.setVisibility(View.INVISIBLE);
+                StatisticsAppsMenuAdapter adapter = new StatisticsAppsMenuAdapter(this.getContext(), stats);
+                list.setAdapter(adapter);
+            }
 
             return rootView;
         }

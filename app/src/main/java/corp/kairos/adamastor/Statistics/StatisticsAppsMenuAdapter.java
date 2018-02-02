@@ -23,13 +23,13 @@ import static corp.kairos.adamastor.Util.getObjectByIndex;
 public class StatisticsAppsMenuAdapter extends ArrayAdapter {
     private Context context;
     private Set<AppDetails> apps;
-    private long finalTotal;
+    private long mostUsedTime;
 
     public StatisticsAppsMenuAdapter(Context context, Set<AppDetails> apps) {
         super(context, R.layout.activity_allapps);
         this.context = context;
         this.apps = apps;
-        this.finalTotal = apps.iterator().hasNext() ? apps.iterator().next().getUsageStatistics() : 0L;
+        this.mostUsedTime = apps.isEmpty() ? 0L : apps.iterator().next().getUsageStatistics();
     }
 
     @Override
@@ -63,7 +63,7 @@ public class StatisticsAppsMenuAdapter extends ArrayAdapter {
         appLabel.setText(app.getLabel());
 
         ProgressBar appProgressBar = (ProgressBar)convertView.findViewById(R.id.app_statistics_progress_bar);
-        long percentage = (app.getUsageStatistics() * 100) / finalTotal;
+        long percentage = (app.getUsageStatistics() * 100) / mostUsedTime;
         appProgressBar.setProgress((int) percentage);
 
         TextView appTimeUsage = (TextView)convertView.findViewById(R.id.app_statistcs_time);
