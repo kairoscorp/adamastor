@@ -22,10 +22,13 @@ public class AppViewHolder extends RecyclerView.ViewHolder {
         iconView = (ImageView) itemView.findViewById(R.id.app_image);
         labelView = (TextView) itemView.findViewById(R.id.app_text);
 
-        rootView.setOnClickListener(v -> {
-            Intent i = appContext.getPackageManager().getLaunchIntentForPackage(this.packageName);
-            appContext.startActivity(i);
-        });
+            rootView.setOnClickListener(v -> {
+                // TODO: Find a more elegant way to deal with coloring the background of the section 3)
+                if (packageName.length() > 0) {
+                    Intent i = appContext.getPackageManager().getLaunchIntentForPackage(this.packageName);
+                    appContext.startActivity(i);
+                }
+            });
 
     }
 }
