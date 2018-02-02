@@ -66,13 +66,22 @@ public class HomeActivity extends AnimationCompactActivity {
     private final String NO_ACTION = "NO_ACTION";
     private final String YES_ACTION = "YES_ACTION";
 
-    private NotificationReceiver nr;
+    /*The ID for context change notifications should be the same every time
+    so that a more recent notification replaces an old undismissed notification
+    */
+    private final int CONTEXT_NOTIFICATION_ID = 12345;
+
+    private NotificationManager notificationManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        this.nr = new NotificationReceiver();
+        NotificationReceiver nr = new NotificationReceiver();
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(YES_ACTION);
+        filter.addAction(NO_ACTION);
+        registerReceiver(nr, filter);
 
         this.userSettings = Settings.getInstance(this);
 
@@ -253,11 +262,11 @@ public class HomeActivity extends AnimationCompactActivity {
 
         //Get the current context from the service
         String returnedContext = CollectorService.getCurrentContext();
-        switchContext(returnedContext);
+        switchContext(returnedContext, false);
     }
 
-    private void switchContext(String newContext) {
-        Log.i(TAG, "Returned context: " + newContext);
+    private void switchContext(String newContext, boolean fromNotification) {
+        Log.i(TAG, "Context: " + newContext);
 
         String previousContext = (String) this.tabLayout.getTabAt(this.tabLayout.getSelectedTabPosition()).getTag();
 
@@ -270,7 +279,9 @@ public class HomeActivity extends AnimationCompactActivity {
                     t.select();
                 }
             }
-            displayNotification(newContext, previousContext);
+            if(!fromNotification) {
+                displayNotification(newContext, previousContext);
+            }
         }
 
     }
@@ -295,19 +306,23 @@ public class HomeActivity extends AnimationCompactActivity {
         noIntent.putExtra("previousContext", previousContext);
         PendingIntent noPendingIntent = PendingIntent.getBroadcast(this, 1, noIntent, PendingIntent.FLAG_CANCEL_CURRENT);
 
+        //Yes Intent
+        Intent yesIntent = new Intent();
+        yesIntent.setAction(YES_ACTION);
+        PendingIntent yesPendingIntent = PendingIntent.getBroadcast(this, 2, yesIntent, PendingIntent.FLAG_CANCEL_CURRENT);
 
         NotificationCompat.Builder notificationBuilder =
                 new NotificationCompat.Builder(this)
                         .setSmallIcon(notificationIcon)
                         .setContentTitle("Switched context")
                         .setContentText("We adjusted the context, are we right?")
-                        .addAction(R.drawable.ic_check, "Totally!", null)
+                        .addAction(R.drawable.ic_check, "Totally!", yesPendingIntent)
                         .addAction(R.drawable.shape, "No", noPendingIntent);
 
-        NotificationManager notificationManager =
+        this.notificationManager =
                 (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 
-        notificationManager.notify(1, notificationBuilder.build());
+        this.notificationManager.notify(CONTEXT_NOTIFICATION_ID, notificationBuilder.build());
     }
 
     public void showAllAppsMenu(View v) {
@@ -377,14 +392,20 @@ public class HomeActivity extends AnimationCompactActivity {
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            String action = intent.getAction();
             Log.i(TAG,  "Intent arrived");
+
+            String action = intent.getAction();
+
             if(action.equals(NO_ACTION)){
                 Log.i(TAG,  "NO_ACTION Intent arrived");
+
                 Bundle extras = intent.getExtras();
                 String previousContext = extras.getString("previousContext");
-                switchContext(previousContext);
+                switchContext(previousContext, true);
             }
+
+            // Dismiss the notification
+            notificationManager.cancel(CONTEXT_NOTIFICATION_ID);
         }
     }
 
