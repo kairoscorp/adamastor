@@ -32,6 +32,7 @@ public class Onboard4ContextAppsActivity extends AppCompatActivity {
     private Set<AppDetails> allApps;
     private Iterator<String> contextsIterator;
     private UserContext userContext;
+    private String backContextName;
     private String atualContextName;
     private FloatingActionButton next;
 
@@ -46,13 +47,32 @@ public class Onboard4ContextAppsActivity extends AppCompatActivity {
         this.contextsIterator = settingsUser.getContextNames().iterator();
         this.allApps = appsManager.getAllApps(getPackageManager(), false);
         this.next = findViewById(R.id.id_add_app_contexts_next);
+        this.atualContextName = contextsIterator.next();
         loadSettings();
     }
 
-    private void loadSettings() {
-        this.atualContextName = contextsIterator.next();
-        this.userContext = settingsUser.getUserContext(atualContextName);
+    @Override
+    public void onBackPressed() {
+        String auxContextName;
+        this.contextsIterator = settingsUser.getContextNames().iterator();
+        if (backContextName == null || atualContextName.equals("Work") ) {
+            super.onBackPressed();
+        } else {
+            while (contextsIterator.hasNext()) {
+                auxContextName = atualContextName;
+                this.atualContextName = contextsIterator.next();
+                if (atualContextName.equals(backContextName)) {
+                    backContextName = auxContextName;
+                    break;
+                }
 
+            }
+            loadSettings();
+        }
+    }
+
+    private void loadSettings() {
+        this.userContext = settingsUser.getUserContext(atualContextName);
 
         ImageView image = ((ImageView)findViewById(R.id.id_add_app_contexts_image));
         TextView label = ((TextView)findViewById(R.id.id_add_app_contexts_label));
@@ -92,6 +112,8 @@ public class Onboard4ContextAppsActivity extends AppCompatActivity {
     public void goNext(View v) {
         settingsUser.setUserContext(userContext);
         if(contextsIterator.hasNext()) {
+            backContextName = atualContextName;
+            this.atualContextName = contextsIterator.next();
             loadSettings();
         } else {
             Intent i = new Intent(this,Onboard5ScheduleActivity.class);

@@ -28,15 +28,13 @@ public class Onboard2SpecialPermissionActivity extends AppCompatActivity{
         int mode = appOps.checkOpNoThrow(AppOpsManager.OPSTR_GET_USAGE_STATS,
                 android.os.Process.myUid(), this.getPackageName());
         if(mode == AppOpsManager.MODE_ALLOWED) {
-            goNext();
+            startActivity(new Intent(this,Onboard3LocationActivity.class));
+            finish();
         }
     }
 
     public void showUsageSettings(View v){
         startActivityForResult(new Intent(android.provider.Settings.ACTION_USAGE_ACCESS_SETTINGS), 1);
     }
-
-    public void goNext() {
-        startActivity(new Intent(this,Onboard3LocationActivity.class));
-    }
+    
 }

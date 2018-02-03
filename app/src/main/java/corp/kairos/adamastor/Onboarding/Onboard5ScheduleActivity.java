@@ -20,9 +20,12 @@ import corp.kairos.adamastor.UserContext;
 
 
 public class Onboard5ScheduleActivity extends AnimationCompactActivity implements TimePickerDialog.OnTimeSetListener{
+    private final int ONBOARDING_SCHEDULE = 5;
+    private final int ONBOARDING_FINISH = 6;
 
     private Settings settingsUser;
     private UserContext workContext;
+    private int screen = ONBOARDING_SCHEDULE;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,6 +44,16 @@ public class Onboard5ScheduleActivity extends AnimationCompactActivity implement
         workContext = settingsUser.getUserContext("Work");
         workContext.setTimes(from, to);
         settingsUser.setUserContext(workContext);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if(screen == ONBOARDING_SCHEDULE) {
+            super.onBackPressed();
+        } else {
+            setContentView(R.layout.onboard5_schedule);
+            screen = ONBOARDING_SCHEDULE;
+        }
     }
 
     public void showTimePicker(View v) {
@@ -70,6 +83,7 @@ public class Onboard5ScheduleActivity extends AnimationCompactActivity implement
     public void goNext(View v) {
         settingsUser.saveContextSettings();
         setContentView(R.layout.onboard6_final);
+        screen = ONBOARDING_FINISH;
     }
 
     public void finish(View v) {

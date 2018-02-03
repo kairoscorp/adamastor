@@ -61,16 +61,8 @@ public class Onboard3LocationActivity extends AppCompatActivity{
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
-        AppOpsManager appOps = (AppOpsManager) this.getSystemService(this.APP_OPS_SERVICE);
-        int mode = appOps.checkOpNoThrow(AppOpsManager.OPSTR_GET_USAGE_STATS,
-                android.os.Process.myUid(), this.getPackageName());
-        if(mode == AppOpsManager.MODE_ALLOWED) {
-            startActivity(new Intent(getApplicationContext(),Onboard1WelcomeActivity.class));
-        }else {
-            startActivity(new Intent(getApplicationContext(),Onboard2SpecialPermissionActivity.class));
-        }
-
+        startActivity(new Intent(getApplicationContext(),Onboard1WelcomeActivity.class));
+        finish();
     }
 
     public void pickHomeLocation(View v) {

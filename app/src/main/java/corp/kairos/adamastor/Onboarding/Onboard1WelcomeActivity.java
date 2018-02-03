@@ -31,6 +31,11 @@ public class Onboard1WelcomeActivity extends AppCompatActivity {
         checkPermissions();
     }
 
+    @Override
+    public void onBackPressed() {
+        //do nothing!
+    }
+
     public void start(View v) {
         Intent i = new Intent(this,Onboard2SpecialPermissionActivity.class);
         startActivity(i);
