@@ -9,8 +9,8 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
-    <uses-permission android:name="android.permission.SET_WALLPAPER"/>
-    <uses-permission android:name="android.permission.SET_WALLPAPER_HINTS"/>
+    <uses-permission android:name="android.permission.SET_WALLPAPER" />
+    <uses-permission android:name="android.permission.SET_WALLPAPER_HINTS" />
     <uses-permission
         android:name="android.permission.PACKAGE_USAGE_STATS"
         tools:ignore="ProtectedPermissions" />
@@ -23,11 +23,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
-
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_android_places_api_key" />
@@ -50,11 +48,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".AllApps.AllAppsActivity"
             android:theme="@style/LauncherTheme" />
-
         <activity
             android:name=".Settings.ContextRelated.ContextRelatedSettingsActivity"
             android:label="Onboarding"
@@ -63,7 +59,6 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="corp.kairos.adamastor.Home.HomeActivity" />
         </activity>
-
         <activity
             android:name=".Settings.ContextRelated.ContextRelatedAppsActivity"
             android:label="Context Related Apps"
@@ -81,42 +76,26 @@
             </intent-filter>
         </service>
 
-
         <activity
             android:name=".Onboarding.Onboard1WelcomeActivity"
             android:label="@string/onboarding_label"
-            android:theme="@style/OnboardingTheme"
-            >
-        </activity>
-
+            android:theme="@style/OnboardingTheme" />
         <activity
             android:name=".Onboarding.Onboard2SpecialPermissionActivity"
             android:label="@string/onboarding_label"
-            android:theme="@style/OnboardingTheme"
-            >
-        </activity>
-
+            android:theme="@style/OnboardingTheme" />
         <activity
             android:name=".Onboarding.Onboard3LocationActivity"
             android:label="@string/onboarding_label"
-            android:theme="@style/OnboardingTheme"
-            >
-        </activity>
-
+            android:theme="@style/OnboardingTheme" />
         <activity
             android:name=".Onboarding.Onboard4ContextAppsActivity"
             android:label="@string/onboarding_label"
-            android:theme="@style/OnboardingTheme"
-            >
-        </activity>
-
+            android:theme="@style/OnboardingTheme" />
         <activity
             android:name=".Onboarding.Onboard5ScheduleActivity"
             android:label="@string/onboarding_label"
-            android:theme="@style/OnboardingTheme"
-            >
-        </activity>
-
+            android:theme="@style/OnboardingTheme" />
         <activity
             android:name=".ContextList.ContextListActivity"
             android:theme="@style/LauncherTheme" />
@@ -129,25 +108,28 @@
             </intent-filter>
         </service>
 
-        <activity        
+        <activity
             android:name=".Statistics.StatisticsActivity"
             android:label="@string/title_activity_statistics"
-            android:theme="@style/AppTheme.NoActionBar">
-        </activity>
+            android:theme="@style/AppTheme.NoActionBar" />
 
         <receiver android:name=".AppsManager.AppsBroadcastService">
             <intent-filter>
                 <category android:name="android.intent.category.DEFAULT" />
-                <action android:name="android.intent.action.PACKAGE_ADDED"  />
+
+                <action android:name="android.intent.action.PACKAGE_ADDED" />
                 <action android:name="android.intent.action.PACKAGE_CHANGED" />
                 <action android:name="android.intent.action.PACKAGE_INSTALL" />
                 <action android:name="android.intent.action.PACKAGE_REMOVED" />
                 <action android:name="android.intent.action.PACKAGE_REPLACED" />
+
                 <data android:scheme="package" />
             </intent-filter>
         </receiver>
 
-
+        <activity
+            android:name=".ContextList.EditContextAppsActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
     </application>
 
 </manifest>

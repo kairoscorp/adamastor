@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.widget.AbsListView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -20,6 +19,7 @@ import corp.kairos.adamastor.R;
 import corp.kairos.adamastor.Settings.ContextRelated.AppCheckAdapter;
 import corp.kairos.adamastor.Settings.Settings;
 import corp.kairos.adamastor.UserContext;
+import corp.kairos.adamastor.onScroll;
 
 
 public class Onboard4ContextAppsActivity extends AppCompatActivity {
@@ -59,7 +59,7 @@ public class Onboard4ContextAppsActivity extends AppCompatActivity {
         TextView description = ((TextView)findViewById(R.id.id_add_app_contexts_description));
         switch (userContext.getContextName()) {
             case "Home":
-                image.setImageDrawable(getDrawable(R.drawable.ic_home_white));
+                image.setImageDrawable(getDrawable(R.drawable.ic_leisure_white));
                 label.setText(R.string.leisure_name);
                 description.setText(R.string.add_app_contexts_description_leisure);
                 break;
@@ -84,7 +84,7 @@ public class Onboard4ContextAppsActivity extends AppCompatActivity {
 
     private void loadListView() {
         this.checkAppsMenuView = findViewById(R.id.check_apps_list);
-        this.checkAppsMenuView.setOnScrollListener(new onScroll());
+        this.checkAppsMenuView.setOnScrollListener(new onScroll(next));
         adapter = new AppCheckAdapter(this, allApps, userContext);
         this.checkAppsMenuView.setAdapter(adapter);
     }
@@ -100,38 +100,4 @@ public class Onboard4ContextAppsActivity extends AppCompatActivity {
         }
     }
 
-    public class onScroll implements AbsListView.OnScrollListener {
-        @Override
-        public void onScrollStateChanged(AbsListView view, int scrollState) {}
-
-        private int lastVisibleItem = 0;
-        private int lastY = 0;
-
-        @Override
-        public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-            int top = 0;
-            if(view.getChildAt(0) != null){
-                top = view.getChildAt(0).getTop();
-            }
-
-            if(firstVisibleItem > lastVisibleItem){
-                //scroll down
-                next.hide();
-            }else if(firstVisibleItem < lastVisibleItem){
-                //scroll up
-                next.show();
-            }else{
-                if(top < lastY){
-                    //scroll down
-                    next.hide();
-                }else if(top > lastY){
-                    //scroll up
-                    next.show();
-                }
-            }
-
-            lastVisibleItem = firstVisibleItem;
-            lastY = top;
-        }
-    }
 }

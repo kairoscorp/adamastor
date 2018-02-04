@@ -232,7 +232,6 @@ public class HomeActivity extends AnimationCompactActivity {
     @Override
     protected void onResume() {
         super.onResume();
-
         checkPermissions();
         if (permissionsGranted)
             bindCollectorService();
