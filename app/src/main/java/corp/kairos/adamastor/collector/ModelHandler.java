@@ -17,6 +17,7 @@ import org.jpmml.evaluator.OutputField;
 import org.jpmml.evaluator.TargetField;
 import org.jpmml.model.FieldUtil;
 import org.jpmml.model.SerializationUtil;
+
 import java.util.Calendar;
 
 import java.io.InputStream;
@@ -139,7 +140,6 @@ public class ModelHandler {
 
     private Evaluator createEvaluator(InputStream is) throws Exception {
         PMML pmml = SerializationUtil.deserializePMML(is);
-
         ModelEvaluatorFactory modelEvaluatorFactory = ModelEvaluatorFactory.newInstance();
 
         ModelEvaluator<?> modelEvaluator = modelEvaluatorFactory.newModelEvaluator(pmml);

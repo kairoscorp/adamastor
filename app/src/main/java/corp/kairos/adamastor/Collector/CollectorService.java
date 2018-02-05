@@ -72,7 +72,7 @@ public class CollectorService extends Service implements GoogleApiClient.Connect
     private LocationListener locationListener;
     private static LogDatabaseHelper logDatabaseHelper;
     private GoogleApiClient googleApiClient;
-    private ModelHandler modelHandler;
+    private static ModelHandler modelHandler;
     private UsageStatsManager usageStatsManager;
     private AudioManager audioManager;
     private TelephonyManager telephonyManager;
@@ -83,7 +83,7 @@ public class CollectorService extends Service implements GoogleApiClient.Connect
     private int predictedContext = 1;
     private int predictInterval = 6;
     private int predictIteration = 0;
-    private boolean predictionActive;
+    private static boolean predictionActive;
 
     @Override
     public void onCreate(){
@@ -91,6 +91,8 @@ public class CollectorService extends Service implements GoogleApiClient.Connect
 
         Intent intent = new Intent(this, MediatorService.class);
         startService(intent);
+
+        instance = this;
 
         // Managers and Settings
         locationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
@@ -151,12 +153,12 @@ public class CollectorService extends Service implements GoogleApiClient.Connect
     }
 
     public void setModel(InputStream modelIS){
-        if(this.logDatabaseHelper.setModel(modelIS)){
-            this.modelHandler.setModel(this.logDatabaseHelper.getModel());
-            this.predictionActive = true;
+        if(logDatabaseHelper.setModel(modelIS)){
+            modelHandler.setModel(logDatabaseHelper.getModel());
+            predictionActive = true;
             Log.i(TAG, "Model Set");
         }else{
-            this.predictionActive = false;
+            predictionActive = false;
             Log.i(TAG, "Error reading Model");
         }
     }

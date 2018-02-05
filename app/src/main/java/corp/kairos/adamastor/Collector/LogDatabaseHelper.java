@@ -16,6 +16,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.RandomAccessFile;
+import java.text.CollationElementIterator;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -164,7 +165,8 @@ public class LogDatabaseHelper extends SQLiteOpenHelper {
     }
 
     public File exportDatabaseCSV(){
-        File file = new File("logdump.csv");
+        File dir = CollectorService.getInstance().getDir("dumps",Context.MODE_PRIVATE);
+        File file = new File(dir,"logdump.csv");
         try
         {
             file.createNewFile();
