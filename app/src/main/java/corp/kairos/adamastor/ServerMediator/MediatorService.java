@@ -37,26 +37,31 @@ import okhttp3.Response;
 public class MediatorService extends Service {
 
     private MediatorServiceBinder mMediatorServiceBinder = new MediatorServiceBinder();
+    private static OkHttpClient client = new OkHttpClient();
     private static MediatorService instance;
     private static final String TAG = "MediatorServiceLog";
-    private static final String INITIAL_ETL_URL = "https://adamastor-backend.herokuapp.com/settings";
-    private static final String REGULAR_ETL_URL = "https://adamastor-backend.herokuapp.com/data";
+    private static final String INITIAL_ETL_URL = "http://138.68.134.198:8080/settings";
+    private static final String REGULAR_ETL_URL = "http://138.68.134.198:8080/data";
     MediaType JSON = MediaType.parse("application/json; charset=utf-8");
     MediaType CSV = MediaType.parse("text/csv");
-    private OkHttpClient client;
     private ConnectivityManager connectivityManager;
 
 
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
-        return null;
+        return mMediatorServiceBinder;
     }
 
     public class MediatorServiceBinder extends Binder {
         public MediatorService getBinder(){
             return MediatorService.this;
         }
+    }
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        return Service.START_STICKY;
     }
 
     public static MediatorService getInstance(){
@@ -70,7 +75,7 @@ public class MediatorService extends Service {
     public void onCreate() {
         Log.i(TAG,"Mediator Service Created");
         super.onCreate();
-        this.client = new OkHttpClient();
+
         connectivityManager =
                 (ConnectivityManager)this.getSystemService(Context.CONNECTIVITY_SERVICE);
 
@@ -114,6 +119,8 @@ public class MediatorService extends Service {
     public void initialETL(){
         RequestBody requestBody = RequestBody.create(JSON, initialJSON());
 
+        Log.i(TAG, initialJSON());
+
         Request request = new Request.Builder()
                 .url(INITIAL_ETL_URL)
                 .post(requestBody)
@@ -148,6 +155,7 @@ public class MediatorService extends Service {
 
     public void regularETL(){
 
+        OkHttpClient client = new OkHttpClient();
         CollectorService collectorService = CollectorService.getInstance();
 
         if(collectorService != null) {
@@ -212,8 +220,8 @@ public class MediatorService extends Service {
 
         }
 
-        return "{\"working_hour_start\":" + workStart + "," +
-                "\"working_hour_end\":" + workEnd + "}";
+        return "{\"working_hours_start\":" + workStart + "," +
+                "\"working_hours_end\":" + workEnd + "}";
     }
 
     private String locationJSON(){

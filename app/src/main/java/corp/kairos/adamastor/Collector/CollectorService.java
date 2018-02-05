@@ -52,6 +52,7 @@ import java.util.concurrent.TimeUnit;
 import corp.kairos.adamastor.AppDetails;
 import corp.kairos.adamastor.AppsManager.AppsManager;
 import corp.kairos.adamastor.Collector.LogDatabaseHelper;
+import corp.kairos.adamastor.ServerMediator.MediatorService;
 import corp.kairos.adamastor.UserContext;
 
 
@@ -87,6 +88,10 @@ public class CollectorService extends Service implements GoogleApiClient.Connect
     @Override
     public void onCreate(){
         Log.i(TAG, "Collector Service Created");
+
+        Intent intent = new Intent(this, MediatorService.class);
+        startService(intent);
+
         // Managers and Settings
         locationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
         usageStatsManager = (UsageStatsManager) this.getSystemService(Context.USAGE_STATS_SERVICE);
@@ -118,8 +123,7 @@ public class CollectorService extends Service implements GoogleApiClient.Connect
             this.modelHandler.setModel(modelIS);
             this.predictionActive = true;
         }else{
-            this.modelHandler.setModel(readModelFile());
-            this.predictionActive = true;
+            this.predictionActive = false;
         }
 
         this.skp();
@@ -141,12 +145,6 @@ public class CollectorService extends Service implements GoogleApiClient.Connect
         return logDatabaseHelper.getContextStatistics();
     }
 
-    //Dumps Database to provided file. DO NOT USE
-    //TODO REMOVE THIS
-    public void dumpDatabaseToCSV(File path, String fileName){
-        logDatabaseHelper.exportDatabaseCSV(path,fileName);
-    }
-
     //Dumps database to a file and returns the file. Used in regular ETL
     public File dumpDatabaseToCSV(){
         return logDatabaseHelper.exportDatabaseCSV();
@@ -154,7 +152,9 @@ public class CollectorService extends Service implements GoogleApiClient.Connect
 
     public void setModel(InputStream modelIS){
         if(this.logDatabaseHelper.setModel(modelIS)){
+            this.modelHandler.setModel(this.logDatabaseHelper.getModel());
             this.predictionActive = true;
+            Log.i(TAG, "Model Set");
         }else{
             this.predictionActive = false;
             Log.i(TAG, "Error reading Model");
@@ -166,17 +166,18 @@ public class CollectorService extends Service implements GoogleApiClient.Connect
         return logDatabaseHelper.getAppKey(app);
     }
 
-    /**Returns the current predicted context.
-     * 1 - HOME\LEISURE
-     * 2 - TRAVEL\COMMUTE
-     * 3 - WORK
+    /** Returns the current predicted context.
+     *  1 - HOME\LEISURE
+     *  2 - TRAVEL\COMMUTE
+     *  3 - WORK
     **/
     public int getPredictedContext(){
         return this.predictedContext;
     }
 
-    //Singleton method. Returns instance of Collector Service.
-    //May throw exception if Service is not running
+    /** Singleton method. Returns instance of Collector Service.
+     *  May throw exception if Service is not running
+     **/
     public static CollectorService getInstance(){
         if(instance == null) {
             instance = new CollectorService();
@@ -185,9 +186,9 @@ public class CollectorService extends Service implements GoogleApiClient.Connect
     }
 
     /** Register a user context manual change
-     * 1 - HOME\LEISURE
-     * 2 - TRAVEL\COMMUTE
-     * 3 - WORK
+     *  1 - HOME\LEISURE
+     *  2 - TRAVEL\COMMUTE
+     *  3 - WORK
      **/
     public void userContextChange(int context){
         this.predictedContext = context;
@@ -240,9 +241,9 @@ public class CollectorService extends Service implements GoogleApiClient.Connect
 
 
 
-    /* #############################################################################################
+    /**#############################################################################################
                                         PRIVATE METHODS
-     #############################################################################################*/
+     ############################################################################################**/
 
     private void mainLoop(){
         while(true){
@@ -306,6 +307,8 @@ public class CollectorService extends Service implements GoogleApiClient.Connect
                                                   latitude, provider);
 
                         CollectorService.getInstance().setContext(context);
+                    }else{
+                        MediatorService.getInstance().initialETL();
                     }
                 }
 

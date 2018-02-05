@@ -123,7 +123,7 @@ public class ModelHandler {
             Map<FieldName, ?> result = evaluator.evaluate(entry);
 
             prediction = ((Double)EvaluatorUtil.decode(result.get(predictedFields.get(0).getName()))).intValue();
-            Log.i("CollectorServiceLog", String.valueOf(prediction));
+            Log.i("CollectorServiceLog", "Context :" + String.valueOf(prediction));
         }
 
         return prediction;
@@ -189,7 +189,7 @@ public class ModelHandler {
         }else{
             result = 3;
         }
-        Log.i("CollectorServiceLog", String.valueOf(result));
+        Log.i("CollectorServiceLog", "Location = " + String.valueOf(result));
         return result;
     }
 

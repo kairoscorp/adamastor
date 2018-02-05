@@ -163,50 +163,6 @@ public class LogDatabaseHelper extends SQLiteOpenHelper {
         return result;
     }
 
-    protected void exportDatabaseCSV(File path, String fileName){
-        if(!path.exists()){
-            path.mkdirs();
-        }
-
-        File file = new File(path, fileName);
-        try
-        {
-            file.createNewFile();
-            CSVWriter csvWrite = new CSVWriter(new FileWriter(file));
-            SQLiteDatabase db = this.getReadableDatabase();
-            Cursor curCSV = db.rawQuery("SELECT * FROM ServiceLogs",null);
-            csvWrite.writeNext(curCSV.getColumnNames());
-
-            while(curCSV.moveToNext())
-            {
-                //Which column you want to exprort
-                String arrStr[] ={
-                        curCSV.getString(curCSV.getColumnIndex("id")),
-                        curCSV.getString(curCSV.getColumnIndex("timestamp")),
-                        String.valueOf(this.getAppKey(curCSV.getString(curCSV.getColumnIndex("foreground")))),
-                        curCSV.getString(curCSV.getColumnIndex("activity")),
-                        curCSV.getString(curCSV.getColumnIndex("screen_active")),
-                        curCSV.getString(curCSV.getColumnIndex("call_active")),
-                        curCSV.getString(curCSV.getColumnIndex("music_active")),
-                        curCSV.getString(curCSV.getColumnIndex("ring_mode")),
-                        curCSV.getString(curCSV.getColumnIndex("latitude")),
-                        curCSV.getString(curCSV.getColumnIndex("longitude")),
-                        curCSV.getString(curCSV.getColumnIndex("provider")),
-                        curCSV.getString(curCSV.getColumnIndex("account")),
-                        curCSV.getString(curCSV.getColumnIndex("context"))
-                };
-                csvWrite.writeNext(arrStr);
-            }
-            csvWrite.close();
-            curCSV.close();
-        }
-        catch(Exception sqlEx)
-        {
-            Log.e(TAG, sqlEx.getMessage(), sqlEx);
-        }
-
-    }
-
     public File exportDatabaseCSV(){
         File file = new File("logdump.csv");
         try
@@ -334,7 +290,7 @@ public class LogDatabaseHelper extends SQLiteOpenHelper {
         Cursor cursor = db.rawQuery(query,null);
 
         if(cursor.getCount()> 0 && cursor.moveToFirst()){
-            result = new ByteArrayInputStream(cursor.getBlob(1));
+            result = new ByteArrayInputStream(cursor.getBlob(0));
         }
 
         return result;

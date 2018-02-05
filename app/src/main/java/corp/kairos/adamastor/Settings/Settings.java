@@ -183,7 +183,7 @@ public class Settings {
         switch(context){
             case 1: result = "Home";
                     break;
-            case 2: result = "Travel";
+            case 2: result = "Commute";
                     break;
             case 3: result = "Work";
                     break;
@@ -201,7 +201,7 @@ public class Settings {
         switch(contextName){
             case "Home": context = 1;
                 break;
-            case "Travel": context = 2;
+            case "Commute": context = 2;
                 break;
             case "Work": context = 3;
                 break;

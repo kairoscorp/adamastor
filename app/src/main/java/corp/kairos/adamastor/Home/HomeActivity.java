@@ -33,6 +33,7 @@ import corp.kairos.adamastor.Home.dao.FavouriteAppsDAO;
 import corp.kairos.adamastor.Home.dao.StaticFavouriteAppsDAO;
 import corp.kairos.adamastor.Onboarding.Onboard1WelcomeActivity;
 import corp.kairos.adamastor.R;
+import corp.kairos.adamastor.ServerMediator.MediatorService;
 import corp.kairos.adamastor.Settings.ContextRelated.ContextRelatedSettingsActivity;
 import corp.kairos.adamastor.Settings.Settings;
 import corp.kairos.adamastor.Statistics.StatisticsActivity;
