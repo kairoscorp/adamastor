@@ -8,7 +8,6 @@ import android.view.View;
 
 import org.apache.commons.lang3.ArrayUtils;
 
-import corp.kairos.adamastor.AllApps.AllAppsActivity;
 import corp.kairos.adamastor.Animation.AnimationActivity;
 import corp.kairos.adamastor.Home.HomeActivity;
 import corp.kairos.adamastor.R;
@@ -47,28 +46,31 @@ public class ContextListActivity extends AnimationActivity {
 
     private void setupViews() {
         mAdapter = new SectionedRecyclerViewAdapter();
-
-        for (UserContext aContext: userContexts) {
+        // TODO: Reorder contexts by active first
+        // TODO: Reorder apps by most relevant first
+        for (int i = 0; i < userContexts.length; i++) {
+            UserContext aContext = userContexts[i];
             if (aContext.getContextApps().size() > 0)
                 mAdapter.addSection(
                     new ContextSection(
                         this,
                         this.mAdapter,
                         aContext.getContextName(),
-                        aContext.getContextApps()
+                        aContext.getContextApps(),
+                        (i == 0 || i == userContexts.length-1)
                     )
                 );
         }
-
 
         GridLayoutManager glm = new GridLayoutManager(this, NUMBER_OF_COLUMNS);
         glm.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
             @Override
             public int getSpanSize(int position) {
-                switch(mAdapter.getSectionItemViewType(position)) {
+                switch (mAdapter.getSectionItemViewType(position)) {
                     case SectionedRecyclerViewAdapter.VIEW_TYPE_HEADER:
+                    case SectionedRecyclerViewAdapter.VIEW_TYPE_FOOTER:
                         return NUMBER_OF_COLUMNS;
-                    default:
+                     default:
                         return 1;
                 }
             }
