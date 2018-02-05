@@ -3,6 +3,7 @@ package corp.kairos.adamastor.Settings.ContextRelated;
 import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TabHost;
@@ -49,7 +50,7 @@ public class ContextRelatedSettingsActivity extends AnimationCompactActivity imp
         setContentView(R.layout.settings_onboarding);
         this.settingsUser = Settings.getInstance(this);
         workContext = this.settingsUser.getUserContext("Work");
-        homeContext = this.settingsUser.getUserContext("Home");
+        homeContext = this.settingsUser.getUserContext("Leisure");
         loadTabViewSettings();
         loadMapsSettings(savedInstanceState);
         loadWorkTimeSettings();
