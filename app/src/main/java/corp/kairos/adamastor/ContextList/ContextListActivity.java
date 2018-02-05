@@ -105,6 +105,8 @@ public class ContextListActivity extends AnimationActivity {
             } else {
                 finish();
             }
+            getWindow().setStatusBarColor(0);
+            getWindow().setNavigationBarColor(0);
 
         } else {
             super.onBackPressed();

@@ -131,6 +131,7 @@ public class SetContext extends Fragment {
                     s.setUserContext(commute);
                     s.setUserContext(leisure);
                     s.saveContextSettings();
+
                     getActivity().getWindow().setStatusBarColor(0);
                     getActivity().getWindow().setNavigationBarColor(0);
                     getFragmentManager().popBackStack();

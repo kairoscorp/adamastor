@@ -29,6 +29,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import corp.kairos.adamastor.AllApps.AllAppsActivity;
 import corp.kairos.adamastor.ContextList.ContextListActivity;
 import corp.kairos.adamastor.Home.HomeActivity;
 
@@ -89,6 +90,10 @@ public class OptionsMenu extends Fragment {
         // Inflate the layout for this fragment
         if(getActivity().getClass().getSimpleName().equals("ContextListActivity")){
             ((ContextListActivity) getActivity()).contextFragment();
+
+        }
+        if(getActivity().getClass().getSimpleName().equals("AllAppsActivity")){
+            ((AllAppsActivity) getActivity()).contextFragment();
 
         }
         this.appDetail = (AppDetails) this.getArguments().getSerializable("app");

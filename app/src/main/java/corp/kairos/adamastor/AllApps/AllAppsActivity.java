@@ -4,6 +4,7 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.ViewGroup;
 import android.widget.SearchView;
 
 import java.util.Set;
@@ -25,6 +26,8 @@ public class AllAppsActivity extends AnimationActivity {
     private SearchView searchView;
     private RecyclerView allAppsMenuView;
     private AllAppsRecyclerViewAdapter mAdapter;
+    static public int back;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,22 +66,31 @@ public class AllAppsActivity extends AnimationActivity {
                 return false;
             }
         });
+        back=0;
+    }
+    public void contextFragment(){
+        back++;
     }
 
     @Override
     public void onBackPressed() {
         if (getFragmentManager().getBackStackEntryCount() > 0) {
-            if (getFragmentManager().findFragmentByTag("OPTIONS") != null) {
-                getFragmentManager().beginTransaction().remove(getFragmentManager().findFragmentByTag("OPTIONS")).commit();
+            if (back == 1) {
+                if (getFragmentManager().findFragmentByTag("OPTIONS") != null) {
+                    HomeActivity.hideSetContext(this);
+                }
+                if (getFragmentManager().findFragmentByTag("CONTEXT") != null) {
+                    getFragmentManager().beginTransaction().remove(getFragmentManager().findFragmentByTag("CONTEXT")).commit();
+                }
+                if (findViewById(R.id.select_context) != null) {
+                    ((ViewGroup) findViewById(R.id.select_context).getParent()).removeView(findViewById(R.id.select_context));
+                }
+                back--;
+            } else {
+                finish();
             }
-            if (getFragmentManager().findFragmentByTag("CONTEXT") != null) {
-                getFragmentManager().beginTransaction().remove(getFragmentManager().findFragmentByTag("CONTEXT")).commit();
-            }
-            if (findViewById(R.id.select_context) != null) {
-                ((ViewGroup) findViewById(R.id.select_context).getParent()).removeView(findViewById(R.id.select_context));
-                getWindow().setStatusBarColor(0);
-                getWindow().setNavigationBarColor(0);
-            }
+            getWindow().setStatusBarColor(0);
+            getWindow().setNavigationBarColor(0);
 
         } else {
             super.onBackPressed();
