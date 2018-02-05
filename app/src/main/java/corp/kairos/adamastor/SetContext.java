@@ -5,12 +5,15 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.Toast;
 
+import corp.kairos.adamastor.ContextList.ContextListActivity;
 import corp.kairos.adamastor.Settings.Settings;
 
 
@@ -35,6 +38,7 @@ public class SetContext extends Fragment {
 
     public SetContext() {
         // Required empty public constructor
+
     }
 
     /**
@@ -51,16 +55,15 @@ public class SetContext extends Fragment {
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
+
         return fragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
+
     }
 
     @Override
@@ -69,12 +72,15 @@ public class SetContext extends Fragment {
         // Inflate the layout for this fragment
         this.appDetail = (AppDetails) this.getArguments().getSerializable("app");
         View v = inflater.inflate(R.layout.fragment_set_context, container, false);
+        Log.i("cas",getActivity().getClass().getSimpleName());
+
         return v;
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
         getActivity().findViewById(R.id.frame_context).setOnClickListener(view -> {
             nothingCLickListener(view);
         });
@@ -100,7 +106,6 @@ public class SetContext extends Fragment {
         cancel.setOnClickListener(v1 -> {
             getActivity().getWindow().setStatusBarColor(0);
             getActivity().getWindow().setNavigationBarColor(0);
-            //((ViewGroup) frame.getParent()).removeView(frame);
             getActivity().onBackPressed();
             getFragmentManager().popBackStack();
 
@@ -126,6 +131,8 @@ public class SetContext extends Fragment {
                     s.setUserContext(commute);
                     s.setUserContext(leisure);
                     s.saveContextSettings();
+                    getActivity().getWindow().setStatusBarColor(0);
+                    getActivity().getWindow().setNavigationBarColor(0);
                     getFragmentManager().popBackStack();
                 }
         );
@@ -144,8 +151,9 @@ public class SetContext extends Fragment {
 
     @Override
     public void onDetach() {
+        getActivity().getWindow().setStatusBarColor(0);
+        getActivity().getWindow().setNavigationBarColor(0);
         super.onDetach();
-        ;
     }
 
     /**

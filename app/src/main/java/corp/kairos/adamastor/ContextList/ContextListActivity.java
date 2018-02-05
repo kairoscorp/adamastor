@@ -20,6 +20,7 @@ public class ContextListActivity extends AnimationActivity {
     public static int NUMBER_OF_COLUMNS = 4;
     private RecyclerView mRecyclerView;
     public SectionedRecyclerViewAdapter mAdapter;
+    static public int back;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,8 +36,8 @@ public class ContextListActivity extends AnimationActivity {
         // Set side activities
         super.setAnimation("left");
         super.setLeftActivity(HomeActivity.class);
-
         setupViews(userContexts);
+        back=0;
     }
 
     @Override
@@ -78,6 +79,9 @@ public class ContextListActivity extends AnimationActivity {
         mRecyclerView.setLayoutManager(glm);
         mRecyclerView.setAdapter(mAdapter);
     }
+    public void contextFragment(){
+        back++;
+    }
 
     public void selectContextApps(View v) {
         startActivity(new Intent(getApplicationContext(),EditContextAppsActivity.class));
@@ -87,19 +91,20 @@ public class ContextListActivity extends AnimationActivity {
     @Override
     public void onBackPressed() {
         if (getFragmentManager().getBackStackEntryCount() > 0) {
-            if (getFragmentManager().findFragmentByTag("OPTIONS") != null) {
-                getFragmentManager().beginTransaction().remove(getFragmentManager().findFragmentByTag("OPTIONS")).commit();
+            if (back == 1) {
+                if (getFragmentManager().findFragmentByTag("OPTIONS") != null) {
+                   HomeActivity.hideSetContext(this);
+                }
+                if (getFragmentManager().findFragmentByTag("CONTEXT") != null) {
+                    getFragmentManager().beginTransaction().remove(getFragmentManager().findFragmentByTag("CONTEXT")).commit();
+                }
+                if (findViewById(R.id.select_context) != null) {
+                    ((ViewGroup) findViewById(R.id.select_context).getParent()).removeView(findViewById(R.id.select_context));
+                }
+                back--;
+            } else {
+                finish();
             }
-            if (getFragmentManager().findFragmentByTag("CONTEXT") != null) {
-                getFragmentManager().beginTransaction().remove(getFragmentManager().findFragmentByTag("CONTEXT")).commit();
-            }
-            if (findViewById(R.id.select_context) != null) {
-                ((ViewGroup) findViewById(R.id.select_context).getParent()).removeView(findViewById(R.id.select_context));
-
-            }
-            getWindow().setStatusBarColor(0);
-            getWindow().setNavigationBarColor(0);
-            getFragmentManager().popBackStack();
 
         } else {
             super.onBackPressed();

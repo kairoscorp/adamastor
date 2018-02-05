@@ -3,7 +3,7 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="delete">Uninstall</string>
     <string name="app_info">App. Info</string>
-    <string name="set_context">Select Context</string>
+    <string name="set_context">Context</string>
     <string name="context_Work">Work</string>
     <string name="context_Leisure">Leisure</string>
     <string name="context_Commute">Commute</string>

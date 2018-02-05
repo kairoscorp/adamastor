@@ -1,16 +1,16 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/options_menu"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_gravity="bottom"
     android:layout_alignParentTop="true"
-    android:id="@+id/options_menu"
+    android:layout_gravity="bottom"
     android:background="#00000000"
     android:focusableInTouchMode="true"
 
     tools:context="corp.kairos.adamastor.OptionsMenu">
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="bottom"
@@ -20,126 +20,143 @@
         <ImageView
             android:id="@+id/image_options"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_alignParentBottom="true"
-            android:layout_alignParentStart="true"
-            android:layout_weight="1" />
+            android:layout_centerHorizontal="true"
+            android:baselineAligned="false" />
 
         <RelativeLayout
-            android:background="@color/mdtp_white"
+            android:id="@+id/background_layout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:animateLayoutChanges="true"
+            android:background="@color/mdtp_white">
 
             <RelativeLayout
                 android:id="@+id/applabel"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
 
                 <ImageView
-                        android:layout_marginLeft="16dp"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginRight="8dp"
-                    android:layout_marginBottom="8dp"
                     android:id="@+id/image_icon"
-                    android:layout_centerVertical="true"
                     android:layout_width="60dp"
                     android:layout_height="60dp"
-                    android:src="@drawable/common_google_signin_btn_icon_light"/>
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="8dp"
+                    android:layout_marginTop="8dp"
+                    android:src="@drawable/common_google_signin_btn_icon_light" />
 
                 <TextView
-                    android:layout_marginTop="8dp"
-                    android:layout_marginLeft="8dp"
-                    android:layout_marginRight="16dp"
                     android:id="@+id/app_name"
-                    android:textSize="15sp"
-                    android:textStyle="bold"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentTop="true"
-                    android:layout_gravity="bottom"
-                    android:layout_toEndOf="@+id/image_icon"
+                    android:layout_below="@id/image_icon"
+                    android:layout_centerHorizontal="true"
                     android:layout_weight="0"
                     android:alpha="1"
                     android:background="@color/mdtp_white"
                     android:text="@string/hello_blank_fragment"
-                    android:textColor="#000000" />
+                    android:textColor="#000000"
+                    android:textSize="15sp"
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/lastUsed"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignStart="@+id/app_name"
-                    android:layout_below="@+id/app_name"
-                    android:layout_marginTop="8dp"
+                    android:layout_below="@id/app_name"
                     android:layout_marginBottom="8dp"
-                    android:textColor="@color/common_google_signin_btn_text_dark_focused"
-                    android:text="Last Used: 28/12/2017 12h05" />
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginTop="8dp"
+                    android:text="Last Used: 28/12/2017 12h05"
+                    android:textColor="@color/common_google_signin_btn_text_dark_focused" />
 
                 <TextView
                     android:id="@+id/timeUsed"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignStart="@+id/lastUsed"
-                    android:layout_below="@+id/lastUsed"
+                    android:layout_below="@id/lastUsed"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginLeft="16dp"
                     android:text="Time Used: 1h23"
-                    android:textColor="@color/common_google_signin_btn_text_dark_focused"
-                    android:layout_marginBottom="8dp"/>
+                    android:textColor="@color/common_google_signin_btn_text_dark_focused" />
 
 
             </RelativeLayout>
 
-            <Button
-                android:id="@+id/uninstall_button"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginRight="16dp"
-                android:layout_marginLeft="16dp"
-                android:padding="12dp"
-                android:textStyle="bold"
-                android:textColor="@color/primaryColor"
-                android:text="@string/delete"
                 android:layout_below="@id/applabel"
-                style="?android:attr/borderlessButtonStyle"/>
+                android:orientation="horizontal"
+                android:weightSum="3">
 
-            <Button
-                android:id="@+id/app_info_button"
-                android:layout_width="match_parent"
-                android:layout_marginRight="16dp"
-                android:layout_marginLeft="16dp"
-                android:layout_marginBottom="8dp"
-                android:layout_marginTop="8dp"
-                android:textStyle="bold"
-                android:layout_height="wrap_content"
-                android:padding="12dp"
-                android:textColor="@color/primaryColor"
-                android:text="@string/app_info"
-                android:layout_below="@id/uninstall_button"
-                style="?android:attr/borderlessButtonStyle"/>
+                <Button
+                    android:id="@+id/uninstall_button"
+                    style="@style/Widget.AppCompat.Button.Colored"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/applabel"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="8dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_weight="1"
+                    android:backgroundTint="@color/appLabelText"
+                    android:maxLines="1"
+                    android:padding="12dp"
+                    android:text="@string/delete"
+                    android:textColor="@color/mdtp_white"
+                    android:textStyle="bold" />
 
-            <Button
-                android:id="@+id/set_context_button"
-                android:layout_width="match_parent"
-                android:layout_marginRight="16dp"
-                android:layout_marginLeft="16dp"
-                android:layout_marginBottom="8dp"
-                android:layout_marginTop="8dp"
-                android:textStyle="bold"
-                android:layout_height="wrap_content"
-                android:padding="12dp"
-                android:textColor="@color/primaryColor"
-                android:text="@string/set_context"
-                android:layout_below="@id/app_info_button"
-                style="?android:attr/borderlessButtonStyle"/>
+                <Button
+                    android:id="@+id/app_info_button"
+                    style="@style/Widget.AppCompat.Button.Colored"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/uninstall_button"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="8dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_weight="1"
+                    android:backgroundTint="@color/appLabelText"
+                    android:padding="12dp"
+                    android:text="@string/app_info"
+                    android:textColor="@color/mdtp_white"
+                    android:textStyle="bold" />
+
+                <Button
+                    android:id="@+id/set_context_button"
+                    style="@style/Widget.AppCompat.Button.Colored"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/app_info_button"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="8dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_weight="1"
+                    android:backgroundTint="@color/appLabelText"
+                    android:padding="12dp"
+                    android:text="@string/set_context"
+                    android:textColor="@color/mdtp_white"
+                    android:textStyle="bold" />
+
+
+            </LinearLayout>
 
 
         </RelativeLayout>
 
 
-
-    </LinearLayout>
+    </RelativeLayout>
 
 
 </FrameLayout>

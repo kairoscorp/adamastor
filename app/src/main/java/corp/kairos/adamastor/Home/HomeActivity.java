@@ -2,6 +2,7 @@ package corp.kairos.adamastor.Home;
 
 
 import android.Manifest;
+import android.animation.Animator;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Fragment;
@@ -25,6 +26,7 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.text.SimpleDateFormat;
@@ -34,7 +36,8 @@ import java.util.Date;
 import java.util.List;
 
 import corp.kairos.adamastor.AllApps.AllAppsActivity;
-import corp.kairos.adamastor.Animation.AnimationCompatActivity;
+import corp.kairos.adamastor.Animation.Animation;
+import corp.kairos.adamastor.Animation.AnimationCompactActivity;
 import corp.kairos.adamastor.AppDetails;
 import corp.kairos.adamastor.AppsManager.AppsManager;
 import corp.kairos.adamastor.Collector.CollectorService;
@@ -368,19 +371,56 @@ public class HomeActivity extends AnimationCompatActivity {
     public void onBackPressed() {
         if (getFragmentManager().getBackStackEntryCount() > 0) {
             if (getFragmentManager().findFragmentByTag("OPTIONS") != null) {
-                getFragmentManager().beginTransaction().remove(getFragmentManager().findFragmentByTag("OPTIONS")).commit();
+              hideSetContext(this);
             }
             if (getFragmentManager().findFragmentByTag("CONTEXT") != null) {
                 getFragmentManager().beginTransaction().remove(getFragmentManager().findFragmentByTag("CONTEXT")).commit();
+                Log.i("OLS", "context");
+
             }
             if (findViewById(R.id.select_context) != null) {
                 ((ViewGroup) findViewById(R.id.select_context).getParent()).removeView(findViewById(R.id.select_context));
-                getWindow().setStatusBarColor(0);
-                getWindow().setNavigationBarColor(0);
+                Log.i("OLS", "null");
+
             }
 
+
         } else {
+            finish();
             super.onBackPressed();
+        }
+    }
+
+    public static void hideSetContext(Context ctx) {
+        RelativeLayout backgroudLayout = ((Activity) ctx).findViewById(R.id.background_layout);
+        if(backgroudLayout!= null) {
+            backgroudLayout.animate().translationY(backgroudLayout.getHeight()).setDuration(300).setListener(new Animator.AnimatorListener() {
+                @Override
+                public void onAnimationStart(Animator animator) {
+                    ImageView iv = ((Activity) ctx).findViewById(R.id.image_options);
+                    iv.animate().alpha(0.0f).setDuration(300);
+
+                }
+
+                @Override
+                public void onAnimationEnd(Animator animator) {
+
+                    backgroudLayout.setVisibility(View.GONE);
+                    Log.i("OLS", "options");
+                    ((Activity) ctx).getFragmentManager().beginTransaction().remove(((Activity) ctx).getFragmentManager().findFragmentByTag("OPTIONS")).commit();
+
+                }
+
+                @Override
+                public void onAnimationCancel(Animator animator) {
+
+                }
+
+                @Override
+                public void onAnimationRepeat(Animator animator) {
+
+                }
+            });
         }
     }
 

@@ -1,11 +1,17 @@
 package corp.kairos.adamastor;
 
+import android.animation.ArgbEvaluator;
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
+import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.GradientDrawable;
+import android.graphics.drawable.TransitionDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
@@ -14,10 +20,17 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import corp.kairos.adamastor.ContextList.ContextListActivity;
+import corp.kairos.adamastor.Home.HomeActivity;
 
 
 /**
@@ -74,14 +87,47 @@ public class OptionsMenu extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+        if(getActivity().getClass().getSimpleName().equals("ContextListActivity")){
+            ((ContextListActivity) getActivity()).contextFragment();
+
+        }
         this.appDetail = (AppDetails) this.getArguments().getSerializable("app");
-        return inflater.inflate(R.layout.fragment_options_menu, container, false);
+        Animation fromdown = AnimationUtils.loadAnimation(this.getActivity(),R.anim.slide_from_up);
+        View v = inflater.inflate(R.layout.fragment_options_menu, container, false);
+        v.startAnimation(fromdown);
+        fromdown.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+                ImageView iv = getActivity().findViewById(R.id.image_options);
+                int colorFrom = getResources().getColor(android.R.color.transparent);
+                int colorTo = getResources().getColor(R.color.black_overlay);
+                ValueAnimator colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), colorFrom, colorTo);
+                colorAnimation.setDuration(900); // milliseconds
+                colorAnimation.addUpdateListener(animator -> iv.setBackgroundColor((int) animator.getAnimatedValue()));
+                colorAnimation.start();
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
+
+        return v;
     }
 
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {
             mListener.onFragmentInteraction(uri);
         }
+    }
+    public void nothingCLickListener(View v) {
+
     }
 
     @Override
@@ -95,19 +141,27 @@ public class OptionsMenu extends Fragment {
         Button context = getActivity().findViewById(R.id.set_context_button);
         TextView lastUsed = getActivity().findViewById(R.id.lastUsed);
         TextView timeUsed = getActivity().findViewById(R.id.timeUsed);
+        RelativeLayout rl = getActivity().findViewById(R.id.background_layout);
+        rl.setOnClickListener(view -> nothingCLickListener(view));
+        GradientDrawable gd = new GradientDrawable();
+        gd.setColor(Color.WHITE);
+        gd.setCornerRadius(10);
+        rl.setBackground(gd);
         //lastUsed.setText();
         //timeUsed.setText();
         getActivity().getWindow().setNavigationBarColor(getResources().getColor(R.color.black_overlay));
         getActivity().getWindow().setStatusBarColor(getResources().getColor(R.color.black_overlay));
-        iv.setBackgroundColor(getResources().getColor(R.color.black_overlay));
         icon.setImageDrawable(appDetail.getIcon());
         if (appDetail.isSystem()) {
             uninstall.setVisibility(View.GONE);
         }
         getActivity().getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         iv.setOnClickListener(v -> {
-            View frame = getActivity().findViewById(R.id.view_option);
-            ((ViewGroup) frame.getParent()).removeView(frame);
+            HomeActivity.hideSetContext(getActivity());
+            if(getActivity().getClass().getSimpleName().equals("ContextListActivity")){
+                ((ContextListActivity) getActivity()).back--;
+
+            }
             getActivity().getWindow().setStatusBarColor(0);
             getActivity().getWindow().setNavigationBarColor(0);
         });
@@ -155,8 +209,9 @@ public class OptionsMenu extends Fragment {
 
     @Override
     public void onDetach() {
+        getActivity().getWindow().setStatusBarColor(0);
+        getActivity().getWindow().setNavigationBarColor(0);
         super.onDetach();
-        mListener = null;
     }
 
 
