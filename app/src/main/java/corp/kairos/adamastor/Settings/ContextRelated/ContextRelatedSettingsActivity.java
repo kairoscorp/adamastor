@@ -29,15 +29,15 @@ import corp.kairos.adamastor.UserContext;
 
 public class ContextRelatedSettingsActivity extends AnimationCompactActivity implements TimePickerDialog.OnTimeSetListener{
     private GoogleMap workMap;
-    private GoogleMap homeMap;
-    private MapView workplaceView;
-    private MapView homeplaceView;
-    private Location homeLoc;
+    private GoogleMap leisureMap;
+    private MapView workPlaceView;
+    private MapView leisurePlaceView;
+    private Location leisureLoc;
     private Location workLoc;
     private UserContext workContext;
-    private UserContext homeContext;
+    private UserContext leisureContext;
     private static final String MAP_VIEW_BUNDLE_WORK_KEY = "MapViewBundleWorkKey";
-    private static final String MAP_VIEW_BUNDLE_HOME_KEY = "MapViewBundleHomeKey";
+    private static final String MAP_VIEW_BUNDLE_LEISURE_KEY = "MapViewBundleLeisureKey";
     private Settings settingsUser;
     GregorianCalendar from = new GregorianCalendar();
     GregorianCalendar to = new GregorianCalendar();
@@ -50,7 +50,7 @@ public class ContextRelatedSettingsActivity extends AnimationCompactActivity imp
         setContentView(R.layout.settings_onboarding);
         this.settingsUser = Settings.getInstance(this);
         workContext = this.settingsUser.getUserContext("Work");
-        homeContext = this.settingsUser.getUserContext("Leisure");
+        leisureContext = this.settingsUser.getUserContext("Leisure");
         loadTabViewSettings();
         loadMapsSettings(savedInstanceState);
         loadWorkTimeSettings();
@@ -61,18 +61,18 @@ public class ContextRelatedSettingsActivity extends AnimationCompactActivity imp
         super.onSaveInstanceState(outState);
 
         Bundle mapWorkViewBundle = outState.getBundle(MAP_VIEW_BUNDLE_WORK_KEY);
-        Bundle mapHomeViewBundle = outState.getBundle(MAP_VIEW_BUNDLE_WORK_KEY);
+        Bundle mapLeisureViewBundle = outState.getBundle(MAP_VIEW_BUNDLE_LEISURE_KEY);
         if (mapWorkViewBundle == null) {
             mapWorkViewBundle = new Bundle();
             outState.putBundle(MAP_VIEW_BUNDLE_WORK_KEY, mapWorkViewBundle);
         }
-        if (mapHomeViewBundle == null) {
-            mapHomeViewBundle = new Bundle();
-            outState.putBundle(MAP_VIEW_BUNDLE_HOME_KEY, mapHomeViewBundle);
+        if (mapLeisureViewBundle == null) {
+            mapLeisureViewBundle = new Bundle();
+            outState.putBundle(MAP_VIEW_BUNDLE_LEISURE_KEY, mapLeisureViewBundle);
         }
 
-        workplaceView.onSaveInstanceState(mapWorkViewBundle);
-        homeplaceView.onSaveInstanceState(mapHomeViewBundle);
+        workPlaceView.onSaveInstanceState(mapWorkViewBundle);
+        leisurePlaceView.onSaveInstanceState(mapLeisureViewBundle);
 
     }
 
@@ -80,43 +80,43 @@ public class ContextRelatedSettingsActivity extends AnimationCompactActivity imp
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        workplaceView.onDestroy();
-        homeplaceView.onDestroy();
+        workPlaceView.onDestroy();
+        leisurePlaceView.onDestroy();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        workplaceView.onResume();
-        homeplaceView.onResume();
+        workPlaceView.onResume();
+        leisurePlaceView.onResume();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        workplaceView.onPause();
-        homeplaceView.onPause();
+        workPlaceView.onPause();
+        leisurePlaceView.onPause();
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        workplaceView.onStart();
-        homeplaceView.onStart();
+        workPlaceView.onStart();
+        leisurePlaceView.onStart();
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        workplaceView.onStop();
-        homeplaceView.onStop();
+        workPlaceView.onStop();
+        leisurePlaceView.onStop();
     }
 
     @Override
     public void onLowMemory() {
         super.onLowMemory();
-        workplaceView.onLowMemory();
-        homeplaceView.onLowMemory();
+        workPlaceView.onLowMemory();
+        leisurePlaceView.onLowMemory();
     }
 
 
@@ -127,16 +127,16 @@ public class ContextRelatedSettingsActivity extends AnimationCompactActivity imp
         startActivity(i);
     }
 
-    public void ShowHomeApps(View v) {
+    public void ShowLeisureApps(View v) {
         Intent i = new Intent(this, ContextRelatedAppsActivity.class);
-        String ctx = "Home";
+        String ctx = "Leisure";
         i.putExtra("CONTEXT", ctx);
         startActivity(i);
     }
 
     public void showTravelApps(View v) {
         Intent i = new Intent(this, ContextRelatedAppsActivity.class);
-        String ctx = "Travel";
+        String ctx = "Commute";
         i.putExtra("CONTEXT", ctx);
         startActivity(i);
     }
@@ -187,9 +187,9 @@ public class ContextRelatedSettingsActivity extends AnimationCompactActivity imp
         //TODO: Add listeners to collect location and save in sharedPreferences
         //TODO: Add marker to the map
 
-        workplaceView = findViewById(R.id.mapWork);
-        workplaceView.onCreate(savedInstanceState);
-        workplaceView.getMapAsync(googleMap -> {
+        workPlaceView = findViewById(R.id.mapWork);
+        workPlaceView.onCreate(savedInstanceState);
+        workPlaceView.getMapAsync(googleMap -> {
             workMap = googleMap;
             workMap.setMinZoomPreference(10);
             Location l = workContext.getLocation();
@@ -217,31 +217,31 @@ public class ContextRelatedSettingsActivity extends AnimationCompactActivity imp
             });
         });
 
-        homeplaceView = findViewById(R.id.mapHome);
-        homeplaceView.onCreate(savedInstanceState);
-        homeplaceView.getMapAsync(googleMap -> {
-            homeMap = googleMap;
-            homeMap.setMinZoomPreference(10);
-            Location l = homeContext.getLocation();
+        leisurePlaceView = findViewById(R.id.mapLeisure);
+        leisurePlaceView.onCreate(savedInstanceState);
+        leisurePlaceView.getMapAsync(googleMap -> {
+            leisureMap = googleMap;
+            leisureMap.setMinZoomPreference(10);
+            Location l = leisureContext.getLocation();
             LatLng ps = new LatLng(l.getLatitude(),l.getLongitude());
-            homeMap.moveCamera(CameraUpdateFactory.newLatLng(ps));
+            leisureMap.moveCamera(CameraUpdateFactory.newLatLng(ps));
             MarkerOptions opts = new MarkerOptions();
-            homeMap.addMarker(opts.position(ps));
+            leisureMap.addMarker(opts.position(ps));
 
-            homeMap.setOnMapClickListener(latLng -> {
-                homeMap.clear();
+            leisureMap.setOnMapClickListener(latLng -> {
+                leisureMap.clear();
                 MarkerOptions opts12 = new MarkerOptions();
                 opts12.position(latLng);
-                homeMap.addMarker(opts12);
-                homeLoc = new Location("provider");
-                homeLoc.setLatitude(latLng.latitude);
-                homeLoc.setLongitude(latLng.longitude);
-                Button btn = findViewById(R.id.btn_pickHome);
+                leisureMap.addMarker(opts12);
+                leisureLoc = new Location("provider");
+                leisureLoc.setLatitude(latLng.latitude);
+                leisureLoc.setLongitude(latLng.longitude);
+                Button btn = findViewById(R.id.btn_pickLeisure);
                 btn.setVisibility(View.VISIBLE);
 
                 btn.setOnClickListener(view -> {
-                    UserContext context = homeContext;
-                    context.setLocation(homeLoc);
+                    UserContext context = leisureContext;
+                    context.setLocation(leisureLoc);
                     settingsUser.setUserContext(context);
                 });
             });
@@ -257,10 +257,10 @@ public class ContextRelatedSettingsActivity extends AnimationCompactActivity imp
         spec.setContent(R.id.tab1);
         spec.setIndicator("Work Context");
         host.addTab(spec);
-        //Tab Context home
+        //Tab Context leisure
         spec = host.newTabSpec("Tab Two");
         spec.setContent(R.id.tab2);
-        spec.setIndicator("Home Context");
+        spec.setIndicator("Leisure Context");
         host.addTab(spec);
     }
 

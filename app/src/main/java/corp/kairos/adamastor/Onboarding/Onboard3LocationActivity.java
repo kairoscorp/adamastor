@@ -30,14 +30,14 @@ public class Onboard3LocationActivity extends AnimationCompactActivity{
     private Settings settingsUser;
 
     private GoogleMap workMap;
-    private GoogleMap homeMap;
+    private GoogleMap leisureMap;
     private MapView workplaceView;
-    private MapView homeplaceView;
-    public static final int PLACE_PICKER_REQUEST_HOME = 1;
+    private MapView leisureplaceView;
+    public static final int PLACE_PICKER_REQUEST_LEISURE = 1;
     public static final int PLACE_PICKER_REQUEST_WORK = 2;
     private Bundle savedInstanceState;
 
-    private Location homeLoc = new Location("provider");
+    private Location leisureLoc = new Location("provider");
     private Location workLoc = new Location("provider");
 
     //UMinho coordinates, if no location provider is available, this will center the map in this location, because UMinho is amazing!
@@ -58,8 +58,8 @@ public class Onboard3LocationActivity extends AnimationCompactActivity{
         this.savedInstanceState = savedInstanceState;
         workplaceView = findViewById(R.id.mapWork);
         workplaceView.onCreate(this.savedInstanceState);
-        homeplaceView = findViewById(R.id.mapHome);
-        homeplaceView.onCreate(this.savedInstanceState);
+        leisureplaceView = findViewById(R.id.mapLeisure);
+        leisureplaceView.onCreate(this.savedInstanceState);
     }
 
     @Override
@@ -75,10 +75,10 @@ public class Onboard3LocationActivity extends AnimationCompactActivity{
         finish();
     }
 
-    public void pickHomeLocation(View v) {
+    public void pickLeisureLocation(View v) {
         PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
         try {
-            startActivityForResult(builder.build(this), PLACE_PICKER_REQUEST_HOME);
+            startActivityForResult(builder.build(this), PLACE_PICKER_REQUEST_LEISURE);
         } catch (GooglePlayServicesRepairableException e) {
             e.printStackTrace();
         } catch (GooglePlayServicesNotAvailableException e) {
@@ -98,7 +98,7 @@ public class Onboard3LocationActivity extends AnimationCompactActivity{
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == PLACE_PICKER_REQUEST_HOME)
+        if (requestCode == PLACE_PICKER_REQUEST_LEISURE)
             if (resultCode == RESULT_OK) {
                 Place place = PlacePicker.getPlace(this,data);
                 homeAddress = String.format("%s", place.getAddress());
@@ -135,27 +135,27 @@ public class Onboard3LocationActivity extends AnimationCompactActivity{
         showNext();
     }
 
-    private void showHomeMap(String address, LatLng pos) {
-        findViewById(R.id.warning_location_home).setVisibility(View.INVISIBLE);
-        ((TextView)findViewById(R.id.home_location_label)).setTextSize(15);
-        ((TextView)findViewById(R.id.home_location_address)).setText(address);
-        homeplaceView.setVisibility(View.VISIBLE);
-        homeplaceView.setClickable(false);
-        homeplaceView.getMapAsync(googleMap -> {
-            homeMap = googleMap;
-            homeMap.getUiSettings().setMapToolbarEnabled(false);
-            homeMap.moveCamera(CameraUpdateFactory.newLatLng(pos));
+    private void showLeisureMap(String address, LatLng pos) {
+        findViewById(R.id.warning_location_leisure).setVisibility(View.INVISIBLE);
+        ((TextView)findViewById(R.id.leisure_location_label)).setTextSize(15);
+        ((TextView)findViewById(R.id.leisure_location_address)).setText(address);
+        leisureplaceView.setVisibility(View.VISIBLE);
+        leisureplaceView.setClickable(false);
+        leisureplaceView.getMapAsync(googleMap -> {
+            leisureMap = googleMap;
+            leisureMap.getUiSettings().setMapToolbarEnabled(false);
+            leisureMap.moveCamera(CameraUpdateFactory.newLatLng(pos));
             MarkerOptions opts = new MarkerOptions();
             opts.position(pos);
             homeMap.clear();
             homeMap.addMarker(opts);
         });
-        pickHome = true;
+        pickLeisure = true;
         showNext();
     }
 
     private void showNext() {
-        if (pickHome && pickWork) {
+        if (pickLeisure && pickWork) {
             findViewById(R.id.next2).setVisibility(View.VISIBLE);
         }
     }
@@ -163,13 +163,13 @@ public class Onboard3LocationActivity extends AnimationCompactActivity{
     public void goNext(View v) {
         Intent i = new Intent(this,Onboard4ContextAppsActivity.class);
 
-        UserContext homeContext = this.settingsUser.getUserContext("Leisure");
+        UserContext leisureContext = this.settingsUser.getUserContext("Leisure");
         UserContext workContext = this.settingsUser.getUserContext("Work");
 
-        homeContext.setLocation(homeLoc);
+        leisureContext.setLocation(leisureLoc);
         workContext.setLocation(workLoc);
 
-        this.settingsUser.setUserContext(homeContext);
+        this.settingsUser.setUserContext(leisureContext);
         this.settingsUser.setUserContext(workContext);
 
         startActivity(i);

@@ -24,11 +24,11 @@ public class Util {
         // Creating 3 static contexts to simulate the intended behaviour */
         UserContext[] staticContexts = new UserContext[3];
 
-        List<String> homeApps = Arrays.asList("com.google.android.talk", "com.facebook.katana");
+        List<String> leisureApps = Arrays.asList("com.google.android.talk", "com.facebook.katana");
         List<String> workApps = Arrays.asList("com.google.android.gm", "com.Slack", "com.google.android.calendar");
-        List<String> travellingApps = Arrays.asList("com.google.android.apps.maps", "com.google.android.apps.fitness");
+        List<String> commuteApps = Arrays.asList("com.google.android.apps.maps", "com.google.android.apps.fitness");
 
-        List<List<String>> apps = Arrays.asList(homeApps, workApps, travellingApps);
+        List<List<String>> apps = Arrays.asList(leisureApps, workApps, commuteApps);
 
         // These loops just associate different apps with different contexts
         int n = 0;

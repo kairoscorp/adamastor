@@ -205,10 +205,8 @@ public class HomeActivity extends AnimationCompactActivity {
         switch (tabTag) {
             case "Work":
                 return R.drawable.work_background;
-            case "Travel":
             case "Commute":
                 return R.drawable.commute_background;
-            case "Home":
             case "Leisure":
             default:
                 return R.drawable.leisure_background;

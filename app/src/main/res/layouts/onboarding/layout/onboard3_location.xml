@@ -33,7 +33,7 @@
 
             <com.google.android.gms.maps.MapView
                 xmlns:map="http://schemas.android.com/apk/res-auto"
-                android:id="@+id/mapHome"
+                android:id="@+id/mapLeisure"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_alignParentStart="true"
@@ -45,7 +45,7 @@
                 android:layout_marginBottom="85dp"/>
 
             <TextView
-                android:id="@+id/warning_location_home"
+                android:id="@+id/warning_location_leisure"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
@@ -57,29 +57,29 @@
                 android:textStyle="italic" />
 
             <TextView
-                android:id="@+id/home_location_label"
+                android:id="@+id/leisure_location_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/mapHome"
+                android:layout_below="@+id/mapLeisure"
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="-80dp"
-                android:text="@string/onboarding_location_home_label"
+                android:text="@string/onboarding_location_leisure_label"
                 android:textAppearance="@android:style/TextAppearance.Material.Medium"
                 android:textColor="@android:color/black" />
 
             <TextView
-                android:id="@+id/home_location_address"
+                android:id="@+id/leisure_location_address"
                 android:layout_width="180dp"
                 android:layout_height="match_parent"
-                android:layout_alignStart="@+id/home_location_label"
-                android:layout_below="@+id/home_location_label"
+                android:layout_alignStart="@+id/leisure_location_label"
+                android:layout_below="@+id/leisure_location_label"
                 android:text="@string/onboarding_location_default_address"
                 android:textSize="12sp"
                 android:textStyle="bold"
                 android:visibility="visible" />
 
             <Button
-                android:id="@+id/btn_pickHome"
+                android:id="@+id/btn_pickLeisure"
                 style="@android:style/Widget.Material.Button.Colored"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -87,7 +87,7 @@
                 android:layout_alignParentEnd="true"
                 android:layout_marginBottom="10dp"
                 android:layout_marginEnd="10dp"
-                android:onClick="pickHomeLocation"
+                android:onClick="pickLeisureLocation"
                 android:text="@string/btn_set_location"
                 android:textSize="12sp" />
 
