@@ -241,6 +241,7 @@ public class HomeActivity extends AnimationCompactActivity {
     }
 
     public void showAllAppsMenu(View v) {
+        MediatorService.getInstance().regularETL();
         super.setAnimation("down");
         Intent i = new Intent(this, AllAppsActivity.class);
         startActivity(i);
