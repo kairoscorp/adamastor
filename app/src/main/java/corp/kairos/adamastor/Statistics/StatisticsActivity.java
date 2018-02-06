@@ -35,6 +35,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 import corp.kairos.adamastor.Animation.AnimationCompatActivity;
 import corp.kairos.adamastor.Animation.AnimationCompactActivity;
@@ -57,11 +58,11 @@ public class StatisticsActivity extends AnimationCompatActivity {
     private static Settings settings;
     private static Map<String, Set<AppDetails>> statistics;
 
+    private Measure measure = Measure.HOURS; // 0 - HOURS | 1 - MINUTES | 2 - SECONDS | 3 - MILLISECONDS
     private TabLayout tabLayout;
     private PieChart chart;
     private View mList;
     private View mChart;
-    private static RelativeLayout mStatsInfo;
     private FloatingActionButton mSwitch;
     private int mShortAnimationDuration;
     private boolean isShowingGraph = true;
@@ -87,7 +88,6 @@ public class StatisticsActivity extends AnimationCompatActivity {
         chart = findViewById(R.id.pie_chart);
         mList = findViewById(R.id.stats_applications);
         mChart = findViewById(R.id.stats_contexts);
-        mStatsInfo = findViewById(R.id.no_stats_info);
 
         mSwitch = (FloatingActionButton) findViewById(R.id.id_statistics_swap_button);
 
@@ -136,15 +136,28 @@ public class StatisticsActivity extends AnimationCompatActivity {
 
     private void loadContextStatistics(){
         Map<String, Long> contextStats = appsManager.getContextStatistics();
-
-        List<PieEntry> pieEntries = new ArrayList<>();
-        long percentage, finalTotal = 0;
+        long finalTotal = 0;
+        long timeInHours, timeInMinutes, timeInSeconds;
         for (Map.Entry<String, Long> stat : contextStats.entrySet()) {
             finalTotal += stat.getValue();
+            timeInHours = TimeUnit.MILLISECONDS.toHours(stat.getValue());
+            if(timeInHours < 1) {
+                timeInMinutes = TimeUnit.MILLISECONDS.toMinutes(stat.getValue());
+                measure = measure.max(Measure.MINUTES.id);
+                if(timeInMinutes < 1) {
+                    timeInSeconds = TimeUnit.MILLISECONDS.toSeconds(stat.getValue());
+                    measure = measure.max(Measure.SECONDS.id);
+                    if(timeInSeconds < 1) {
+                        measure = measure.max(Measure.MILLISECONDS.id);
+                    }
+                }
+            }
         }
+        List<PieEntry> pieEntries = new ArrayList<>();
         for (Map.Entry<String, Long> stat : contextStats.entrySet()) {
-            percentage = (stat.getValue() * 100) / finalTotal;
-            pieEntries.add(new PieEntry(stat.getValue(), stat.getKey() + " ("+percentage+"%)"));
+            long percentage = (stat.getValue() * 100) / finalTotal;
+            long time = measure.getValue(stat.getValue());
+            pieEntries.add(new PieEntry(stat.getValue(), stat.getKey() + ": " + time + " " + measure.name + ", " + Math.round(percentage) + "%"));
         }
 
         PieDataSet dataSet = new PieDataSet(pieEntries, "");
@@ -359,5 +372,64 @@ public class StatisticsActivity extends AnimationCompatActivity {
             // Show 3 total pages.
             return 3;
         }
+    }
+
+    private enum Measure {
+
+        HOURS, MINUTES, SECONDS, MILLISECONDS;
+
+        private int id;
+        private String name;
+
+        static {
+            HOURS.id = 0;
+            HOURS.name = "hours";
+
+            MINUTES.id = 1;
+            MINUTES.name = "minutes";
+
+            SECONDS.id = 2;
+            SECONDS.name = "seconds";
+
+            MILLISECONDS.id = 3;
+            MILLISECONDS.name = "milliseconds";
+        }
+
+        public long getValue(long value) {
+            switch (this.id) {
+                case 0:
+                    return TimeUnit.MILLISECONDS.toHours(value);
+                case 1:
+                    return TimeUnit.MILLISECONDS.toMinutes(value);
+                case 2:
+                    return TimeUnit.MILLISECONDS.toSeconds(value);
+                case 3:
+                    return value;
+
+                default:
+                    return 0;
+            }
+        }
+
+        private Measure getMeasure(int id) {
+            switch (id) {
+                case 0:
+                    return HOURS;
+                case 1:
+                    return MINUTES;
+                case 2:
+                    return SECONDS;
+                case 3:
+                    return MILLISECONDS;
+
+                default:
+                    return HOURS;
+            }
+        }
+
+        public Measure max(int id) {
+            return getMeasure(Math.max(this.id, id));
+        }
+
     }
 }

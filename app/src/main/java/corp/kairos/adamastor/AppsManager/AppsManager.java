@@ -109,7 +109,7 @@ public class AppsManager {
         }
         Map<String, Set<AppDetails>> result = new TreeMap<>();
         for(String contextName : contextsNames) {
-            result.put(contextName, statisticsManager.getContextAppsStatistics(this.allAppsDetails, contextName));
+            result.put(contextName, statisticsManager.getContextAppsStatistics(this.appsDetailsWithoutLauncher, contextName));
         }
         return result;
     }
