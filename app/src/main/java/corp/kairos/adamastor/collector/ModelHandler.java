@@ -17,7 +17,10 @@ import org.jpmml.evaluator.OutputField;
 import org.jpmml.evaluator.TargetField;
 import org.jpmml.model.FieldUtil;
 import org.jpmml.model.SerializationUtil;
+<<<<<<< HEAD
 
+=======
+>>>>>>> 71a17aec1b654c29759045bcdc5b786432fee9b8
 import java.util.Calendar;
 
 import java.io.InputStream;
@@ -123,8 +126,14 @@ public class ModelHandler {
 
             Map<FieldName, ?> result = evaluator.evaluate(entry);
 
+<<<<<<< HEAD
             prediction = ((Double)EvaluatorUtil.decode(result.get(predictedFields.get(0).getName()))).intValue();
             Log.i("CollectorServiceLog", "Context :" + String.valueOf(prediction));
+=======
+
+            prediction = (int)EvaluatorUtil.decode(result.get(predictedFields.get(0)));
+            Log.i("ModelHandlerLog", String.valueOf(prediction));
+>>>>>>> 71a17aec1b654c29759045bcdc5b786432fee9b8
         }
 
         return prediction;
@@ -132,7 +141,11 @@ public class ModelHandler {
 
     public void setModel(InputStream is){
         try{
+<<<<<<< HEAD
             this.evaluator = this.createEvaluator(is);
+=======
+            this. evaluator = this.createEvaluator(is);
+>>>>>>> 71a17aec1b654c29759045bcdc5b786432fee9b8
         }catch(Exception e){
             Log.i("CollectorServiceLog", "Error Reading Model");
         }
@@ -140,6 +153,10 @@ public class ModelHandler {
 
     private Evaluator createEvaluator(InputStream is) throws Exception {
         PMML pmml = SerializationUtil.deserializePMML(is);
+<<<<<<< HEAD
+=======
+
+>>>>>>> 71a17aec1b654c29759045bcdc5b786432fee9b8
         ModelEvaluatorFactory modelEvaluatorFactory = ModelEvaluatorFactory.newInstance();
 
         ModelEvaluator<?> modelEvaluator = modelEvaluatorFactory.newModelEvaluator(pmml);
@@ -174,10 +191,17 @@ public class ModelHandler {
         locationNow.setLatitude(latNow);
         locationNow.setLongitude(logNow);
 
+<<<<<<< HEAD
         Settings settings = Settings.getInstance(CollectorService.getInstance());
 
         Location locationWork = settings.getUserContext("Work").getLocation();
         Location locationHome = settings.getUserContext("Home").getLocation();
+=======
+        Settings settings = new Settings(CollectorService.getInstance());
+
+        Location locationWork = settings.getUserContext("Work").getLocation();
+        Location locationHome = settings.getUserContext("Leisure").getLocation();
+>>>>>>> 71a17aec1b654c29759045bcdc5b786432fee9b8
 
         double homeDistance = locationNow.distanceTo(locationHome);
         double workDistance = locationNow.distanceTo(locationWork);
@@ -189,7 +213,11 @@ public class ModelHandler {
         }else{
             result = 3;
         }
+<<<<<<< HEAD
         Log.i("CollectorServiceLog", "Location = " + String.valueOf(result));
+=======
+
+>>>>>>> 71a17aec1b654c29759045bcdc5b786432fee9b8
         return result;
     }
 

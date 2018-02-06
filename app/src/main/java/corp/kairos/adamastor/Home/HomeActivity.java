@@ -80,10 +80,10 @@ public class HomeActivity extends AnimationCompactActivity {
             this.monthDayTextView = (TextView) findViewById(R.id.month_day_text_view);
             this.weekdayYearTextView = (TextView) findViewById(R.id.weekday_year_text_view);
 
-
             // Set navigation
             super.setAnimation("up");
             this.setDownActivity(AllAppsActivity.class);
+
             this.setLeftActivity(StatisticsActivity.class);
             this.setRightActivity(ContextListActivity.class);
 
@@ -97,6 +97,7 @@ public class HomeActivity extends AnimationCompactActivity {
             if (permissionsGranted) {
                 bindCollectorService();
             }
+
         }
     }
 
@@ -105,7 +106,6 @@ public class HomeActivity extends AnimationCompactActivity {
         Date time = Calendar.getInstance().getTime();
          SimpleDateFormat df = new SimpleDateFormat("MMMM dd");
         this.monthDayTextView.setText(df.format(time));
-
         df = new SimpleDateFormat("EEEE, yyyy");
         this.weekdayYearTextView.setText(df.format(time));
     }

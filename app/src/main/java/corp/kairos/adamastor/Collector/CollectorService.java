@@ -48,13 +48,11 @@ import java.util.TreeMap;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 
-
 import corp.kairos.adamastor.AppDetails;
 import corp.kairos.adamastor.AppsManager.AppsManager;
 import corp.kairos.adamastor.Collector.LogDatabaseHelper;
 import corp.kairos.adamastor.ServerMediator.MediatorService;
 import corp.kairos.adamastor.UserContext;
-
 
 public class CollectorService extends Service implements GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener {
@@ -76,6 +74,7 @@ public class CollectorService extends Service implements GoogleApiClient.Connect
     private UsageStatsManager usageStatsManager;
     private AudioManager audioManager;
     private TelephonyManager telephonyManager;
+
 
     private Location lastLocation;
     private boolean checkLocation = false;
@@ -127,6 +126,7 @@ public class CollectorService extends Service implements GoogleApiClient.Connect
         }else{
             this.predictionActive = false;
         }
+
 
         this.skp();
 
@@ -258,6 +258,7 @@ public class CollectorService extends Service implements GoogleApiClient.Connect
                 String provider;
                 //TODO Remove account
                 String account = "null";
+
                 Calendar localDate = Calendar.getInstance();
                 String time = getTimeNow(localDate);
                 String appForeground = getForegroundTask();
