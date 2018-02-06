@@ -155,7 +155,6 @@ public class MediatorService extends Service {
 
     public void regularETL(){
 
-        OkHttpClient client = new OkHttpClient();
         CollectorService collectorService = CollectorService.getInstance();
 
         if(collectorService != null) {
@@ -165,9 +164,49 @@ public class MediatorService extends Service {
 
             RequestBody requestBody = new MultipartBody.Builder()
                     .setType(MultipartBody.FORM)
-                    .addFormDataPart("csv_file", "logdump.csv", RequestBody.create(CSV, logDump))
+                    .addFormDataPart("csvfile", "csvfile.csv", RequestBody.create(CSV, logDump))
                     .addFormDataPart("locations", "locations.JSON", RequestBody.create(JSON, locationJSON))
                     .build();
+
+            Request request = new Request.Builder()
+                    .url(REGULAR_ETL_URL)
+                    .post(requestBody)
+                    .build();
+
+            client.newCall(request).enqueue(new Callback() {
+                @Override
+                public void onFailure(Call call, IOException e) {
+                    Log.i(TAG, e.getMessage());
+                }
+
+                @Override
+                public void onResponse(Call call, final Response response) {
+                    if (!response.isSuccessful()) {
+                        Log.i(TAG, "Server Response Not Sucessful");
+                    } else {
+                        try {
+                            ByteArrayInputStream bis = new ByteArrayInputStream(
+                                    response.body().bytes());
+
+                            CollectorService.getInstance().setModel(bis);
+                        } catch (IOException e) {
+                            Log.i(TAG, "Error Reading Server Response");
+                        }
+                    }
+                }
+            });
+        }
+    }
+
+    public void alternative_regularETL(){
+
+        CollectorService collectorService = CollectorService.getInstance();
+
+        if(collectorService != null) {
+
+            File logDump = collectorService.dumpCleanDatabaseToCSV();
+
+            RequestBody requestBody = RequestBody.create(CSV, logDump);
 
             Request request = new Request.Builder()
                     .url(REGULAR_ETL_URL)

@@ -166,7 +166,7 @@ public class LogDatabaseHelper extends SQLiteOpenHelper {
 
     public File exportDatabaseCSV(){
         File dir = CollectorService.getInstance().getDir("dumps",Context.MODE_PRIVATE);
-        File file = new File(dir,"logdump.csv");
+        File file = new File(dir,"csvfile.csv");
         try
         {
             file.createNewFile();
@@ -177,7 +177,6 @@ public class LogDatabaseHelper extends SQLiteOpenHelper {
 
             while(curCSV.moveToNext())
             {
-                //Which column you want to exprort
                 String arrStr[] ={
                         curCSV.getString(curCSV.getColumnIndex("id")),
                         curCSV.getString(curCSV.getColumnIndex("timestamp")),
@@ -191,6 +190,56 @@ public class LogDatabaseHelper extends SQLiteOpenHelper {
                         curCSV.getString(curCSV.getColumnIndex("longitude")),
                         curCSV.getString(curCSV.getColumnIndex("provider")),
                         curCSV.getString(curCSV.getColumnIndex("account")),
+                        curCSV.getString(curCSV.getColumnIndex("context"))
+                };
+                csvWrite.writeNext(arrStr);
+            }
+            csvWrite.close();
+            curCSV.close();
+        }
+        catch(Exception sqlEx)
+        {
+            Log.e(TAG, sqlEx.getMessage(), sqlEx);
+        }
+        return file;
+    }
+
+    public File exportCleanDatabaseCSV(){
+        File dir = CollectorService.getInstance().getDir("dumps",Context.MODE_PRIVATE);
+        File file = new File(dir,"csvfile.csv");
+        try
+        {
+            file.createNewFile();
+            CSVWriter csvWrite = new CSVWriter(new FileWriter(file));
+            SQLiteDatabase db = this.getReadableDatabase();
+            Cursor curCSV = db.rawQuery("SELECT * FROM ServiceLogs",null);
+            csvWrite.writeNext(curCSV.getColumnNames());
+            csvWrite.writeNext(new String[] {
+                    "timestamp",
+                    "foregorund",
+                    "activity",
+                    "screen_active",
+                    "call_active",
+                    "music_active",
+                    "ring_mode",
+                    "location",
+                    "context"});
+
+            while(curCSV.moveToNext())
+            {
+                String arrStr[] ={
+                        curCSV.getString(curCSV.getColumnIndex("timestamp")),
+                        String.valueOf(this.getAppKey(
+                                curCSV.getString(curCSV.getColumnIndex("foreground")))),
+                        curCSV.getString(curCSV.getColumnIndex("activity")),
+                        curCSV.getString(curCSV.getColumnIndex("screen_active")),
+                        curCSV.getString(curCSV.getColumnIndex("call_active")),
+                        curCSV.getString(curCSV.getColumnIndex("music_active")),
+                        curCSV.getString(curCSV.getColumnIndex("ring_mode")),
+                        String.valueOf(DataCleaner.getLocation(
+                                curCSV.getDouble(curCSV.getColumnIndex("latitude")),
+                                curCSV.getDouble(curCSV.getColumnIndex("longitude")),
+                                curCSV.getString(curCSV.getColumnIndex("provider")))),
                         curCSV.getString(curCSV.getColumnIndex("context"))
                 };
                 csvWrite.writeNext(arrStr);

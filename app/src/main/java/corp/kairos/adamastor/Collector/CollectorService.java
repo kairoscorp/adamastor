@@ -151,6 +151,7 @@ public class CollectorService extends Service implements GoogleApiClient.Connect
     public File dumpDatabaseToCSV(){
         return logDatabaseHelper.exportDatabaseCSV();
     }
+    public File dumpCleanDatabaseToCSV(){return logDatabaseHelper.exportCleanDatabaseCSV();}
 
     public void setModel(InputStream modelIS){
         if(logDatabaseHelper.setModel(modelIS)){

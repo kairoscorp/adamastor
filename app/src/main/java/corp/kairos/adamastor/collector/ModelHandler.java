@@ -65,22 +65,23 @@ public class ModelHandler {
             for(InputField field : activeFields){
                 switch(field.getName().getValue()){
                     case "hour": hourValue = FieldValueUtil.prepareInputValue(field.getField(),
-                            field.getMiningField(), this.getHour(time));
+                            field.getMiningField(), DataCleaner.getHour(time));
                             entry.put(hourField,hourValue);
                             break;
 
                     case "minute": minuteValue = FieldValueUtil.prepareInputValue(field.getField(),
-                            field.getMiningField(), this.getMinute(time));
+                            field.getMiningField(), DataCleaner.getMinute(time));
                             entry.put(minuteField,minuteValue);
                             break;
 
                     case "weekday": weekdayValue = FieldValueUtil.prepareInputValue(
-                            field.getField(), field.getMiningField(), this.getWeekday(time));
+                            field.getField(), field.getMiningField(), DataCleaner.getWeekday(time));
                             entry.put(weekdayField,weekdayValue);
                             break;
 
                     case "foreground": foregroundValue = FieldValueUtil.prepareInputValue(
-                            field.getField(), field.getMiningField(), this.getActivity(foreground));
+                            field.getField(), field.getMiningField(),
+                            DataCleaner.getActivity(foreground));
                             entry.put(foregroundField,foregroundValue);
                             break;
 
@@ -110,8 +111,8 @@ public class ModelHandler {
                             break;
 
                     case "location": locationValue = FieldValueUtil.prepareInputValue(
-                            field.getField(), field.getMiningField(), this.getLocation(longitute,
-                                    latitude, provider));
+                            field.getField(), field.getMiningField(),
+                            DataCleaner.getLocation(longitute, latitude, provider));
                             entry.put(locationField,locationValue);
                             break;
 
@@ -148,57 +149,5 @@ public class ModelHandler {
         modelEvaluator.verify();
 
         return modelEvaluator;
-    }
-
-    private int getHour(Calendar c){
-        return c.get(Calendar.HOUR_OF_DAY);
-    }
-
-    private int getMinute(Calendar c){
-        return c.get(Calendar.MINUTE);
-    }
-
-    private int getWeekday(Calendar c){
-        return c.get(Calendar.DAY_OF_WEEK);
-    }
-
-    private int getLocation(double logNow, double latNow, String provider){
-        double range = 0;
-        int result = 1;
-
-        if(provider.equals("gps")){
-            range = 200;
-        }else{
-            range = 500;
-        }
-
-        Location locationNow = new Location("Location Now");
-        locationNow.setLatitude(latNow);
-        locationNow.setLongitude(logNow);
-
-        Settings settings = Settings.getInstance(CollectorService.getInstance());
-
-        Location locationWork = settings.getUserContext("Work").getLocation();
-        Location locationHome = settings.getUserContext("Home").getLocation();
-
-        double homeDistance = locationNow.distanceTo(locationHome);
-        double workDistance = locationNow.distanceTo(locationWork);
-
-        if(homeDistance < range){
-            result = 1;
-        }else if(workDistance < range){
-            result = 2;
-        }else{
-            result = 3;
-        }
-        Log.i("CollectorServiceLog", "Location = " + String.valueOf(result));
-
-        return result;
-    }
-
-    private int getActivity(String app){
-
-        return CollectorService.getInstance().getAppKey(app);
-
     }
 }
