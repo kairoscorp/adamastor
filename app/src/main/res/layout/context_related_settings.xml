@@ -171,7 +171,7 @@
                         android:layout_height="wrap_content"
                         android:gravity="center"
                         android:paddingTop="20dp"
-                        android:text="@string/onboarding_leisure"
+                        android:text="@string/onboarding_home"
                         android:textAppearance="@style/TextAppearance.AppCompat.Large" />
 
                     <com.google.android.gms.maps.MapView
