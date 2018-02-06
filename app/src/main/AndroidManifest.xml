@@ -126,11 +126,6 @@
             </intent-filter>
         </service>
 
-        <activity
-            android:name=".Statistics.StatisticsActivity"
-            android:label="@string/title_activity_statistics"
-            android:theme="@style/AppTheme.NoActionBar" />
-
         <receiver android:name=".AppsManager.AppsBroadcastService">
             <intent-filter>
                 <category android:name="android.intent.category.DEFAULT" />
@@ -148,12 +143,15 @@
         <activity
             android:name=".Settings.ContextRelated.EditContextAppsActivity"
             android:label="Context Apps" />
+
         <activity
             android:name=".Settings.LocationSettingsActivity"
             android:label="Location" />
+
         <activity
             android:name=".Settings.KairosSettingsActivity"
             android:label="Kairos Settings"></activity>
+            
         <activity android:name=".Settings.ScheduleSettingsActivity" />
     
         <activity
@@ -164,6 +162,6 @@
             android:name=".Statistics.StatisticsActivity"
             android:label="@string/title_activity_statistics"
             android:theme="@style/AppTheme.NoActionBar" />
-    
+
     </application>
 </manifest>

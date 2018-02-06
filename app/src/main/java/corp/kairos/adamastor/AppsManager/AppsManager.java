@@ -90,7 +90,7 @@ public class AppsManager {
         if(this.needToLoad()) {
             setupApps(packageManager);
         }
-        Map<String, AppDetails> statistics = statisticsManager.getAppsStatistics(this.allAppsDetails, usm);
+        Map<String, AppDetails> statistics = statisticsManager.getAppsStatistics(this.appsDetailsWithoutLauncher, usm);
         Map<String, AppDetails> result = new TreeMap<>();
         if(filtered) {
             for(Map.Entry<String, AppDetails> app : statistics.entrySet()) {
