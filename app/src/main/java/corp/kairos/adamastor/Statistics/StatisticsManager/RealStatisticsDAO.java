@@ -65,4 +65,18 @@ public class RealStatisticsDAO implements StatisticsDAO {
 
         return appStatsMap;
     }
+
+    public Set<AppDetails> getContextAppsStatistics(Map<String, AppDetails> allAppsDetails, String context) {
+        Set<AppDetails> result = new TreeSet<>(new StatisticsAppDetailsComparator());
+        Map<String, Long> collectorResult = collectorService.getContextAppsStatistics(context);
+        for(Map.Entry<String, Long> entry : collectorResult.entrySet()) {
+            AppDetails app = allAppsDetails.get(entry.getKey());
+            if(app != null) {
+                app.setUsageStatistics(entry.getValue());
+                result.add(app);
+            }
+        }
+
+        return result;
+    }
 }

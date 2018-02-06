@@ -27,6 +27,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.components.Description;
@@ -59,6 +60,7 @@ public class StatisticsActivity extends AnimationCompatActivity {
     private static PackageManager packageManager;
     private static AppsManager appsManager;
     private static Settings settings;
+    private static Map<String, Set<AppDetails>> statistics;
 
     private TabLayout tabLayout;
     private PieChart chart;
@@ -123,6 +125,8 @@ public class StatisticsActivity extends AnimationCompatActivity {
         packageManager = this.getPackageManager();
         appsManager = AppsManager.getInstance();
         settings = Settings.getInstance(this);
+
+        statistics = appsManager.getAppsStatisticsByContext(settings.getContextNames(), packageManager);
 
         // Load Application Statistics View
         loadAppsStatistics();
@@ -329,8 +333,7 @@ public class StatisticsActivity extends AnimationCompatActivity {
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_statistics_activity, stats_applications, false);
 
-            UserContext context = settings.getUserContext(getArguments().getString(ARG_SECTION_NUMBER));
-            Set<AppDetails> stats = appsManager.getAppStatisticsByContext(context, packageManager, (UsageStatsManager) getActivity().getSystemService(Context.USAGE_STATS_SERVICE));
+            Set<AppDetails> stats = statistics.get(getArguments().getString(ARG_SECTION_NUMBER));
 
             RelativeLayout no_stats = rootView.findViewById(R.id.no_stats_info);
             ListView list = rootView.findViewById(R.id.stats_apps_list);

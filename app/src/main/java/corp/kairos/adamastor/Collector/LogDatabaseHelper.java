@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 import java.util.concurrent.TimeUnit;
 
@@ -467,5 +468,33 @@ public class LogDatabaseHelper extends SQLiteOpenHelper {
         buffer.flush();
 
         return buffer.toByteArray();
+    }
+    
+    public Map<String, Long> getContextAppsStatistics(String context) {
+        Map<String, Long> result = new TreeMap<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        String query =
+                "SELECT logs.foreground As Foreground, SUM(logs.id) AS Times " +
+                "FROM 'ServiceLogs' AS logs " +
+                "WHERE logs.context = '" + context + "' " +
+                "GROUP BY logs.foreground;";
+
+        Cursor res = db.rawQuery(query, null );
+        res.moveToFirst();
+
+        while(!res.isAfterLast()) {
+            String activity = res.getString(res.getColumnIndex("Foreground"));
+
+            // Each record means approximately 10 seconds in the context
+            int timeSeconds = res.getInt(res.getColumnIndex("Times")) * 10;
+
+            result.put(activity, TimeUnit.SECONDS.toMillis(timeSeconds));
+
+            Log.i(TAG, "Activity: " + activity + " | Seconds: " + timeSeconds);
+            res.moveToNext();
+        }
+
+        return result;
     }
 }

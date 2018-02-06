@@ -59,4 +59,21 @@ public class RandomStatisticsDAO implements StatisticsDAO {
         }
         return appStatsMap;
     }
+
+    @Override
+    public Set<AppDetails> getContextAppsStatistics(Map<String, AppDetails> allAppsDetails, String context) {
+        Set<AppDetails> stats = new TreeSet<>(new StatisticsAppDetailsComparator());
+        long min = TimeUnit.MINUTES.toMillis(15);
+        long max = TimeUnit.MINUTES.toMillis(360);
+        long randomTime = 0;
+
+        for(Map.Entry<String, AppDetails> entry : allAppsDetails.entrySet()) {
+            AppDetails app = entry.getValue();
+            randomTime =  ThreadLocalRandom.current().nextLong(min, max);
+            app.setUsageStatistics(randomTime);
+            stats.add(app);
+        }
+
+        return stats;
+    }
 }

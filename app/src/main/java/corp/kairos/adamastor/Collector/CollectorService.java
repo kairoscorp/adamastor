@@ -49,6 +49,7 @@ import java.util.TreeMap;
 import corp.kairos.adamastor.AppDetails;
 import corp.kairos.adamastor.AppsManager.AppsManager;
 import corp.kairos.adamastor.ServerMediator.MediatorService;
+import corp.kairos.adamastor.Settings.Settings;
 
 public class CollectorService extends Service implements GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener {
@@ -381,6 +382,13 @@ public class CollectorService extends Service implements GoogleApiClient.Connect
             currentApp = tasks.get(0).processName;
         }
 
+        try{
+            result = (String) packageManager.getApplicationLabel(packageManager.getApplicationInfo(
+                    currentApp, PackageManager.GET_META_DATA));
+        }catch(Exception e){
+            result = currentApp;
+        }
+
         return currentApp;
     }
 
@@ -532,6 +540,17 @@ public class CollectorService extends Service implements GoogleApiClient.Connect
         Set<AppDetails> allApps = appsManager.getAllApps(packageManager, true);
         for(AppDetails ad : allApps){
             this.logDatabaseHelper.addEntryAppLookUp(ad.getPackageName());
+        }
+    }
+
+    public Map<String, Long> getContextAppsStatistics(String context) {
+        return logDatabaseHelper.getContextAppsStatistics(context);
+    }
+
+    public class CollectorServiceBinder extends Binder {
+        public CollectorService getBinder(){
+            Log.i(TAG, "GettingBinder");
+            return CollectorService.this;
         }
     }
 

@@ -27,10 +27,8 @@ import corp.kairos.adamastor.UserContext;
 public class AppsManager {
     private Map<String, AppDetails> allAppsDetails;
     private Map<String, AppDetails> appsDetailsWithoutLauncher;
-    private Settings settings;
     private StatisticsDAO statisticsManager;
     private static AppsManager instance;
-    private BroadcastReceiver listener;
     protected Boolean force;
 
     private static final String TAG = AppsManager.class.getName();
@@ -105,13 +103,13 @@ public class AppsManager {
         return statistics;
     }
 
-    public Set<AppDetails> getAppStatisticsByContext(UserContext userContext, PackageManager packageManager, UsageStatsManager usm) {
-        Set<AppDetails> result = new TreeSet<>(new StatisticsAppDetailsComparator());
-        Map<String, AppDetails> statistics = this.getAppsStatistics(packageManager, usm, true);
-        for(AppDetails app : userContext.getContextApps()) {
-            if(statistics.containsKey(app.getPackageName())) {
-                result.add(statistics.get(app.getPackageName()));
-            }
+    public Map<String, Set<AppDetails>> getAppsStatisticsByContext(List<String> contextsNames, PackageManager packageManager) {
+        if(this.needToLoad()) {
+            setupApps(packageManager);
+        }
+        Map<String, Set<AppDetails>> result = new TreeMap<>();
+        for(String contextName : contextsNames) {
+            result.put(contextName, statisticsManager.getContextAppsStatistics(this.allAppsDetails, contextName));
         }
         return result;
     }
@@ -126,6 +124,7 @@ public class AppsManager {
             return app;
         }
     }
+
 
     public Map<String, Long> getContextStatistics() {
          return statisticsManager.getContextStatistics();

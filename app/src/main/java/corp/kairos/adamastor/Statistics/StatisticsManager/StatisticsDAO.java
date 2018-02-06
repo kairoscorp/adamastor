@@ -12,5 +12,8 @@ public interface StatisticsDAO {
 
     int getAppTime(AppDetails app);
     String lastTimeApp(AppDetails app);
+    
     Map<String, AppDetails> getAppsStatistics(Map<String, AppDetails> allAppsDetails, UsageStatsManager usm);
+
+    Set<AppDetails> getContextAppsStatistics(Map<String, AppDetails> allAppsDetails, String context);
 }
