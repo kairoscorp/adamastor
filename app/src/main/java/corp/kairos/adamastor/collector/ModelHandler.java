@@ -17,10 +17,6 @@ import org.jpmml.evaluator.OutputField;
 import org.jpmml.evaluator.TargetField;
 import org.jpmml.model.FieldUtil;
 import org.jpmml.model.SerializationUtil;
-<<<<<<< HEAD
-
-=======
->>>>>>> 71a17aec1b654c29759045bcdc5b786432fee9b8
 import java.util.Calendar;
 
 import java.io.InputStream;
