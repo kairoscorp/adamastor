@@ -63,13 +63,13 @@ public class Onboard4ContextAppsActivity extends AnimationCompactActivity {
                 super.setAnimation("left");
                 super.onBackPressed();
                 break;
-            case "Home":
+            case "Leisure":
                 atualContextName = "Work";
                 animationLeft();
                 loadSettings();
                 break;
             case "Commute":
-                atualContextName = "Home";
+                atualContextName = "Leisure";
                 animationLeft();
                 loadSettings();
                 break;
@@ -85,7 +85,7 @@ public class Onboard4ContextAppsActivity extends AnimationCompactActivity {
         TextView label = ((TextView)findViewById(R.id.id_add_app_contexts_label));
         TextView description = ((TextView)findViewById(R.id.id_add_app_contexts_description));
         switch (atualContextName) {
-            case "Home":
+            case "Leisure":
                 image.setImageDrawable(getDrawable(R.drawable.ic_leisure_white));
                 label.setText(R.string.leisure_name);
                 description.setText(R.string.add_app_contexts_description_leisure);
@@ -127,11 +127,11 @@ public class Onboard4ContextAppsActivity extends AnimationCompactActivity {
     public void goNext(View v) {
         switch (atualContextName) {
             case "Work":
-                atualContextName = "Home";
+                atualContextName = "Leisure";
                 animationRight();
                 loadSettings();
                 break;
-            case "Home":
+            case "Leisure":
                 atualContextName = "Commute";
                 animationRight();
                 loadSettings();

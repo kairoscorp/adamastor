@@ -44,6 +44,8 @@ public class Onboard3LocationActivity extends AnimationCompactActivity{
     private LatLng pos = new LatLng(41.56131,-8.393804);
     private boolean pickWork = false;
     private boolean pickHome = false;
+    private String homeAddress;
+    private String workAddress;
 
 
 
@@ -99,16 +101,16 @@ public class Onboard3LocationActivity extends AnimationCompactActivity{
         if (requestCode == PLACE_PICKER_REQUEST_HOME)
             if (resultCode == RESULT_OK) {
                 Place place = PlacePicker.getPlace(this,data);
-                String address = String.format("%s", place.getAddress());
-                showHomeMap(address, place.getLatLng());
+                homeAddress = String.format("%s", place.getAddress());
+                showHomeMap(homeAddress, place.getLatLng());
                 homeLoc.setLatitude(place.getLatLng().latitude);
                 homeLoc.setLongitude(place.getLatLng().longitude);
             }
             if (requestCode == PLACE_PICKER_REQUEST_WORK)
                 if (resultCode == RESULT_OK) {
                     Place place = PlacePicker.getPlace(this,data);
-                    String address = String.format("%s", place.getAddress());
-                    showWorkMap(address,place.getLatLng());
+                    workAddress = String.format("%s", place.getAddress());
+                    showWorkMap(workAddress,place.getLatLng());
                     workLoc.setLatitude(place.getLatLng().latitude);
                     workLoc.setLongitude(place.getLatLng().longitude);
             }
@@ -126,6 +128,7 @@ public class Onboard3LocationActivity extends AnimationCompactActivity{
             workMap.moveCamera(CameraUpdateFactory.newLatLng(pos));
             MarkerOptions opts = new MarkerOptions();
             opts.position(pos);
+            workMap.clear();
             workMap.addMarker(opts);
         });
         pickWork = true;
@@ -144,6 +147,7 @@ public class Onboard3LocationActivity extends AnimationCompactActivity{
             homeMap.moveCamera(CameraUpdateFactory.newLatLng(pos));
             MarkerOptions opts = new MarkerOptions();
             opts.position(pos);
+            homeMap.clear();
             homeMap.addMarker(opts);
         });
         pickHome = true;
