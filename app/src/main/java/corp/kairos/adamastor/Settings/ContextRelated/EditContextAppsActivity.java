@@ -6,18 +6,18 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import corp.kairos.adamastor.Animation.AnimationCompatActivity;
 import corp.kairos.adamastor.R;
 import corp.kairos.adamastor.Settings.Settings;
 import corp.kairos.adamastor.UserContext;
 
 
-public class EditContextAppsActivity extends AppCompatActivity{
+public class EditContextAppsActivity extends AnimationCompatActivity {
     private ViewPager viewPager;
     private TabLayout tabLayout;
     private Settings userSettings;
@@ -29,6 +29,7 @@ public class EditContextAppsActivity extends AppCompatActivity{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setAnimation("left");
         userSettings = Settings.getInstance(getApplicationContext());
         workContext = userSettings.getUserContext("Work");
         leisureContext = userSettings.getUserContext("Leisure");
@@ -36,6 +37,7 @@ public class EditContextAppsActivity extends AppCompatActivity{
 
         setContentView(R.layout.activity_select_context_apps);
 
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         viewPager = findViewById(R.id.viewpager);
         tabLayout = findViewById(R.id.context_tabs);
         createViewPager(viewPager);
@@ -43,6 +45,18 @@ public class EditContextAppsActivity extends AppCompatActivity{
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(viewPager));
         }
+
+    @Override
+    public void onBackPressed() {
+        setAnimation("right");
+        finish();
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
+    }
 
     private void createViewPager(ViewPager viewPager) {
         pagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
@@ -68,6 +82,7 @@ public class EditContextAppsActivity extends AppCompatActivity{
             userSettings.setUserContext(f.getUserContext());
         }
         userSettings.saveContextSettings();
+        setAnimation("right");
         finish();
     }
 

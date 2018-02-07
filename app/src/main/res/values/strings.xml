@@ -63,4 +63,8 @@
     <string name="weekday_year_dummy_text">Weekday Year</string>
     <string name="search_hint">Search apps...</string>
     <string name="edit_apps_button">Edit Context Apps</string>
+    <string name="settings_schedules_label">Schedules</string>
+    <string name="settings_locations_label">Locations</string>
+    <string name="settings_context_apps_label">Context Apps</string>
+
 </resources>

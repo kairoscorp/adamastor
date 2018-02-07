@@ -101,6 +101,7 @@ public class Onboard3LocationActivity extends AnimationCompatActivity {
                 showHomeMap(homeAddress, place.getLatLng());
                 homeLoc.setLatitude(place.getLatLng().latitude);
                 homeLoc.setLongitude(place.getLatLng().longitude);
+                pickHome = true;
             }
             if (requestCode == PLACE_PICKER_REQUEST_WORK)
                 if (resultCode == RESULT_OK) {
@@ -109,10 +110,11 @@ public class Onboard3LocationActivity extends AnimationCompatActivity {
                     showWorkMap(workAddress,place.getLatLng());
                     workLoc.setLatitude(place.getLatLng().latitude);
                     workLoc.setLongitude(place.getLatLng().longitude);
+                    pickWork  = true;
             }
     }
 
-    private void showWorkMap(String address, LatLng pos) {
+    public void showWorkMap(String address, LatLng pos) {
         findViewById(R.id.warning_location_work).setVisibility(View.INVISIBLE);
         ((TextView)findViewById(R.id.work_location_label)).setTextSize(15);
         ((TextView)findViewById(R.id.work_location_address)).setText(address);
@@ -127,11 +129,10 @@ public class Onboard3LocationActivity extends AnimationCompatActivity {
             workMap.clear();
             workMap.addMarker(opts);
         });
-        pickWork = true;
         showNext();
     }
 
-    private void showHomeMap(String address, LatLng pos) {
+    public void showHomeMap(String address, LatLng pos) {
         findViewById(R.id.warning_location_home).setVisibility(View.INVISIBLE);
         ((TextView)findViewById(R.id.home_location_label)).setTextSize(15);
         ((TextView)findViewById(R.id.home_location_address)).setText(address);
@@ -146,7 +147,6 @@ public class Onboard3LocationActivity extends AnimationCompatActivity {
             homeMap.clear();
             homeMap.addMarker(opts);
         });
-        pickHome = true;
         showNext();
     }
 
@@ -156,18 +156,26 @@ public class Onboard3LocationActivity extends AnimationCompatActivity {
         }
     }
 
-    public void goNext(View v) {
-        Intent i = new Intent(this,Onboard4ContextAppsActivity.class);
 
-        UserContext leisureContext = this.settingsUser.getUserContext("Leisure");
+    public void save() {
+        UserContext homeContext = this.settingsUser.getUserContext("Leisure");
         UserContext workContext = this.settingsUser.getUserContext("Work");
 
-        leisureContext.setLocation(homeLoc);
-        workContext.setLocation(workLoc);
+        if (pickHome) {
+            homeContext.setLocation(homeLoc);
+            homeContext.setAddress(homeAddress);
+            this.settingsUser.setUserContext(homeContext);
+        }
+        if (pickWork) {
+            workContext.setLocation(workLoc);
+            workContext.setAddress(workAddress);
+            this.settingsUser.setUserContext(workContext);
+        }
+    }
 
-        this.settingsUser.setUserContext(leisureContext);
-        this.settingsUser.setUserContext(workContext);
-
+    public void goNext(View v) {
+        save();
+        Intent i = new Intent(this,Onboard4ContextAppsActivity.class);
         startActivity(i);
     }
 }

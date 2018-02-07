@@ -106,6 +106,7 @@ public class Settings {
         UserContext uc = new UserContext(contextName, contextApps);
         uc.setTimes(start,end);
         uc.setLocation(pos);
+        uc.setAddress(address);
         return uc;
     }
 
