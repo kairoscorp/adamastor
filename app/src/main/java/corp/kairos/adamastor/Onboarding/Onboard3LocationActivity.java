@@ -20,12 +20,13 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.Set;
 
+import corp.kairos.adamastor.Animation.AnimationCompactActivity;
 import corp.kairos.adamastor.R;
 import corp.kairos.adamastor.Settings.Settings;
 import corp.kairos.adamastor.UserContext;
 
 
-public class Onboard3LocationActivity extends AppCompatActivity{
+public class Onboard3LocationActivity extends AnimationCompactActivity{
     private Settings settingsUser;
 
     private GoogleMap workMap;
@@ -60,7 +61,14 @@ public class Onboard3LocationActivity extends AppCompatActivity{
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        super.setAnimation("right");
+    }
+
+    @Override
     public void onBackPressed() {
+        super.setAnimation("left");
         startActivity(new Intent(getApplicationContext(),Onboard1WelcomeActivity.class));
         finish();
     }

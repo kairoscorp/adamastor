@@ -2,7 +2,12 @@ package corp.kairos.adamastor.Onboarding;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.text.Layout;
+import android.transition.TransitionManager;
 import android.view.View;
+import android.view.animation.AnimationUtils;
+import android.view.animation.LayoutAnimationController;
 import android.widget.TextView;
 
 import com.borax12.materialdaterangepicker.time.RadialPickerLayout;
@@ -29,7 +34,6 @@ public class Onboard5ScheduleActivity extends AnimationCompactActivity implement
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        super.setAnimation("up");
         setContentView(R.layout.onboard5_schedule);
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         this.settingsUser = Settings.getInstance(this);
@@ -47,13 +51,15 @@ public class Onboard5ScheduleActivity extends AnimationCompactActivity implement
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        super.setAnimation("right");
+    }
+
+    @Override
     public void onBackPressed() {
-        if(screen == ONBOARDING_SCHEDULE) {
+            super.setAnimation("left");
             super.onBackPressed();
-        } else {
-            setContentView(R.layout.onboard5_schedule);
-            screen = ONBOARDING_SCHEDULE;
-        }
     }
 
     public void showTimePicker(View v) {
@@ -82,14 +88,7 @@ public class Onboard5ScheduleActivity extends AnimationCompactActivity implement
 
     public void goNext(View v) {
         settingsUser.saveContextSettings();
-        setContentView(R.layout.onboard6_final);
-        screen = ONBOARDING_FINISH;
-    }
-
-    public void finish(View v) {
-        settingsUser.setOnboardingDone();
-        Intent i = new Intent(this, HomeActivity.class);
+        Intent i = new Intent(this, Onboard6FinalActivity.class);
         startActivity(i);
-        finish();
     }
 }
