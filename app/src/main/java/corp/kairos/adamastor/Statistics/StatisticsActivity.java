@@ -2,7 +2,6 @@ package corp.kairos.adamastor.Statistics;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
-import android.app.usage.UsageStatsManager;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
@@ -22,7 +21,6 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.components.Description;
@@ -38,13 +36,11 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import corp.kairos.adamastor.Animation.AnimationCompatActivity;
-import corp.kairos.adamastor.Animation.AnimationCompactActivity;
 import corp.kairos.adamastor.AppDetails;
 import corp.kairos.adamastor.AppsManager.AppsManager;
 import corp.kairos.adamastor.Home.HomeActivity;
 import corp.kairos.adamastor.R;
 import corp.kairos.adamastor.Settings.Settings;
-import corp.kairos.adamastor.UserContext;
 
 public class StatisticsActivity extends AnimationCompatActivity {
 
@@ -75,7 +71,6 @@ public class StatisticsActivity extends AnimationCompatActivity {
         packageManager = this.getPackageManager();
         appsManager = AppsManager.getInstance();
         settings = Settings.getInstance(this);
-        setContentView(R.layout.statistics_activity);
 
         // Set animations
         super.setAnimation("right");
@@ -106,10 +101,6 @@ public class StatisticsActivity extends AnimationCompatActivity {
     @Override
     public void onResume(){
         super.onResume();
-
-        packageManager = this.getPackageManager();
-        appsManager = AppsManager.getInstance();
-        settings = Settings.getInstance(this);
 
         statistics = appsManager.getAppsStatisticsByContext(settings.getContextNames(), packageManager);
 

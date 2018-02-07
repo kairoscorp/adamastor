@@ -120,9 +120,9 @@ public class LogDatabaseHelper extends SQLiteOpenHelper {
         Map<String, Long> result = new TreeMap<>();
         SQLiteDatabase db = this.getReadableDatabase();
 
-        String query = "SELECT logs.context As Context, SUM(logs.id) AS Times " +
-                "FROM 'ServiceLogs' AS logs " +
-                "GROUP BY logs.context;";
+        String query = "SELECT logs.context As Context, COUNT(logs.id) AS Times " +
+                       "FROM 'ServiceLogs' AS logs " +
+                       "GROUP BY logs.context;";
 
         Cursor res = db.rawQuery(query, null);
         res.moveToFirst();
@@ -475,7 +475,7 @@ public class LogDatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
 
         String query =
-                "SELECT logs.foreground As Foreground, SUM(logs.id) AS Times " +
+                "SELECT logs.foreground As Foreground, COUNT(logs.id) AS Times " +
                 "FROM 'ServiceLogs' AS logs " +
                 "WHERE logs.context = '" + context + "' " +
                 "GROUP BY logs.foreground;";
