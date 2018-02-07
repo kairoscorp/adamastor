@@ -3,26 +3,17 @@ package corp.kairos.adamastor.Onboarding;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.TextView;
 
-import com.borax12.materialdaterangepicker.time.RadialPickerLayout;
-import com.borax12.materialdaterangepicker.time.TimePickerDialog;
-
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.GregorianCalendar;
-
-import corp.kairos.adamastor.Animation.AnimationCompactActivity;
+import corp.kairos.adamastor.Animation.AnimationCompatActivity;
 import corp.kairos.adamastor.Home.HomeActivity;
 import corp.kairos.adamastor.R;
 import corp.kairos.adamastor.Settings.Settings;
-import corp.kairos.adamastor.UserContext;
 
 /**
  * Created by jlsilva94 on 07/02/18.
  */
 
-public class Onboard6FinalActivity extends AnimationCompactActivity{
+public class Onboard6FinalActivity extends AnimationCompatActivity {
 
     private Settings settingsUser;
 

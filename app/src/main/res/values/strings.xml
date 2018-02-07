@@ -17,7 +17,7 @@
     <string name="onboarding_summary">we want to know some things about you!</string>
     <string name="onboarding_work_hours">Working hours</string>
     <string name="onboarding_work_place">Workplace Location</string>
-    <string name="onboarding_house">Home Location</string>
+    <string name="onboarding_home">Home Location</string>
     <string name="title_activity_statistics">Statistics</string>
     <string name="action_settings">Settings</string>
     <string name="onboarding_special_permission_title">Just one thing!</string>

@@ -1,10 +1,8 @@
 package corp.kairos.adamastor.Onboarding;
 
-import android.app.AppOpsManager;
 import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.TextView;
 
@@ -18,22 +16,20 @@ import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-import java.util.Set;
-
-import corp.kairos.adamastor.Animation.AnimationCompactActivity;
+import corp.kairos.adamastor.Animation.AnimationCompatActivity;
 import corp.kairos.adamastor.R;
 import corp.kairos.adamastor.Settings.Settings;
 import corp.kairos.adamastor.UserContext;
 
 
-public class Onboard3LocationActivity extends AnimationCompactActivity{
+public class Onboard3LocationActivity extends AnimationCompatActivity {
     private Settings settingsUser;
 
     private GoogleMap workMap;
     private GoogleMap homeMap;
     private MapView workplaceView;
     private MapView homeplaceView;
-    public static final int PLACE_PICKER_REQUEST_HOME = 1;
+    public static final int PLACE_PICKER_REQUEST_LEISURE = 1;
     public static final int PLACE_PICKER_REQUEST_WORK = 2;
     private Bundle savedInstanceState;
 
@@ -78,7 +74,7 @@ public class Onboard3LocationActivity extends AnimationCompactActivity{
     public void pickHomeLocation(View v) {
         PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
         try {
-            startActivityForResult(builder.build(this), PLACE_PICKER_REQUEST_HOME);
+            startActivityForResult(builder.build(this), PLACE_PICKER_REQUEST_LEISURE);
         } catch (GooglePlayServicesRepairableException e) {
             e.printStackTrace();
         } catch (GooglePlayServicesNotAvailableException e) {
@@ -98,7 +94,7 @@ public class Onboard3LocationActivity extends AnimationCompactActivity{
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == PLACE_PICKER_REQUEST_HOME)
+        if (requestCode == PLACE_PICKER_REQUEST_LEISURE)
             if (resultCode == RESULT_OK) {
                 Place place = PlacePicker.getPlace(this,data);
                 homeAddress = String.format("%s", place.getAddress());
@@ -163,13 +159,13 @@ public class Onboard3LocationActivity extends AnimationCompactActivity{
     public void goNext(View v) {
         Intent i = new Intent(this,Onboard4ContextAppsActivity.class);
 
-        UserContext homeContext = this.settingsUser.getUserContext("Leisure");
+        UserContext leisureContext = this.settingsUser.getUserContext("Leisure");
         UserContext workContext = this.settingsUser.getUserContext("Work");
 
-        homeContext.setLocation(homeLoc);
+        leisureContext.setLocation(homeLoc);
         workContext.setLocation(workLoc);
 
-        this.settingsUser.setUserContext(homeContext);
+        this.settingsUser.setUserContext(leisureContext);
         this.settingsUser.setUserContext(workContext);
 
         startActivity(i);

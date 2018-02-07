@@ -3,15 +3,13 @@ package corp.kairos.adamastor.Onboarding;
 import android.app.AppOpsManager;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 
-import corp.kairos.adamastor.Animation.AnimationCompactActivity;
+import corp.kairos.adamastor.Animation.AnimationCompatActivity;
 import corp.kairos.adamastor.R;
 
 
-public class Onboard2SpecialPermissionActivity extends AnimationCompactActivity{
+public class Onboard2SpecialPermissionActivity extends AnimationCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
