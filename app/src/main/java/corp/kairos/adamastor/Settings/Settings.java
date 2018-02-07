@@ -28,7 +28,7 @@ public class Settings {
 
     private static final String TAG = Settings.class.getName();
 
-    private Map<String,UserContext> contexts;
+    private Map<String, UserContext> contexts;
     public int contextsNumber;
 
     private Context context;
@@ -39,7 +39,7 @@ public class Settings {
     private static final String CONTEXT_NAME = "_name";
     private static final String LOC_ADDR = "_address";
 
-    public static final String [] contextsNames = {
+    public static final String[] contextsNames = {
             "Leisure",
             "Work",
             "Commute"
@@ -58,13 +58,13 @@ public class Settings {
     }
 
     private void setUpContexts() {
-        for(String contextName: contextsNames) {
+        for (String contextName : contextsNames) {
             this.contexts.put(contextName, loadContextSettings(contextName));
         }
     }
 
     public static Settings getInstance(Context c) {
-        if(instance == null) {
+        if (instance == null) {
             instance = new Settings(c);
         }
 
@@ -72,18 +72,19 @@ public class Settings {
     }
 
     public boolean isOnboardingDone() {
-        SharedPreferences sharedPref = context.getSharedPreferences("GENERAL",Context.MODE_PRIVATE);
-        return sharedPref.getBoolean("OnboardingDone",false);
+        SharedPreferences sharedPref = context.getSharedPreferences("GENERAL", Context.MODE_PRIVATE);
+        return sharedPref.getBoolean("OnboardingDone", false);
     }
+
     public void setOnboardingDone() {
-        SharedPreferences sharedPref = context.getSharedPreferences("GENERAL",Context.MODE_PRIVATE);
+        SharedPreferences sharedPref = context.getSharedPreferences("GENERAL", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
-        editor.putBoolean("OnboardingDone",true);
+        editor.putBoolean("OnboardingDone", true);
         editor.apply();
     }
 
     public UserContext loadContextSettings(String contextName) {
-        SharedPreferences sharedPref = context.getSharedPreferences("Prefs_"+contextName, Context.MODE_PRIVATE);
+        SharedPreferences sharedPref = context.getSharedPreferences("Prefs_" + contextName, Context.MODE_PRIVATE);
 
         List<AppDetails> contextApps = new ArrayList<>();
         GregorianCalendar start = new GregorianCalendar();
@@ -91,34 +92,34 @@ public class Settings {
         Location pos = new Location("Provider");
 
         start.setTimeInMillis(sharedPref.getLong(TIME_FROM, 0));
-        end.setTimeInMillis(sharedPref.getLong(TIME_TO,0));
-        pos.setLatitude(sharedPref.getFloat(LOC_LAT,0));
-        pos.setLongitude(sharedPref.getFloat(LOC_LNG,0));
-        String address = sharedPref.getString(LOC_ADDR,"");
+        end.setTimeInMillis(sharedPref.getLong(TIME_TO, 0));
+        pos.setLatitude(sharedPref.getFloat(LOC_LAT, 0));
+        pos.setLongitude(sharedPref.getFloat(LOC_LNG, 0));
+        String address = sharedPref.getString(LOC_ADDR, "");
         Set<AppDetails> allApps = this.appsManager.getAllApps(context.getPackageManager(), true);
 
         for (AppDetails app : allApps) {
-            if(sharedPref.getBoolean(app.getPackageName(), false)) {
+            if (sharedPref.getBoolean(app.getPackageName(), false)) {
                 contextApps.add(app);
             }
         }
 
         UserContext uc = new UserContext(contextName, contextApps);
-        uc.setTimes(start,end);
+        uc.setTimes(start, end);
         uc.setLocation(pos);
         uc.setAddress(address);
         return uc;
     }
 
     public void saveContextSettings() {
-        for(UserContext userContext : contexts.values()) {
+        for (UserContext userContext : contexts.values()) {
             this.saveContextSettings(userContext);
         }
     }
 
 
     public void saveContextSettings(UserContext userContext) {
-        SharedPreferences sharedPref = context.getSharedPreferences("Prefs_"+userContext.getContextName(), Context.MODE_PRIVATE);
+        SharedPreferences sharedPref = context.getSharedPreferences("Prefs_" + userContext.getContextName(), Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
 
         editor.putString(CONTEXT_NAME, userContext.getContextName());
@@ -128,9 +129,9 @@ public class Settings {
         editor.putLong(TIME_TO, userContext.getEnd().getTimeInMillis());
 
         //Save location
-        editor.putFloat(LOC_LAT,(float)userContext.getLocation().getLatitude());
-        editor.putFloat(LOC_LNG,(float)userContext.getLocation().getLongitude());
-        editor.putString(LOC_ADDR,userContext.getAddress());
+        editor.putFloat(LOC_LAT, (float) userContext.getLocation().getLatitude());
+        editor.putFloat(LOC_LNG, (float) userContext.getLocation().getLongitude());
+        editor.putString(LOC_ADDR, userContext.getAddress());
 
         //Save Apps
         for (AppDetails app : userContext.getContextApps()) {
@@ -222,8 +223,8 @@ public class Settings {
 
     public void resetSettings() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            for(String contextName: this.contexts.keySet()) {
-                context.deleteSharedPreferences("Prefs_"+contextName);
+            for (String contextName : this.contexts.keySet()) {
+                context.deleteSharedPreferences("Prefs_" + contextName);
             }
         }
     }
@@ -240,13 +241,13 @@ public class Settings {
         UserContext zeroContext = new UserContext("Other Apps", new ArrayList<>());
         int i;
         Set<AppDetails> allApps = this.appsManager.getAllApps(this.packageManager, false);
-        for (AppDetails app: allApps) {
+        for (AppDetails app : allApps) {
             i = 0;
-            for (UserContext context: contexts) {
+            for (UserContext context : contexts) {
                 if (context.appExists(app)) break;
                 else i++;
             }
-            if (i==contextsNumber) zeroContext.addApp(app);
+            if (i == contextsNumber) zeroContext.addApp(app);
         }
 
         return zeroContext;

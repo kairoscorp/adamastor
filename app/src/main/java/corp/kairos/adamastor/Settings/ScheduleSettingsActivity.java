@@ -21,7 +21,7 @@ public class ScheduleSettingsActivity extends Onboard5ScheduleActivity {
         Button save = findViewById(R.id.next3);
         save.setText("save changes");
         findViewById(R.id.worktime_title).setVisibility(View.GONE);
-        ((TextView)findViewById(R.id.worktime_description)).setTextSize(16);
+        ((TextView) findViewById(R.id.worktime_description)).setTextSize(16);
 
         super.from = workContext.getInit();
         super.to = workContext.getEnd();

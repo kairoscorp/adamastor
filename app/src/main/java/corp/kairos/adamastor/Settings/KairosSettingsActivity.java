@@ -29,14 +29,14 @@ public class KairosSettingsActivity extends AnimationCompatActivity {
     }
 
     public void schedules(View v) {
-        startActivity(new Intent(getApplicationContext(),ScheduleSettingsActivity.class));
+        startActivity(new Intent(getApplicationContext(), ScheduleSettingsActivity.class));
     }
 
     public void locations(View v) {
-        startActivity(new Intent(getApplicationContext(),LocationSettingsActivity.class));
+        startActivity(new Intent(getApplicationContext(), LocationSettingsActivity.class));
     }
 
     public void contextApps(View v) {
-        startActivity( new Intent(getApplicationContext(), EditContextAppsActivity.class));
+        startActivity(new Intent(getApplicationContext(), EditContextAppsActivity.class));
     }
 }

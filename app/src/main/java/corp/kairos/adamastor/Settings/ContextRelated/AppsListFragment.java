@@ -27,7 +27,8 @@ public class AppsListFragment extends Fragment {
     private String userContextName;
 
 
-    public AppsListFragment() {}
+    public AppsListFragment() {
+    }
 
     public static AppsListFragment newInstance(UserContext userContext) {
         AppsListFragment fragment = new AppsListFragment();
@@ -45,9 +46,10 @@ public class AppsListFragment extends Fragment {
         this.allApps = appsManager.getAllApps(getActivity().getPackageManager(), false);
     }
 
-    public UserContext getUserContext () {
+    public UserContext getUserContext() {
         return this.userContext;
     }
+
     public void setUserContext(UserContext uc) {
         this.userContext = uc;
     }

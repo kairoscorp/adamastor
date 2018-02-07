@@ -44,7 +44,7 @@ public class EditContextAppsActivity extends AnimationCompatActivity {
 
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(viewPager));
-        }
+    }
 
     @Override
     public void onBackPressed() {
@@ -77,8 +77,8 @@ public class EditContextAppsActivity extends AnimationCompatActivity {
 
     public void save(View v) {
         Settings userSettings = Settings.getInstance(getApplicationContext());
-        for (int i = 0; i < pagerAdapter.getCount(); i++ ) {
-            AppsListFragment f = (AppsListFragment)pagerAdapter.getItem(i);
+        for (int i = 0; i < pagerAdapter.getCount(); i++) {
+            AppsListFragment f = (AppsListFragment) pagerAdapter.getItem(i);
             userSettings.setUserContext(f.getUserContext());
         }
         userSettings.saveContextSettings();
