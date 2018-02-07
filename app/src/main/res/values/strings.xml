@@ -62,4 +62,5 @@
     <string name="month_day_dummy_text">Month Day</string>
     <string name="weekday_year_dummy_text">Weekday Year</string>
     <string name="search_hint">Search apps...</string>
+    <string name="edit_apps_button">Edit Context Apps</string>
 </resources>

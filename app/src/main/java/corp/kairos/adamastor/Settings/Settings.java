@@ -39,7 +39,7 @@ public class Settings {
     private static final String CONTEXT_NAME = "_name";
 
     public static final String [] contextsNames = {
-            "Home",
+            "Leisure",
             "Work",
             "Commute"
     };

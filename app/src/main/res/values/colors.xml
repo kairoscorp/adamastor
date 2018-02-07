@@ -11,6 +11,7 @@
     <color name="secondaryTextColor">#ffffff</color>
 
     <color name="black_overlay">#66000000</color>
+    <color name="white_overlay">#DDFFFFFF</color>
     <color name="appLabelText">#414243</color>
     <color name="translucid_background">#66ffffff</color>
 </resources>

@@ -161,23 +161,9 @@ public class HomeActivity extends AnimationCompactActivity {
         this.tabLayout.setupWithViewPager(this.viewPager);
         int i = 0;
         for (UserContext context : this.userContexts) {
-            int iconCode;
+
             // TODO: make contexts carry their own icon
-            switch (context.getContextName()) {
-                case "Work":
-                    iconCode = R.drawable.ic_work_black_24dp;
-                    break;
-                case "Home":
-                case "Leisure":
-                    iconCode = R.drawable.ic_leisure_black_24dp;
-                    break;
-                case "Travel":
-                case "Commute":
-                    iconCode = R.drawable.ic_commute_black_24dp;
-                    break;
-                default:
-                    iconCode = R.drawable.ic_settings_black_24dp;
-            }
+            int iconCode = UserContext.getContextIcon(context.getContextName());
 
             // Setup Icon and Tab Tag
             TabLayout.Tab tab = this.tabLayout.getTabAt(i);
@@ -234,7 +220,6 @@ public class HomeActivity extends AnimationCompactActivity {
     @Override
     protected void onResume() {
         super.onResume();
-
         checkPermissions();
         if (permissionsGranted)
             bindCollectorService();

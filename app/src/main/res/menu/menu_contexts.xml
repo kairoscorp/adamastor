@@ -1,0 +1,17 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="corp.kairos.adamastor.ContextList.EditContextAppsActivity">
+    <item
+        android:id="@+id/id_menu_context_work"
+        android:title="@string/work_name"
+        android:icon="@drawable/ic_work_white"/>
+    <item
+        android:id="@+id/id_menu_context_leisure"
+        android:title="@string/leisure_name"
+        android:icon="@drawable/ic_leisure_white"/>
+    <item
+        android:id="@+id/id_menu_context_commute"
+        android:title="@string/commute_name"
+        android:icon="@drawable/ic_commute_white"/>
+</menu>

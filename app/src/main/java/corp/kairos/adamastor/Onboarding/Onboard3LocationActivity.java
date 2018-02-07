@@ -21,6 +21,7 @@ import java.util.Set;
 
 import corp.kairos.adamastor.R;
 import corp.kairos.adamastor.Settings.Settings;
+import corp.kairos.adamastor.UserContext;
 
 
 public class Onboard3LocationActivity extends AppCompatActivity{
@@ -34,8 +35,8 @@ public class Onboard3LocationActivity extends AppCompatActivity{
     public static final int PLACE_PICKER_REQUEST_WORK = 2;
     private Bundle savedInstanceState;
 
-    private Location homeLoc;
-    private Location workLoc;
+    private Location homeLoc = new Location("provider");
+    private Location workLoc = new Location("provider");
 
     //UMinho coordinates, if no location provider is available, this will center the map in this location, because UMinho is amazing!
     private LatLng pos = new LatLng(41.56131,-8.393804);
@@ -87,15 +88,17 @@ public class Onboard3LocationActivity extends AppCompatActivity{
                 Place place = PlacePicker.getPlace(this,data);
                 String address = String.format("%s", place.getAddress());
                 showHomeMap(address, place.getLatLng());
-
-        }
-        if (requestCode == PLACE_PICKER_REQUEST_WORK)
-            if (resultCode == RESULT_OK) {
-                Place place = PlacePicker.getPlace(this,data);
-                String address = String.format("%s", place.getAddress());
-                showWorkMap(address,place.getLatLng());
-
-        }
+                homeLoc.setLatitude(place.getLatLng().latitude);
+                homeLoc.setLongitude(place.getLatLng().longitude);
+            }
+            if (requestCode == PLACE_PICKER_REQUEST_WORK)
+                if (resultCode == RESULT_OK) {
+                    Place place = PlacePicker.getPlace(this,data);
+                    String address = String.format("%s", place.getAddress());
+                    showWorkMap(address,place.getLatLng());
+                    workLoc.setLatitude(place.getLatLng().latitude);
+                    workLoc.setLongitude(place.getLatLng().longitude);
+            }
     }
 
     private void showWorkMap(String address, LatLng pos) {
@@ -142,7 +145,16 @@ public class Onboard3LocationActivity extends AppCompatActivity{
 
     public void goNext(View v) {
         Intent i = new Intent(this,Onboard4ContextAppsActivity.class);
-        Set<String> contexts = this.settingsUser.getContexts().keySet();
+
+        UserContext homeContext = this.settingsUser.getUserContext("Leisure");
+        UserContext workContext = this.settingsUser.getUserContext("Work");
+
+        homeContext.setLocation(homeLoc);
+        workContext.setLocation(workLoc);
+
+        this.settingsUser.setUserContext(homeContext);
+        this.settingsUser.setUserContext(workContext);
+
         startActivity(i);
         finish();
     }
