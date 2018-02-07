@@ -10,10 +10,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 
+import corp.kairos.adamastor.Animation.AnimationCompactActivity;
 import corp.kairos.adamastor.R;
 import corp.kairos.adamastor.Settings.Settings;
 
-public class Onboard1WelcomeActivity extends AppCompatActivity {
+public class Onboard1WelcomeActivity extends AnimationCompactActivity {
     private boolean permissionsGranted = false;
     public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
     private Settings settingsUser;
@@ -30,11 +31,20 @@ public class Onboard1WelcomeActivity extends AppCompatActivity {
         this.settingsUser.resetSettings();
         checkPermissions();
     }
+    @Override
+    protected void onResume() {
+        super.onResume();
+        super.setAnimation("right");
+    }
+
+    @Override
+    public void onBackPressed() {
+        //do nothing!
+    }
 
     public void start(View v) {
         Intent i = new Intent(this,Onboard2SpecialPermissionActivity.class);
         startActivity(i);
-        finish();
     }
 
     private void checkPermissions(){

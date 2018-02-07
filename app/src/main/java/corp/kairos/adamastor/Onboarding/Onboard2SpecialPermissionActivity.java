@@ -7,10 +7,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 
+import corp.kairos.adamastor.Animation.AnimationCompactActivity;
 import corp.kairos.adamastor.R;
 
 
-public class Onboard2SpecialPermissionActivity extends AppCompatActivity{
+public class Onboard2SpecialPermissionActivity extends AnimationCompactActivity{
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,20 +25,18 @@ public class Onboard2SpecialPermissionActivity extends AppCompatActivity{
     @Override
     protected void onResume() {
         super.onResume();
+        super.setAnimation("right");
         AppOpsManager appOps = (AppOpsManager) this.getSystemService(this.APP_OPS_SERVICE);
         int mode = appOps.checkOpNoThrow(AppOpsManager.OPSTR_GET_USAGE_STATS,
                 android.os.Process.myUid(), this.getPackageName());
         if(mode == AppOpsManager.MODE_ALLOWED) {
-            goNext();
+            startActivity(new Intent(this,Onboard3LocationActivity.class));
+            finish();
         }
     }
 
     public void showUsageSettings(View v){
         startActivityForResult(new Intent(android.provider.Settings.ACTION_USAGE_ACCESS_SETTINGS), 1);
     }
-
-    public void goNext() {
-        startActivity(new Intent(this,Onboard3LocationActivity.class));
-        finish();
-    }
+    
 }
