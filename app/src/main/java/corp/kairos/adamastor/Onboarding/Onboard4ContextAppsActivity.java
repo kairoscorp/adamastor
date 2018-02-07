@@ -13,7 +13,7 @@ import android.widget.TextView;
 import java.util.Iterator;
 import java.util.Set;
 
-import corp.kairos.adamastor.Animation.AnimationCompactActivity;
+import corp.kairos.adamastor.Animation.AnimationCompatActivity;
 import corp.kairos.adamastor.AppDetails;
 import corp.kairos.adamastor.AppsManager.AppsManager;
 import corp.kairos.adamastor.R;
@@ -23,7 +23,7 @@ import corp.kairos.adamastor.UserContext;
 import corp.kairos.adamastor.onScroll;
 
 
-public class Onboard4ContextAppsActivity extends AnimationCompactActivity {
+public class Onboard4ContextAppsActivity extends AnimationCompatActivity {
     private ListView checkAppsMenuView;
     private AppCheckAdapter adapter;
     public Context context = this;

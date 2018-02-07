@@ -1,10 +1,8 @@
 package corp.kairos.adamastor.Onboarding;
 
-import android.app.AppOpsManager;
 import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.TextView;
 
@@ -18,15 +16,13 @@ import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-import java.util.Set;
-
-import corp.kairos.adamastor.Animation.AnimationCompactActivity;
+import corp.kairos.adamastor.Animation.AnimationCompatActivity;
 import corp.kairos.adamastor.R;
 import corp.kairos.adamastor.Settings.Settings;
 import corp.kairos.adamastor.UserContext;
 
 
-public class Onboard3LocationActivity extends AnimationCompactActivity{
+public class Onboard3LocationActivity extends AnimationCompatActivity {
     private Settings settingsUser;
 
     private GoogleMap workMap;

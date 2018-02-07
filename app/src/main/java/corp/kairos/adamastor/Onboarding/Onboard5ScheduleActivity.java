@@ -2,12 +2,7 @@ package corp.kairos.adamastor.Onboarding;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.text.Layout;
-import android.transition.TransitionManager;
 import android.view.View;
-import android.view.animation.AnimationUtils;
-import android.view.animation.LayoutAnimationController;
 import android.widget.TextView;
 
 import com.borax12.materialdaterangepicker.time.RadialPickerLayout;
@@ -17,14 +12,13 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.GregorianCalendar;
 
-import corp.kairos.adamastor.Animation.AnimationCompactActivity;
-import corp.kairos.adamastor.Home.HomeActivity;
+import corp.kairos.adamastor.Animation.AnimationCompatActivity;
 import corp.kairos.adamastor.R;
 import corp.kairos.adamastor.Settings.Settings;
 import corp.kairos.adamastor.UserContext;
 
 
-public class Onboard5ScheduleActivity extends AnimationCompactActivity implements TimePickerDialog.OnTimeSetListener{
+public class Onboard5ScheduleActivity extends AnimationCompatActivity implements TimePickerDialog.OnTimeSetListener{
     private final int ONBOARDING_SCHEDULE = 5;
     private final int ONBOARDING_FINISH = 6;
 

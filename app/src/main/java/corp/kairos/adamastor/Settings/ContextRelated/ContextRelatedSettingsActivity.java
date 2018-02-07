@@ -3,7 +3,6 @@ package corp.kairos.adamastor.Settings.ContextRelated;
 import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TabHost;
@@ -21,13 +20,13 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.GregorianCalendar;
 
-import corp.kairos.adamastor.Animation.AnimationCompactActivity;
+import corp.kairos.adamastor.Animation.AnimationCompatActivity;
 import corp.kairos.adamastor.Home.HomeActivity;
 import corp.kairos.adamastor.R;
 import corp.kairos.adamastor.Settings.Settings;
 import corp.kairos.adamastor.UserContext;
 
-public class ContextRelatedSettingsActivity extends AnimationCompactActivity implements TimePickerDialog.OnTimeSetListener{
+public class ContextRelatedSettingsActivity extends AnimationCompatActivity implements TimePickerDialog.OnTimeSetListener{
     private GoogleMap workMap;
     private GoogleMap leisureMap;
     private MapView workPlaceView;
