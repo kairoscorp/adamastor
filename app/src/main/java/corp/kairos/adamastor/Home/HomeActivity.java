@@ -270,7 +270,6 @@ public class HomeActivity extends AnimationCompatActivity {
         Log.i(TAG, "Binding Service");
         Intent intent = new Intent(this, CollectorService.class);
         startService(intent);
-
     }
 
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {

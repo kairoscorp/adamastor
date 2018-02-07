@@ -4,9 +4,12 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,10 +22,14 @@ import android.widget.TextView;
 import java.util.HashSet;
 import java.util.Set;
 
+import corp.kairos.adamastor.AllApps.AllAppsActivity;
+import corp.kairos.adamastor.AllApps.AllAppsRecyclerViewAdapter;
 import corp.kairos.adamastor.AppDetails;
+import corp.kairos.adamastor.ContextList.AppViewHolder;
 import corp.kairos.adamastor.R;
 import corp.kairos.adamastor.UserContext;
 
+import static corp.kairos.adamastor.ContextList.ContextListActivity.NUMBER_OF_COLUMNS;
 import static corp.kairos.adamastor.Util.getObjectByIndex;
 
 
@@ -66,64 +73,20 @@ public class PlaceholderFragment extends Fragment {
         int min = Math.min(4, fragmentContext.getContextApps().size());
         Set<AppDetails> appsToDisplay = new HashSet<>(fragmentContext.getContextApps().subList(0, min));
 
-        GridView grid = (GridView) parentLayout.findViewById(R.id.home_grid_view);
-        grid.setNumColumns(min);
-        CustomAdapter adapter = new CustomAdapter(getActivity(), appsToDisplay);
+        RecyclerView grid = parentLayout.findViewById(R.id.home_grid_view);
+        grid.setLayoutManager(new GridLayoutManager(getContext(), min));
+        AllAppsRecyclerViewAdapter adapter = new AllAppsRecyclerViewAdapter(getContext(), appsToDisplay) {
+            @Override
+            public void onBindViewHolder(AppViewHolder holder, int position) {
+                super.onBindViewHolder(holder, position);
+                holder.labelView.setTextColor(Color.WHITE);
+            }
+        };
+
+
         grid.setAdapter(adapter);
 
         return parentLayout;
-    }
-
-    private class CustomAdapter extends ArrayAdapter {
-
-        protected Context context;
-        private Set<AppDetails> allApps;
-        private Set<AppDetails> filteredApps;
-
-        public CustomAdapter(Context context, Set<AppDetails> allApps) {
-            super(context, R.layout.activity_allapps);
-            this.context = context;
-            this.allApps = allApps;
-            this.filteredApps = allApps;
-        }
-
-        @Override
-        public int getCount() {
-            return filteredApps.size();
-        }
-
-        @Override
-        public Object getItem(int position) {
-            return getObjectByIndex(position, this.filteredApps);
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            View item = convertView;
-
-            if (item == null)
-            {
-                LayoutInflater inflater = ((Activity) context).getLayoutInflater();
-                item = inflater.inflate(R.layout.allapps_app, parent, false);
-            }
-
-            AppDetails app = (AppDetails) getObjectByIndex(position, this.filteredApps);
-
-            TextView textViewTitle = (TextView) item.findViewById(R.id.app_text);
-            ImageView imageViewItem = (ImageView) item.findViewById(R.id.app_image);
-
-            textViewTitle.setText(app.getLabel());
-            textViewTitle.setTextColor(ContextCompat.getColor(this.context, R.color.primaryTextColor));
-            imageViewItem.setImageDrawable(app.getIcon());
-
-            item.setOnClickListener(view -> {
-                Intent i = this.context.getPackageManager().getLaunchIntentForPackage(app.getPackageName());
-                context.startActivity(i);
-            });
-
-            return item;
-        }
-
     }
 
 }
