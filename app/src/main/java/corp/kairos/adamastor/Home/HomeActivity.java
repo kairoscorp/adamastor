@@ -36,7 +36,6 @@ import java.util.Date;
 import java.util.List;
 
 import corp.kairos.adamastor.AllApps.AllAppsActivity;
-import corp.kairos.adamastor.Animation.Animation;
 import corp.kairos.adamastor.Animation.AnimationCompactActivity;
 import corp.kairos.adamastor.AppDetails;
 import corp.kairos.adamastor.AppsManager.AppsManager;
@@ -371,7 +370,7 @@ public class HomeActivity extends AnimationCompatActivity {
     public void onBackPressed() {
         if (getFragmentManager().getBackStackEntryCount() > 0) {
             if (getFragmentManager().findFragmentByTag("OPTIONS") != null) {
-              hideSetContext(this);
+                hideSetContext(this);
             }
             if (getFragmentManager().findFragmentByTag("CONTEXT") != null) {
                 getFragmentManager().beginTransaction().remove(getFragmentManager().findFragmentByTag("CONTEXT")).commit();
@@ -383,7 +382,8 @@ public class HomeActivity extends AnimationCompatActivity {
                 Log.i("OLS", "null");
 
             }
-
+            getWindow().setStatusBarColor(0);
+            getWindow().setNavigationBarColor(0);
 
         } else {
             finish();
@@ -393,7 +393,7 @@ public class HomeActivity extends AnimationCompatActivity {
 
     public static void hideSetContext(Context ctx) {
         RelativeLayout backgroudLayout = ((Activity) ctx).findViewById(R.id.background_layout);
-        if(backgroudLayout!= null) {
+        if (backgroudLayout != null) {
             backgroudLayout.animate().translationY(backgroudLayout.getHeight()).setDuration(300).setListener(new Animator.AnimatorListener() {
                 @Override
                 public void onAnimationStart(Animator animator) {

@@ -11,7 +11,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.Toast;
 
 import corp.kairos.adamastor.ContextList.ContextListActivity;
 import corp.kairos.adamastor.Settings.Settings;
@@ -72,7 +71,7 @@ public class SetContext extends Fragment {
         // Inflate the layout for this fragment
         this.appDetail = (AppDetails) this.getArguments().getSerializable("app");
         View v = inflater.inflate(R.layout.fragment_set_context, container, false);
-        Log.i("cas",getActivity().getClass().getSimpleName());
+        Log.i("cas", getActivity().getClass().getSimpleName());
 
         return v;
     }
@@ -131,10 +130,17 @@ public class SetContext extends Fragment {
                     s.setUserContext(commute);
                     s.setUserContext(leisure);
                     s.saveContextSettings();
+                    if (getActivity().getClass().getSimpleName().equals("ContextListActivity")) {
+                        Log.i("SSS", "nope");
+                        ((ContextListActivity) getActivity()).notifyDataSet();
+                    } else {
+                        Log.i("SSS", "YES");
 
+                    }
                     getActivity().getWindow().setStatusBarColor(0);
                     getActivity().getWindow().setNavigationBarColor(0);
                     getFragmentManager().popBackStack();
+                    getActivity().onBackPressed();
                 }
         );
     }

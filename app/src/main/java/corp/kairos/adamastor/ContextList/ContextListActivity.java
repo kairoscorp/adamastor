@@ -79,12 +79,13 @@ public class ContextListActivity extends AnimationActivity {
         mRecyclerView.setLayoutManager(glm);
         mRecyclerView.setAdapter(mAdapter);
     }
-    public void contextFragment(){
+
+    public void contextFragment() {
         back++;
     }
 
     public void selectContextApps(View v) {
-        startActivity(new Intent(getApplicationContext(),EditContextAppsActivity.class));
+        startActivity(new Intent(getApplicationContext(), EditContextAppsActivity.class));
 
     }
 
@@ -93,7 +94,7 @@ public class ContextListActivity extends AnimationActivity {
         if (getFragmentManager().getBackStackEntryCount() > 0) {
             if (back == 1) {
                 if (getFragmentManager().findFragmentByTag("OPTIONS") != null) {
-                   HomeActivity.hideSetContext(this);
+                    HomeActivity.hideSetContext(this);
                 }
                 if (getFragmentManager().findFragmentByTag("CONTEXT") != null) {
                     getFragmentManager().beginTransaction().remove(getFragmentManager().findFragmentByTag("CONTEXT")).commit();
@@ -111,5 +112,9 @@ public class ContextListActivity extends AnimationActivity {
         } else {
             super.onBackPressed();
         }
+    }
+
+    public void notifyDataSet() {
+        this.mAdapter.notifyDataSetChanged();
     }
 }

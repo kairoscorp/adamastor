@@ -128,7 +128,6 @@ public  class AllAppsRecyclerViewAdapter extends RecyclerView.Adapter<AppViewHol
         final AppDetails model = mAppsToDisplay.remove(fromPosition);
         mAppsToDisplay.add(toPosition, model);
         notifyItemMoved(fromPosition, toPosition);
-    }
 
     public void updateData(List<AppDetails> newApps) {
         mAppsToDisplay = newApps;
