@@ -491,7 +491,6 @@ public class LogDatabaseHelper extends SQLiteOpenHelper {
 
             result.put(activity, TimeUnit.SECONDS.toMillis(timeSeconds));
 
-            Log.i(TAG, "Activity: " + activity + " | Seconds: " + timeSeconds);
             res.moveToNext();
         }
 

@@ -164,7 +164,12 @@ public class HomeActivity extends AnimationCompatActivity {
             ImageView img = (ImageView) layoutInflater.inflate(R.layout.favourite_app_icon, parentLayout, false);
             img.setImageDrawable(app.getIcon());
             img.setOnClickListener(v -> {
-                Intent intent = getPackageManager().getLaunchIntentForPackage(app.getPackageName());
+                Intent intent = null;
+                if(app.getPackageName().equals("com.android.phone")) {
+                    intent = new Intent(Intent.ACTION_DIAL);
+                } else {
+                    intent = getPackageManager().getLaunchIntentForPackage(app.getPackageName());
+                }
                 this.startActivity(intent);
             });
             img.setOnLongClickListener(view -> {
