@@ -181,13 +181,13 @@ public class Settings {
         int context = CollectorService.getInstance().getPredictedContext();
         String result;
         switch(context){
-            case 1: result = "Home";
+            case 1: result = "Leisure";
                     break;
             case 2: result = "Commute";
                     break;
             case 3: result = "Work";
                     break;
-            default: result = "Home";
+            default: result = "Leisure";
                     break;
         }
 
@@ -199,7 +199,7 @@ public class Settings {
         int context = 1;
 
         switch(contextName){
-            case "Home": context = 1;
+            case "Leisure": context = 1;
                 break;
             case "Commute": context = 2;
                 break;

@@ -62,6 +62,7 @@ public class CollectorService extends Service implements GoogleApiClient.Connect
     private static final String TAG = "CollectorServiceLog";
 
     private static final int INTERVAL = 10000;
+    private static final long ETL_INTERVAL = 7*24*60*60*1000;
 
     private CollectorServiceBinder mCollectorServiceBinder = new CollectorServiceBinder();;
     private LocationManager locationManager;
@@ -79,10 +80,12 @@ public class CollectorService extends Service implements GoogleApiClient.Connect
     private Location lastLocation;
     private boolean checkLocation = false;
     private int userActivityNow = 1;
-    private int predictedContext = 1;
-    private int predictInterval = 6;
-    private int predictIteration = 0;
+    private static int predictedContext = 1;
+    private static int predictInterval = 6 * 10;
+    private static int predictIteration = 0;
     private static boolean predictionActive;
+    private static int etlIteration = 0;
+    private static int etlCheckInterval = 6 * 60 * 6;
 
     @Override
     public void onCreate(){
@@ -156,6 +159,7 @@ public class CollectorService extends Service implements GoogleApiClient.Connect
     public void setModel(InputStream modelIS){
         if(logDatabaseHelper.setModel(modelIS)){
             modelHandler.setModel(logDatabaseHelper.getModel());
+            logDatabaseHelper.registerETL(Calendar.getInstance());
             predictionActive = true;
             Log.i(TAG, "Model Set");
         }else{
@@ -316,6 +320,20 @@ public class CollectorService extends Service implements GoogleApiClient.Connect
                     }
                 }
 
+                if(etlIteration >= etlCheckInterval){
+                    etlIteration = 0;
+                    Calendar lastETL = logDatabaseHelper.getLastETL();
+                    if(lastETL != null) {
+                        long lastETLinMillies = lastETL.getTimeInMillis();
+                        long now = localDate.getTimeInMillis();
+
+                        if (now - lastETLinMillies > ETL_INTERVAL && this.predictionActive) {
+                            MediatorService.getInstance().regularETL();
+                        }
+                    }
+
+                }
+
 
                 this.predictedContext = CollectorService.getInstance().getPredictedContext();
 
@@ -325,6 +343,7 @@ public class CollectorService extends Service implements GoogleApiClient.Connect
                         provider, account, predictedContext);
 
                 this.predictIteration++;
+                this.etlIteration++;
 
                 Thread.sleep(INTERVAL);
             }catch(InterruptedException ex){
@@ -456,9 +475,9 @@ public class CollectorService extends Service implements GoogleApiClient.Connect
     private int getRingtoneMode(){
         int result;
         switch(audioManager.getRingerMode()){
-            case AudioManager.RINGER_MODE_NORMAL : result = 0; break;
-            case AudioManager.RINGER_MODE_SILENT : result = 1; break;
-            case AudioManager.RINGER_MODE_VIBRATE : result = 2; break;
+            case AudioManager.RINGER_MODE_NORMAL : result = 1; break;
+            case AudioManager.RINGER_MODE_SILENT : result = 0; break;
+            case AudioManager.RINGER_MODE_VIBRATE : result = 0; break;
             default : result = 0;
         }
 

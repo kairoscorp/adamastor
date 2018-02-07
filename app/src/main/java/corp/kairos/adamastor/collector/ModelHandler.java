@@ -124,7 +124,7 @@ public class ModelHandler {
             Map<FieldName, ?> result = evaluator.evaluate(entry);
 
             prediction = ((Double)EvaluatorUtil.decode(result.get(predictedFields.get(0).getName()))).intValue();
-            Log.i("CollectorServiceLog", "Context :" + String.valueOf(prediction));
+            Log.i("CollectorServiceLog", "Context =" + String.valueOf(prediction));
 
         }
 

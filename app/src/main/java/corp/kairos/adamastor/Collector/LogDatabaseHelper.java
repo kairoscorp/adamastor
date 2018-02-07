@@ -17,7 +17,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.RandomAccessFile;
 import java.text.CollationElementIterator;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -344,6 +347,54 @@ public class LogDatabaseHelper extends SQLiteOpenHelper {
             result = new ByteArrayInputStream(cursor.getBlob(0));
         }
 
+        return result;
+    }
+
+    public void registerETL(Calendar date){
+        String NEWTABLE = "CREATE TABLE IF NOT EXISTS 'ETLs' "
+                + "( date DATETIME PRIMARY KEY"
+                + ");";
+
+        SQLiteDatabase dbWrite = this.getWritableDatabase();
+        dbWrite.execSQL(NEWTABLE);
+
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+        String dateString = formatter.format(date.getTime());
+
+        String sql = "INSERT INTO ETLs(date) VALUES(?)";
+        SQLiteStatement statement = dbWrite.compileStatement(sql);
+
+        statement.bindString(1,dateString);
+        statement.execute();
+
+    }
+
+    public Calendar getLastETL(){
+
+        Calendar result = null;
+
+        String NEWTABLE = "CREATE TABLE IF NOT EXISTS 'ETLs' "
+                + "( date DATETIME PRIMARY KEY"
+                + ");";
+
+        SQLiteDatabase dbWrite = this.getWritableDatabase();
+        dbWrite.execSQL(NEWTABLE);
+
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        String query = "SELECT * FROM ETLs ORDER BY datetime(date) DESC LIMIT 1";
+
+        Cursor cursor = db.rawQuery(query,null);
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+
+        if(cursor.getCount()> 0 && cursor.moveToFirst()){
+            try {
+                result = Calendar.getInstance();
+                result.setTime(formatter.parse(cursor.getString(cursor.getColumnIndex("date"))));
+            } catch (ParseException e) {
+                result = null;
+            }
+        }
         return result;
     }
 

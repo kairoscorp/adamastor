@@ -1,12 +1,8 @@
 package corp.kairos.adamastor.ServerMediator;
 
-import android.app.AlarmManager;
-import android.app.PendingIntent;
 import android.app.Service;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.icu.util.Calendar;
 import android.location.Location;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -15,15 +11,12 @@ import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
-import com.github.mikephil.charting.data.LineDataSet;
-
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.util.GregorianCalendar;
 
 import corp.kairos.adamastor.Collector.CollectorService;
-import corp.kairos.adamastor.Collector.ModelHandler;
 import corp.kairos.adamastor.Settings.Settings;
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -44,7 +37,7 @@ public class MediatorService extends Service {
     private static final String REGULAR_ETL_URL = "http://138.68.134.198:8080/data";
     MediaType JSON = MediaType.parse("application/json; charset=utf-8");
     MediaType CSV = MediaType.parse("text/csv");
-    private ConnectivityManager connectivityManager;
+    private static ConnectivityManager connectivityManager;
 
 
     @Nullable
@@ -79,97 +72,19 @@ public class MediatorService extends Service {
         connectivityManager =
                 (ConnectivityManager)this.getSystemService(Context.CONNECTIVITY_SERVICE);
 
-        AlarmManager alarmManager = (AlarmManager)getSystemService(ALARM_SERVICE);
-        Intent intent = new Intent(this, MediatorService.class);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
 
-        GregorianCalendar initialDate = new GregorianCalendar();
-        initialDate.add(GregorianCalendar.WEEK_OF_YEAR, 1);
-        initialDate.set(GregorianCalendar.HOUR_OF_DAY, 0);
-        initialDate.set(GregorianCalendar.MINUTE, 0);
-
-        long oneweek = 7 * 24 *60 * 60 * 1000;
-
-        alarmManager.setRepeating(
-                AlarmManager.RTC_WAKEUP,
-                initialDate.getTimeInMillis(),
-                oneweek,
-                pendingIntent);
-
-    }
-
-    class ETLAlarmReceiver extends BroadcastReceiver {
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            NetworkInfo activeNetwork = connectivityManager.getActiveNetworkInfo();
-            boolean isConnected = activeNetwork != null &&
-                    activeNetwork.isConnectedOrConnecting();
-            boolean isWiFi = activeNetwork.getType() == ConnectivityManager.TYPE_WIFI;
-
-            if(activeNetwork != null
-                    && activeNetwork.isConnectedOrConnecting()
-                    && activeNetwork.getType() == ConnectivityManager.TYPE_WIFI){
-
-                MediatorService.getInstance().regularETL();
-            }
-        }
     }
 
     public void initialETL(){
-        RequestBody requestBody = RequestBody.create(JSON, initialJSON());
 
-        Log.i(TAG, initialJSON());
+        if(true) {
 
-        Request request = new Request.Builder()
-                .url(INITIAL_ETL_URL)
-                .post(requestBody)
-                .build();
+            RequestBody requestBody = RequestBody.create(JSON, initialJSON());
 
-        client.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                Log.i(TAG, e.getMessage());
-            }
-
-            @Override
-            public void onResponse(Call call, final Response response)  {
-                if (!response.isSuccessful()) {
-                    Log.i(TAG, "Server Response Not Sucessful");
-                } else {
-
-                    try {
-                        ByteArrayInputStream bis = new ByteArrayInputStream(
-                                response.body().bytes());
-
-                        CollectorService.getInstance().setModel(bis);
-                    } catch (IOException e) {
-                        Log.i(TAG, "Error Reading Server Response");
-                    }
-
-                }
-            }
-        });
-
-    }
-
-    public void regularETL(){
-
-        CollectorService collectorService = CollectorService.getInstance();
-
-        if(collectorService != null) {
-
-            String locationJSON = locationJSON();
-            File logDump = collectorService.dumpDatabaseToCSV();
-
-            RequestBody requestBody = new MultipartBody.Builder("boundary")
-                    .setType(MultipartBody.FORM)
-                    .addFormDataPart("csvfile", "csvfile.csv", RequestBody.create(CSV, logDump))
-                    .addFormDataPart("locations", "locations.JSON", RequestBody.create(JSON, locationJSON))
-                    .build();
+            Log.i(TAG, initialJSON());
 
             Request request = new Request.Builder()
-                    .url(REGULAR_ETL_URL)
+                    .url(INITIAL_ETL_URL)
                     .post(requestBody)
                     .build();
 
@@ -184,6 +99,7 @@ public class MediatorService extends Service {
                     if (!response.isSuccessful()) {
                         Log.i(TAG, "Server Response Not Sucessful");
                     } else {
+
                         try {
                             ByteArrayInputStream bis = new ByteArrayInputStream(
                                     response.body().bytes());
@@ -192,9 +108,58 @@ public class MediatorService extends Service {
                         } catch (IOException e) {
                             Log.i(TAG, "Error Reading Server Response");
                         }
+
                     }
                 }
             });
+        }
+
+    }
+
+    public void regularETL(){
+
+        if(true) {
+
+            CollectorService collectorService = CollectorService.getInstance();
+
+            if (collectorService != null) {
+
+                String locationJSON = locationJSON();
+                File logDump = collectorService.dumpDatabaseToCSV();
+
+                RequestBody requestBody = new MultipartBody.Builder("boundary")
+                        .setType(MultipartBody.FORM)
+                        .addFormDataPart("csvfile", "csvfile.csv", RequestBody.create(CSV, logDump))
+                        .addFormDataPart("locations", "locations.JSON", RequestBody.create(JSON, locationJSON))
+                        .build();
+
+                Request request = new Request.Builder()
+                        .url(REGULAR_ETL_URL)
+                        .post(requestBody)
+                        .build();
+
+                client.newCall(request).enqueue(new Callback() {
+                    @Override
+                    public void onFailure(Call call, IOException e) {
+                        Log.i(TAG, e.getMessage());
+                    }
+
+                    @Override
+                    public void onResponse(Call call, final Response response) {
+                        if (!response.isSuccessful()) {
+                            Log.i(TAG, "Server Response Not Sucessful");
+                        } else {
+                            try {
+                                ByteArrayInputStream bis = new ByteArrayInputStream(
+                                        response.body().bytes());
+                                collectorService.setModel(bis);
+                            } catch (IOException e) {
+                                Log.i(TAG, "Error Reading Server Response");
+                            }
+                        }
+                    }
+                });
+            }
         }
     }
 
@@ -290,6 +255,15 @@ public class MediatorService extends Service {
                 "\"work_location_longitude\":" + workLocationLong + "," +
                 "\"home_location_latitude\":" + homeLocationLat + "," +
                 "\"home_location_longitude\":" + homeLocationLong + "}";
+    }
+
+    private boolean networkOK(){
+        NetworkInfo activeNetwork = connectivityManager.getActiveNetworkInfo();
+
+        return (activeNetwork != null
+                && activeNetwork.isConnectedOrConnecting()
+                && activeNetwork.getType() == ConnectivityManager.TYPE_WIFI);
+
     }
 
 }

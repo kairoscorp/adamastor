@@ -38,7 +38,7 @@ public class DataCleaner {
         Settings settings = Settings.getInstance(CollectorService.getInstance());
 
         Location locationWork = settings.getUserContext("Work").getLocation();
-        Location locationHome = settings.getUserContext("Home").getLocation();
+        Location locationHome = settings.getUserContext("Leisure").getLocation();
 
         double homeDistance = locationNow.distanceTo(locationHome);
         double workDistance = locationNow.distanceTo(locationWork);
