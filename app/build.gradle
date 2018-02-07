@@ -3,6 +3,7 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion 27
     defaultConfig {
+        multiDexEnabled true
         applicationId "corp.kairos.adamastor"
         minSdkVersion 23
         targetSdkVersion 27
