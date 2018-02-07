@@ -37,6 +37,7 @@ public class Settings {
     private static final String LOC_LAT = "_lat";
     private static final String LOC_LNG = "_lng";
     private static final String CONTEXT_NAME = "_name";
+    private static final String LOC_ADDR = "_address";
 
     public static final String [] contextsNames = {
             "Leisure",
@@ -91,9 +92,9 @@ public class Settings {
 
         start.setTimeInMillis(sharedPref.getLong(TIME_FROM, 0));
         end.setTimeInMillis(sharedPref.getLong(TIME_TO,0));
-
         pos.setLatitude(sharedPref.getFloat(LOC_LAT,0));
         pos.setLongitude(sharedPref.getFloat(LOC_LNG,0));
+        String address = sharedPref.getString(LOC_ADDR,"");
         Set<AppDetails> allApps = this.appsManager.getAllApps(context.getPackageManager(), true);
 
         for (AppDetails app : allApps) {
@@ -128,6 +129,7 @@ public class Settings {
         //Save location
         editor.putFloat(LOC_LAT,(float)userContext.getLocation().getLatitude());
         editor.putFloat(LOC_LNG,(float)userContext.getLocation().getLongitude());
+        editor.putString(LOC_ADDR,userContext.getAddress());
 
         //Save Apps
         for (AppDetails app : userContext.getContextApps()) {

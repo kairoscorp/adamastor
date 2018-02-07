@@ -11,6 +11,7 @@ import org.apache.commons.lang3.ArrayUtils;
 import corp.kairos.adamastor.Animation.AnimationActivity;
 import corp.kairos.adamastor.Home.HomeActivity;
 import corp.kairos.adamastor.R;
+import corp.kairos.adamastor.Settings.ContextRelated.EditContextAppsActivity;
 import corp.kairos.adamastor.Settings.Settings;
 import corp.kairos.adamastor.UserContext;
 import io.github.luizgrp.sectionedrecyclerviewadapter.SectionedRecyclerViewAdapter;

@@ -1,7 +1,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="corp.kairos.adamastor.ContextList.EditContextAppsActivity">
+    tools:context="corp.kairos.adamastor.Settings.ContextRelated.EditContextAppsActivity">
     <item
         android:id="@+id/id_menu_context_work"
         android:title="@string/work_name"

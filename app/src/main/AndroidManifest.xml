@@ -148,8 +148,12 @@
         </receiver>
 
         <activity
-            android:name=".ContextList.EditContextAppsActivity"
+            android:name=".Settings.ContextRelated.EditContextAppsActivity"
             android:theme="@style/AppTheme.NoActionBar" />
+
+        <activity
+            android:name=".Settings.LocationSettingsActivity"
+            android:label="Location" />
     </application>
 
 </manifest>
