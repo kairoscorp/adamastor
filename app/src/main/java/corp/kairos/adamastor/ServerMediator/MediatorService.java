@@ -162,7 +162,7 @@ public class MediatorService extends Service {
             String locationJSON = locationJSON();
             File logDump = collectorService.dumpDatabaseToCSV();
 
-                RequestBody requestBody = new MultipartBody.Builder("boundary")
+            RequestBody requestBody = new MultipartBody.Builder("boundary")
                     .setType(MultipartBody.FORM)
                     .addFormDataPart("csvfile", "csvfile.csv", RequestBody.create(CSV, logDump))
                     .addFormDataPart("locations", "locations.JSON", RequestBody.create(JSON, locationJSON))
