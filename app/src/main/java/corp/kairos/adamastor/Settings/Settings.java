@@ -194,7 +194,7 @@ public class Settings {
         return result;
     }
 
-    private void informCollectorContextChange(String contextName){
+    public void informCollectorContextChange(String contextName){
 
         int context = 1;
 

@@ -56,6 +56,7 @@ public class HomeActivity extends AnimationCompatActivity {
     private TextView monthDayTextView;
     private TextView weekdayYearTextView;
 
+    private boolean autoContextChange = false;
     private boolean permissionsGranted = false;
 
     @Override
@@ -186,6 +187,11 @@ public class HomeActivity extends AnimationCompatActivity {
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
+                if(autoContextChange == true){
+                    autoContextChange = false;
+                }else{
+                    informSettingsManualContextChange((String)tab.getTag());
+                }
                 BackgroundChanger.changeWallpaper(getApplicationContext(), getSelectedTabBackground(tab));
             }
 
@@ -199,6 +205,10 @@ public class HomeActivity extends AnimationCompatActivity {
                 // Do Nothing
             }
         });
+    }
+
+    private void informSettingsManualContextChange(String context){
+        Settings.getInstance(this).informCollectorContextChange(context);
     }
 
     private int getSelectedTabBackground(TabLayout.Tab tab) {
@@ -215,12 +225,36 @@ public class HomeActivity extends AnimationCompatActivity {
         }
     }
 
+    private int getTabIndexByContextName(String contextName){
+        int result = 0;
+        for(int i = 0; i<this.tabLayout.getTabCount(); i++){
+            if(((String)this.tabLayout.getTabAt(i).getTag()).equals(contextName)){
+                result = i;
+                break;
+            }
+        }
+        return result;
+    }
+
+    private void switchTabByAutoContextChange(String context){
+        int  selectedTab = this.tabLayout.getSelectedTabPosition();
+        int currentContextTab = this.getTabIndexByContextName(context);
+
+        if(selectedTab != currentContextTab){
+            this.autoContextChange = true;
+            this.tabLayout.getTabAt(currentContextTab).select();
+        }
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
         checkPermissions();
         if (permissionsGranted)
             bindCollectorService();
+
+        UserContext current = Settings.getInstance(this).getCurrentUserContext();
+        this.switchTabByAutoContextChange(current.getContextName());
     }
 
     public void showAllAppsMenu(View v) {
