@@ -56,7 +56,7 @@ public class ActivityRecognitionService extends IntentService {
             case DetectedActivity.RUNNING: result = 2; break;
             default: result = 1; break;
         }
-
+        Log.i("CollectorServiceLog", "Activity = " + result);
         Intent i = new  Intent("kairos.CollectorService.ACTIVITY_MONITOR_RESULT");
         i.putExtra("ActivityNow",result);
         sendBroadcast(i);

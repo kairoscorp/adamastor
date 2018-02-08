@@ -84,6 +84,11 @@
             </intent-filter>
         </service>
 
+        <service
+            android:name=".Collector.ActivityRecognitionService"
+            android:label="Kairos">
+        </service>
+
         <activity
             android:name=".Onboarding.Onboard1WelcomeActivity"
             android:label="@string/onboarding_label"

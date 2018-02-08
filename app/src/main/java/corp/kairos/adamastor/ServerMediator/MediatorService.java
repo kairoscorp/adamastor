@@ -67,11 +67,10 @@ public class MediatorService extends Service {
     @Override
     public void onCreate() {
         Log.i(TAG,"Mediator Service Created");
-        super.onCreate();
-
         connectivityManager =
                 (ConnectivityManager)this.getSystemService(Context.CONNECTIVITY_SERVICE);
 
+        super.onCreate();
 
     }
 
@@ -258,8 +257,14 @@ public class MediatorService extends Service {
     }
 
     private boolean networkOK(){
-        NetworkInfo activeNetwork = connectivityManager.getActiveNetworkInfo();
 
+        NetworkInfo activeNetwork = null;
+
+        try{
+            activeNetwork = connectivityManager.getActiveNetworkInfo();
+        }catch (Exception e){
+            Log.i(TAG, "ConnectionFailed");
+        }
         return (activeNetwork != null
                 && activeNetwork.isConnectedOrConnecting()
                 && activeNetwork.getType() == ConnectivityManager.TYPE_WIFI);
