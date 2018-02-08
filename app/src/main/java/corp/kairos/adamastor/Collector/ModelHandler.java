@@ -1,4 +1,4 @@
-package corp.kairos.adamastor.temp;
+package corp.kairos.adamastor.Collector;
 
 import android.location.Location;
 import android.util.Log;

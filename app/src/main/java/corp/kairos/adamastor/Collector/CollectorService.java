@@ -49,7 +49,6 @@ import java.util.TreeMap;
 import corp.kairos.adamastor.AppDetails;
 import corp.kairos.adamastor.AppsManager.AppsManager;
 import corp.kairos.adamastor.ServerMediator.MediatorService;
-import corp.kairos.adamastor.temp.ModelHandler;
 
 public class CollectorService extends Service implements GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener {
