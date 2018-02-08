@@ -38,6 +38,8 @@ public class Onboard3LocationActivity extends AnimationCompatActivity {
 
     //UMinho coordinates, if no location provider is available, this will center the map in this location, because UMinho is amazing!
     private LatLng pos = new LatLng(41.56131,-8.393804);
+    UserContext homeContext;
+    UserContext workContext;
     private boolean pickWork = false;
     private boolean pickHome = false;
     private String homeAddress;
@@ -52,16 +54,20 @@ public class Onboard3LocationActivity extends AnimationCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         this.settingsUser = Settings.getInstance(this);
         this.savedInstanceState = savedInstanceState;
+        homeContext = this.settingsUser.getUserContext("Leisure");
+        workContext = this.settingsUser.getUserContext("Work");
         workplaceView = findViewById(R.id.mapWork);
         workplaceView.onCreate(this.savedInstanceState);
         homeplaceView = findViewById(R.id.mapHome);
         homeplaceView.onCreate(this.savedInstanceState);
+        loadInitialMaps();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         super.setAnimation("right");
+        loadInitialMaps();
     }
 
     @Override
@@ -69,6 +75,22 @@ public class Onboard3LocationActivity extends AnimationCompatActivity {
         super.setAnimation("left");
         startActivity(new Intent(getApplicationContext(),Onboard1WelcomeActivity.class));
         finish();
+    }
+
+    public void loadInitialMaps() {
+        homeLoc = homeContext.getLocation();
+        workLoc = workContext.getLocation();
+        homeAddress = homeContext.getAddress();
+        workAddress = workContext.getAddress();
+
+        if (!homeAddress.isEmpty()) { //if not empty, location already before on onboarding
+            showHomeMap(homeAddress, new LatLng(homeLoc.getLatitude(), homeLoc.getLongitude()));
+            pickHome = true;
+        }
+        if (!workAddress.isEmpty()) { //same here
+            showWorkMap(workAddress, new LatLng(workLoc.getLatitude(), workLoc.getLongitude()));
+            pickWork = true;
+        }
     }
 
     public void pickHomeLocation(View v) {
@@ -129,6 +151,8 @@ public class Onboard3LocationActivity extends AnimationCompatActivity {
             workMap.clear();
             workMap.addMarker(opts);
         });
+        workContext.setLocation(workLoc);
+        workContext.setAddress(workAddress);
         showNext();
     }
 
@@ -147,6 +171,8 @@ public class Onboard3LocationActivity extends AnimationCompatActivity {
             homeMap.clear();
             homeMap.addMarker(opts);
         });
+        homeContext.setLocation(homeLoc);
+        homeContext.setAddress(homeAddress);
         showNext();
     }
 
@@ -162,13 +188,9 @@ public class Onboard3LocationActivity extends AnimationCompatActivity {
         UserContext workContext = this.settingsUser.getUserContext("Work");
 
         if (pickHome) {
-            homeContext.setLocation(homeLoc);
-            homeContext.setAddress(homeAddress);
             this.settingsUser.setUserContext(homeContext);
         }
         if (pickWork) {
-            workContext.setLocation(workLoc);
-            workContext.setAddress(workAddress);
             this.settingsUser.setUserContext(workContext);
         }
     }

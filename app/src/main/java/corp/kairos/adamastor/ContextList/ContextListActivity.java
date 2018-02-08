@@ -81,9 +81,4 @@ public class ContextListActivity extends AnimationActivity {
         mRecyclerView.setAdapter(mAdapter);
     }
 
-    public void selectContextApps(View v) {
-        startActivity(new Intent(getApplicationContext(),EditContextAppsActivity.class));
-
-    }
-
 }
