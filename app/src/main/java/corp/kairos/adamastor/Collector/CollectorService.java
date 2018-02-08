@@ -45,14 +45,11 @@ import java.util.Map;
 import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
-import java.util.concurrent.ThreadLocalRandom;
-import java.util.concurrent.TimeUnit;
 
 import corp.kairos.adamastor.AppDetails;
 import corp.kairos.adamastor.AppsManager.AppsManager;
-import corp.kairos.adamastor.Collector.LogDatabaseHelper;
 import corp.kairos.adamastor.ServerMediator.MediatorService;
-import corp.kairos.adamastor.UserContext;
+import corp.kairos.adamastor.temp.ModelHandler;
 
 public class CollectorService extends Service implements GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener {

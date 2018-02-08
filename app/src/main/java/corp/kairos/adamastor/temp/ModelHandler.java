@@ -1,4 +1,4 @@
-package corp.kairos.adamastor.Collector;
+package corp.kairos.adamastor.temp;
 
 import android.location.Location;
 import android.util.Log;
@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import corp.kairos.adamastor.Collector.DataCleaner;
 import corp.kairos.adamastor.Settings.Settings;
 
 public class ModelHandler {
