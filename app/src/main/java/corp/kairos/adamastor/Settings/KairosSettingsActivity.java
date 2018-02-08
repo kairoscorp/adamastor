@@ -19,7 +19,7 @@ public class KairosSettingsActivity extends AnimationCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        setAnimation("left");
+        setAnimation("right");
     }
 
     @Override

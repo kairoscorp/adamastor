@@ -16,7 +16,7 @@ public class ScheduleSettingsActivity extends Onboard5ScheduleActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setAnimation("left");
+        setAnimation("right");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         Button save = findViewById(R.id.next3);
         save.setText("save changes");
@@ -35,14 +35,14 @@ public class ScheduleSettingsActivity extends Onboard5ScheduleActivity {
 
     @Override
     public boolean onSupportNavigateUp() {
-        setAnimation("right");
+        setAnimation("left");
         finish();
         return true;
     }
 
     @Override
     public void onBackPressed() {
-        setAnimation("right");
+        setAnimation("left");
         finish();
     }
 
@@ -51,7 +51,7 @@ public class ScheduleSettingsActivity extends Onboard5ScheduleActivity {
         super.workContext.setTimes(from, to);
         super.settingsUser.setUserContext(workContext);
         super.settingsUser.saveContextSettings();
-        setAnimation("right");
+        setAnimation("left");
         finish();
     }
 }

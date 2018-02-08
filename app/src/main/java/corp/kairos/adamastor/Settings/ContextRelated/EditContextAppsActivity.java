@@ -29,7 +29,7 @@ public class EditContextAppsActivity extends AnimationCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setAnimation("left");
+        setAnimation("right");
         userSettings = Settings.getInstance(getApplicationContext());
         workContext = userSettings.getUserContext("Work");
         leisureContext = userSettings.getUserContext("Leisure");
@@ -48,7 +48,7 @@ public class EditContextAppsActivity extends AnimationCompatActivity {
 
     @Override
     public void onBackPressed() {
-        setAnimation("right");
+        setAnimation("left");
         finish();
     }
 
@@ -82,7 +82,7 @@ public class EditContextAppsActivity extends AnimationCompatActivity {
             userSettings.setUserContext(f.getUserContext());
         }
         userSettings.saveContextSettings();
-        setAnimation("right");
+        setAnimation("left");
         finish();
     }
 

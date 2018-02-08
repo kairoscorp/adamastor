@@ -18,7 +18,7 @@ public class LocationSettingsActivity extends Onboard3LocationActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        setAnimation("left");
+        setAnimation("right");
         Button save = findViewById(R.id.next2);
         save.setText("save changes");
         save.setVisibility(View.VISIBLE);
@@ -27,7 +27,7 @@ public class LocationSettingsActivity extends Onboard3LocationActivity {
 
     @Override
     public void onBackPressed() {
-        setAnimation("right");
+        setAnimation("left");
         finish();
     }
 
@@ -40,7 +40,7 @@ public class LocationSettingsActivity extends Onboard3LocationActivity {
     @Override
     public void goNext(View v) {
         save();
-        setAnimation("right");
+        setAnimation("left");
         finish();
     }
 }

@@ -4,8 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:layout_marginTop="16dp"
-    android:layout_marginBottom="16dp">
+    android:layout_margin="16dp"
+    >
 
     <RelativeLayout
         android:id="@+id/opt_schedule"
@@ -14,14 +14,12 @@
         android:clickable="true"
         android:onClick="schedules"
         android:paddingBottom="8dp"
-        android:paddingEnd="16dp"
-        android:paddingStart="16dp"
         android:paddingTop="8dp">
 
         <ImageView
             android:id="@+id/imageViewTime"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
             app:srcCompat="@drawable/ic_time_48dp" />
 
         <TextView
@@ -32,7 +30,7 @@
             android:layout_marginStart="32dp"
             android:layout_toEndOf="@+id/imageViewTime"
             android:text="@string/settings_schedules_label"
-            android:textAppearance="@android:style/TextAppearance.Material.Large" />
+            android:textAppearance="@android:style/TextAppearance.Material.Medium" />
     </RelativeLayout>
 
     <RelativeLayout
@@ -42,14 +40,12 @@
         android:clickable="true"
         android:onClick="locations"
         android:paddingBottom="8dp"
-        android:paddingEnd="16dp"
-        android:paddingStart="16dp"
         android:paddingTop="8dp">
 
         <ImageView
             android:id="@+id/imageViewLocation"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
             app:srcCompat="@drawable/ic_location48dp" />
 
         <TextView
@@ -60,7 +56,7 @@
             android:layout_marginStart="32dp"
             android:layout_toEndOf="@+id/imageViewLocation"
             android:text="@string/settings_locations_label"
-            android:textAppearance="@android:style/TextAppearance.Material.Large" />
+            android:textAppearance="@android:style/TextAppearance.Material.Medium" />
     </RelativeLayout>
 
     <RelativeLayout
@@ -70,14 +66,12 @@
         android:clickable="true"
         android:onClick="contextApps"
         android:paddingBottom="8dp"
-        android:paddingEnd="16dp"
-        android:paddingStart="16dp"
         android:paddingTop="8dp">
 
         <ImageView
             android:id="@+id/imageViewCtxApps"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
             app:srcCompat="@drawable/ic_apps_48dp" />
 
         <TextView
@@ -88,6 +82,6 @@
             android:layout_marginStart="32dp"
             android:layout_toEndOf="@+id/imageViewCtxApps"
             android:text="@string/settings_context_apps_label"
-            android:textAppearance="@android:style/TextAppearance.Material.Large" />
+            android:textAppearance="@android:style/TextAppearance.Material.Medium" />
     </RelativeLayout>
 </android.widget.LinearLayout>
