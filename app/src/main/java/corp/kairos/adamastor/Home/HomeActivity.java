@@ -9,6 +9,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.Fragment;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
@@ -19,6 +20,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -46,12 +48,12 @@ public class HomeActivity extends AnimationCompatActivity {
     private PackageManager packageManager;
     private Settings userSettings;
     private AppsManager appsManager;
-    private BackgroundChanger backgroundChanger;
     private UserContext[] userContexts;
     private List<AppDetails> favouriteApps;
 
     private TabLayout tabLayout;
     private ViewPager viewPager;
+    private ViewPagerAdapter viewPagerAdapter;
     private TextView monthDayTextView;
     private TextView weekdayYearTextView;
 

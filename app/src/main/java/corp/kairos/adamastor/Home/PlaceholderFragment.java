@@ -1,42 +1,35 @@
 package corp.kairos.adamastor.Home;
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.GridView;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import java.util.HashSet;
 import java.util.Set;
 
-import corp.kairos.adamastor.AllApps.AllAppsActivity;
 import corp.kairos.adamastor.AllApps.AllAppsRecyclerViewAdapter;
 import corp.kairos.adamastor.AppDetails;
 import corp.kairos.adamastor.ContextList.AppViewHolder;
 import corp.kairos.adamastor.R;
+import corp.kairos.adamastor.Settings.Settings;
 import corp.kairos.adamastor.UserContext;
-
-import static corp.kairos.adamastor.ContextList.ContextListActivity.NUMBER_OF_COLUMNS;
-import static corp.kairos.adamastor.Util.getObjectByIndex;
 
 
 public class PlaceholderFragment extends Fragment {
     private static String PARCELABLE_KEY = "userContext";
 
     UserContext fragmentContext;
+    RecyclerView mGrid;
+    AllAppsRecyclerViewAdapter mAdapter;
+    private boolean isFirstStart = true;
 
     public PlaceholderFragment() {
         // Required empty public constructor
@@ -73,9 +66,9 @@ public class PlaceholderFragment extends Fragment {
         int min = Math.min(4, fragmentContext.getContextApps().size());
         Set<AppDetails> appsToDisplay = new HashSet<>(fragmentContext.getContextApps().subList(0, min));
 
-        RecyclerView grid = parentLayout.findViewById(R.id.home_grid_view);
-        grid.setLayoutManager(new GridLayoutManager(getContext(), min));
-        AllAppsRecyclerViewAdapter adapter = new AllAppsRecyclerViewAdapter(getContext(), appsToDisplay) {
+        mGrid = parentLayout.findViewById(R.id.home_grid_view);
+        mGrid.setLayoutManager(new GridLayoutManager(getContext(), min));
+        mAdapter = new AllAppsRecyclerViewAdapter(getContext(), appsToDisplay) {
             @Override
             public void onBindViewHolder(AppViewHolder holder, int position) {
                 super.onBindViewHolder(holder, position);
@@ -83,10 +76,26 @@ public class PlaceholderFragment extends Fragment {
             }
         };
 
-
-        grid.setAdapter(adapter);
+        mGrid.setAdapter(mAdapter);
 
         return parentLayout;
     }
 
+    // TODO: Find a more elegant way to update the fragment content
+    @Override
+    public void onStart() {
+        super.onStart();
+        if (isFirstStart)
+            isFirstStart = false;
+        else
+            updateFragmentContent();
+    }
+
+    public void updateFragmentContent() {
+        Settings settings = Settings.getInstance(getContext());
+        fragmentContext = settings.getUserContext(fragmentContext.getContextName());
+        int min = Math.min(4, fragmentContext.getContextApps().size());
+        mGrid.setLayoutManager(new GridLayoutManager(getContext(), min));
+        mAdapter.updateData(fragmentContext.getContextApps());
+    }
 }
