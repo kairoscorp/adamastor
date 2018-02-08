@@ -110,6 +110,7 @@ public class LogDatabaseHelper extends SQLiteOpenHelper {
                 + ");";
 
         activityLogDB.execSQL(ENTRY);
+        activityLogDB.close();
     }
 
     protected Map<String, Long> getContextStatistics() {
@@ -132,6 +133,8 @@ public class LogDatabaseHelper extends SQLiteOpenHelper {
             result.put(context, TimeUnit.SECONDS.toMillis(timeSeconds));
             res.moveToNext();
         }
+        res.close();
+        db.close();
 
         return result;
     }
@@ -163,6 +166,8 @@ public class LogDatabaseHelper extends SQLiteOpenHelper {
             result.add(entry);
             res.moveToNext();
         }
+        res.close();
+        db.close();
 
         return result;
     }
@@ -199,6 +204,7 @@ public class LogDatabaseHelper extends SQLiteOpenHelper {
             }
             csvWrite.close();
             curCSV.close();
+            db.close();
         }
         catch(Exception sqlEx)
         {
@@ -249,6 +255,7 @@ public class LogDatabaseHelper extends SQLiteOpenHelper {
             }
             csvWrite.close();
             curCSV.close();
+            db.close();
         }
         catch(Exception sqlEx)
         {
@@ -281,6 +288,8 @@ public class LogDatabaseHelper extends SQLiteOpenHelper {
 
             db.execSQL(ENTRY);
         }
+        cursor.close();
+        db.close();
     }
 
     public int getAppKey(String app){
@@ -295,6 +304,8 @@ public class LogDatabaseHelper extends SQLiteOpenHelper {
             addEntryAppLookUp(app);
             result = getAppKey(app);
         }
+        cursor.close();
+        db.close();
 
         return result;
     }
@@ -323,6 +334,7 @@ public class LogDatabaseHelper extends SQLiteOpenHelper {
             Log.i(TAG, "Error Loading Model");
             result = false;
         }
+        db.close();
 
         return result;
     }
@@ -346,6 +358,8 @@ public class LogDatabaseHelper extends SQLiteOpenHelper {
         if(cursor.getCount()> 0 && cursor.moveToFirst()){
             result = new ByteArrayInputStream(cursor.getBlob(0));
         }
+        db.close();
+        dbWrite.close();
 
         return result;
     }
@@ -366,6 +380,7 @@ public class LogDatabaseHelper extends SQLiteOpenHelper {
 
         statement.bindString(1,dateString);
         statement.execute();
+        dbWrite.close();
 
     }
 
@@ -395,6 +410,8 @@ public class LogDatabaseHelper extends SQLiteOpenHelper {
                 result = null;
             }
         }
+        db.close();
+        dbWrite.close();
         return result;
     }
 
