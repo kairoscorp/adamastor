@@ -119,6 +119,9 @@ public class Settings {
 
 
     public void saveContextSettings(UserContext userContext) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            context.deleteSharedPreferences("Prefs_" + userContext.getContextName());
+        }
         SharedPreferences sharedPref = context.getSharedPreferences("Prefs_" + userContext.getContextName(), Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
 
