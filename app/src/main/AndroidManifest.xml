@@ -76,6 +76,19 @@
             </intent-filter>
         </service>
 
+        <service
+            android:name=".ServerMediator.MediatorService"
+            android:label="Kairos">
+            <intent-filter>
+                <action android:name="android.service.notification.MediatorService" />
+            </intent-filter>
+        </service>
+
+        <service
+            android:name=".Collector.ActivityRecognitionService"
+            android:label="Kairos">
+        </service>
+
         <activity
             android:name=".Onboarding.Onboard1WelcomeActivity"
             android:label="@string/onboarding_label"

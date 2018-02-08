@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Build;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -17,6 +18,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 import corp.kairos.adamastor.AppDetails;
 import corp.kairos.adamastor.AppsManager.AppsManager;
+import corp.kairos.adamastor.Collector.CollectorService;
 import corp.kairos.adamastor.UserContext;
 
 public class Settings {
@@ -154,11 +156,60 @@ public class Settings {
     }
 
     public UserContext getCurrentUserContext() {
-        int min = 0;
-        int max = contextsNames.length;
-        int currentContextNumber = ThreadLocalRandom.current().nextInt(min, max);
-        String currentContextName = contextsNames[currentContextNumber];
-        return this.contexts.get(currentContextName);
+        return this.contexts.get(this.getContextNamefromCollector());
+    }
+
+    public UserContext getNextUserContext(String contextName){
+        List<UserContext> aux = new ArrayList<>();
+        UserContext result = null;
+
+        aux.addAll(this.contexts.values());
+
+        for(int i = 0; i < aux.size(); i++){
+            if(aux.get(i).getContextName().equals(contextName)){
+                result = aux.get((i+1)%aux.size());
+                break;
+            }
+        }
+
+        this.informCollectorContextChange(result.getContextName());
+
+        return result;
+    }
+
+    private String getContextNamefromCollector(){
+        int context = CollectorService.getInstance().getPredictedContext();
+        String result;
+        switch(context){
+            case 1: result = "Leisure";
+                    break;
+            case 2: result = "Commute";
+                    break;
+            case 3: result = "Work";
+                    break;
+            default: result = "Leisure";
+                    break;
+        }
+
+        return result;
+    }
+
+    public void informCollectorContextChange(String contextName){
+
+        int context = 1;
+
+        switch(contextName){
+            case "Leisure": context = 1;
+                break;
+            case "Commute": context = 2;
+                break;
+            case "Work": context = 3;
+                break;
+            default: context = 1;
+                break;
+        }
+
+        CollectorService.getInstance().userContextChange(context);
     }
 
     public void setUserContext(UserContext c) {
@@ -196,6 +247,10 @@ public class Settings {
         }
 
         return zeroContext;
+    }
+
+    public UserContext getStartingContext(){
+        return this.contexts.get("Home");
     }
 }
 

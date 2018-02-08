@@ -33,6 +33,7 @@ import corp.kairos.adamastor.Home.dao.FavouriteAppsDAO;
 import corp.kairos.adamastor.Home.dao.StaticFavouriteAppsDAO;
 import corp.kairos.adamastor.Onboarding.Onboard1WelcomeActivity;
 import corp.kairos.adamastor.R;
+import corp.kairos.adamastor.ServerMediator.MediatorService;
 import corp.kairos.adamastor.Settings.ContextRelated.ContextRelatedSettingsActivity;
 import corp.kairos.adamastor.Settings.Settings;
 import corp.kairos.adamastor.Statistics.StatisticsActivity;
@@ -55,6 +56,7 @@ public class HomeActivity extends AnimationCompatActivity {
     private TextView monthDayTextView;
     private TextView weekdayYearTextView;
 
+    private boolean autoContextChange = false;
     private boolean permissionsGranted = false;
 
     @Override
@@ -79,13 +81,10 @@ public class HomeActivity extends AnimationCompatActivity {
             this.monthDayTextView = (TextView) findViewById(R.id.month_day_text_view);
             this.weekdayYearTextView = (TextView) findViewById(R.id.weekday_year_text_view);
 
-            checkPermissions();
-            if (permissionsGranted)
-                bindCollectorService();
-
             // Set navigation
             super.setAnimation("up");
             this.setDownActivity(AllAppsActivity.class);
+
             this.setLeftActivity(StatisticsActivity.class);
             this.setRightActivity(ContextListActivity.class);
 
@@ -94,6 +93,12 @@ public class HomeActivity extends AnimationCompatActivity {
             setupFavouriteApps();
 
             setupContextDisplayer();
+
+            checkPermissions();
+            if (permissionsGranted) {
+                bindCollectorService();
+            }
+
         }
     }
 
@@ -102,11 +107,9 @@ public class HomeActivity extends AnimationCompatActivity {
         Date time = Calendar.getInstance().getTime();
          SimpleDateFormat df = new SimpleDateFormat("MMMM dd");
         this.monthDayTextView.setText(df.format(time));
-
         df = new SimpleDateFormat("EEEE, yyyy");
         this.weekdayYearTextView.setText(df.format(time));
     }
-
 
     private void setupFavouriteApps() {
         // Load favorite apps
@@ -184,6 +187,11 @@ public class HomeActivity extends AnimationCompatActivity {
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
+                if(autoContextChange == true){
+                    autoContextChange = false;
+                }else{
+                    informSettingsManualContextChange((String)tab.getTag());
+                }
                 BackgroundChanger.changeWallpaper(getApplicationContext(), getSelectedTabBackground(tab));
             }
 
@@ -197,6 +205,10 @@ public class HomeActivity extends AnimationCompatActivity {
                 // Do Nothing
             }
         });
+    }
+
+    private void informSettingsManualContextChange(String context){
+        Settings.getInstance(this).informCollectorContextChange(context);
     }
 
     private int getSelectedTabBackground(TabLayout.Tab tab) {
@@ -213,12 +225,36 @@ public class HomeActivity extends AnimationCompatActivity {
         }
     }
 
+    private int getTabIndexByContextName(String contextName){
+        int result = 0;
+        for(int i = 0; i<this.tabLayout.getTabCount(); i++){
+            if(((String)this.tabLayout.getTabAt(i).getTag()).equals(contextName)){
+                result = i;
+                break;
+            }
+        }
+        return result;
+    }
+
+    private void switchTabByAutoContextChange(String context){
+        int  selectedTab = this.tabLayout.getSelectedTabPosition();
+        int currentContextTab = this.getTabIndexByContextName(context);
+
+        if(selectedTab != currentContextTab){
+            this.autoContextChange = true;
+            this.tabLayout.getTabAt(currentContextTab).select();
+        }
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
         checkPermissions();
         if (permissionsGranted)
             bindCollectorService();
+
+        UserContext current = Settings.getInstance(this).getCurrentUserContext();
+        this.switchTabByAutoContextChange(current.getContextName());
     }
 
     public void showAllAppsMenu(View v) {
@@ -232,6 +268,7 @@ public class HomeActivity extends AnimationCompatActivity {
         Intent i = new Intent(this, ContextRelatedSettingsActivity.class);
         startActivity(i);
     }
+
 
     private void checkPermissions() {
         if ((ActivityCompat.checkSelfPermission(this,
@@ -267,10 +304,8 @@ public class HomeActivity extends AnimationCompatActivity {
     }
 
     private void bindCollectorService() {
-        Log.i(TAG, "Binding Service");
         Intent intent = new Intent(this, CollectorService.class);
         startService(intent);
-
     }
 
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
