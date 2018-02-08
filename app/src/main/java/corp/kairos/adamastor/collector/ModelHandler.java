@@ -150,4 +150,9 @@ public class ModelHandler {
 
         return modelEvaluator;
     }
+
+    private void test(){
+        Log.i("test","just testing");
+    }
+
 }
