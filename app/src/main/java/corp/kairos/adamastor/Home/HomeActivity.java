@@ -30,7 +30,7 @@ import java.util.Date;
 import java.util.List;
 
 import corp.kairos.adamastor.AllApps.AllAppsActivity;
-import corp.kairos.adamastor.Animation.AnimationCompactActivity;
+import corp.kairos.adamastor.Animation.AnimationCompatActivity;
 import corp.kairos.adamastor.AppDetails;
 import corp.kairos.adamastor.AppsManager.AppsManager;
 import corp.kairos.adamastor.Collector.CollectorService;
@@ -39,12 +39,13 @@ import corp.kairos.adamastor.Home.dao.FavouriteAppsDAO;
 import corp.kairos.adamastor.Home.dao.StaticFavouriteAppsDAO;
 import corp.kairos.adamastor.Onboarding.Onboard1WelcomeActivity;
 import corp.kairos.adamastor.R;
+import corp.kairos.adamastor.ServerMediator.MediatorService;
 import corp.kairos.adamastor.Settings.ContextRelated.ContextRelatedSettingsActivity;
 import corp.kairos.adamastor.Settings.Settings;
 import corp.kairos.adamastor.Statistics.StatisticsActivity;
 import corp.kairos.adamastor.UserContext;
 
-public class HomeActivity extends AnimationCompactActivity {
+public class HomeActivity extends AnimationCompatActivity {
 
     public static final String TAG = HomeActivity.class.toString();
     public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
@@ -61,6 +62,7 @@ public class HomeActivity extends AnimationCompactActivity {
     private TextView monthDayTextView;
     private TextView weekdayYearTextView;
 
+    private boolean autoContextChange = false;
     private boolean permissionsGranted = false;
 
     private final String NO_ACTION = "NO_ACTION";
@@ -102,13 +104,10 @@ public class HomeActivity extends AnimationCompactActivity {
             this.monthDayTextView = (TextView) findViewById(R.id.month_day_text_view);
             this.weekdayYearTextView = (TextView) findViewById(R.id.weekday_year_text_view);
 
-            checkPermissions();
-            if (permissionsGranted)
-                bindCollectorService();
-
             // Set navigation
             super.setAnimation("up");
             this.setDownActivity(AllAppsActivity.class);
+
             this.setLeftActivity(StatisticsActivity.class);
             this.setRightActivity(ContextListActivity.class);
 
@@ -117,6 +116,12 @@ public class HomeActivity extends AnimationCompactActivity {
             setupFavouriteApps();
 
             setupContextDisplayer();
+
+            checkPermissions();
+            if (permissionsGranted) {
+                bindCollectorService();
+            }
+
         }
     }
 
@@ -125,11 +130,9 @@ public class HomeActivity extends AnimationCompactActivity {
         Date time = Calendar.getInstance().getTime();
          SimpleDateFormat df = new SimpleDateFormat("MMMM dd");
         this.monthDayTextView.setText(df.format(time));
-
         df = new SimpleDateFormat("EEEE, yyyy");
         this.weekdayYearTextView.setText(df.format(time));
     }
-
 
     private void setupFavouriteApps() {
         // Load favorite apps
@@ -182,23 +185,9 @@ public class HomeActivity extends AnimationCompactActivity {
         this.tabLayout.setupWithViewPager(this.viewPager);
         int i = 0;
         for (UserContext context : this.userContexts) {
-            int iconCode;
+
             // TODO: make contexts carry their own icon
-            switch (context.getContextName()) {
-                case "Work":
-                    iconCode = R.drawable.ic_work_black_24dp;
-                    break;
-                case "Home":
-                case "Leisure":
-                    iconCode = R.drawable.ic_leisure_black_24dp;
-                    break;
-                case "Travel":
-                case "Commute":
-                    iconCode = R.drawable.ic_commute_black_24dp;
-                    break;
-                default:
-                    iconCode = R.drawable.ic_settings_black_24dp;
-            }
+            int iconCode = UserContext.getContextIcon(context.getContextName());
 
             // Setup Icon and Tab Tag
             TabLayout.Tab tab = this.tabLayout.getTabAt(i);
@@ -221,6 +210,11 @@ public class HomeActivity extends AnimationCompactActivity {
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
+                if(autoContextChange == true){
+                    autoContextChange = false;
+                }else{
+                    informSettingsManualContextChange((String)tab.getTag());
+                }
                 BackgroundChanger.changeWallpaper(getApplicationContext(), getSelectedTabBackground(tab));
             }
 
@@ -236,33 +230,54 @@ public class HomeActivity extends AnimationCompactActivity {
         });
     }
 
+    private void informSettingsManualContextChange(String context){
+        Settings.getInstance(this).informCollectorContextChange(context);
+    }
+
     private int getSelectedTabBackground(TabLayout.Tab tab) {
         String tabTag = (String) tab.getTag();
         assert tabTag != null;
         switch (tabTag) {
             case "Work":
                 return R.drawable.work_background;
-            case "Travel":
             case "Commute":
                 return R.drawable.commute_background;
-            case "Home":
             case "Leisure":
             default:
                 return R.drawable.leisure_background;
         }
     }
 
+    private int getTabIndexByContextName(String contextName){
+        int result = 0;
+        for(int i = 0; i<this.tabLayout.getTabCount(); i++){
+            if(((String)this.tabLayout.getTabAt(i).getTag()).equals(contextName)){
+                result = i;
+                break;
+            }
+        }
+        return result;
+    }
+
+    private void switchTabByAutoContextChange(String context){
+        int selectedTab = this.tabLayout.getSelectedTabPosition();
+        int currentContextTab = this.getTabIndexByContextName(context);
+
+        if(selectedTab != currentContextTab){
+            this.autoContextChange = true;
+            this.tabLayout.getTabAt(currentContextTab).select();
+        }
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
-
         checkPermissions();
         if (permissionsGranted)
             bindCollectorService();
 
-        //Get the current context from the service
-        String returnedContext = CollectorService.getCurrentContext();
-        switchContext(returnedContext, false);
+        UserContext current = Settings.getInstance(this).getCurrentUserContext();
+        this.switchTabByAutoContextChange(current.getContextName());
     }
 
     private void switchContext(String newContext, boolean fromNotification) {
@@ -337,6 +352,7 @@ public class HomeActivity extends AnimationCompactActivity {
         startActivity(i);
     }
 
+
     private void checkPermissions() {
         if ((ActivityCompat.checkSelfPermission(this,
                 android.Manifest.permission.ACCESS_FINE_LOCATION)
@@ -371,10 +387,8 @@ public class HomeActivity extends AnimationCompactActivity {
     }
 
     private void bindCollectorService() {
-        Log.i(TAG, "Binding Service");
         Intent intent = new Intent(this, CollectorService.class);
         startService(intent);
-
     }
 
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {

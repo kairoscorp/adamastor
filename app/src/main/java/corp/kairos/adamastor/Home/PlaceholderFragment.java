@@ -1,6 +1,8 @@
 package corp.kairos.adamastor.Home;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -8,17 +10,20 @@ import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.GridView;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.HashSet;
 import java.util.Set;
 
-import corp.kairos.adamastor.AllApps.AllAppsMenuAdapter;
 import corp.kairos.adamastor.AppDetails;
 import corp.kairos.adamastor.R;
 import corp.kairos.adamastor.UserContext;
+
+import static corp.kairos.adamastor.Util.getObjectByIndex;
 
 
 public class PlaceholderFragment extends Fragment {
@@ -69,19 +74,56 @@ public class PlaceholderFragment extends Fragment {
         return parentLayout;
     }
 
-    private class CustomAdapter extends AllAppsMenuAdapter {
+    private class CustomAdapter extends ArrayAdapter {
 
-        public CustomAdapter(Context context, Set apps) {
-            super(context, apps);
+        protected Context context;
+        private Set<AppDetails> allApps;
+        private Set<AppDetails> filteredApps;
+
+        public CustomAdapter(Context context, Set<AppDetails> allApps) {
+            super(context, R.layout.activity_allapps);
+            this.context = context;
+            this.allApps = allApps;
+            this.filteredApps = allApps;
+        }
+
+        @Override
+        public int getCount() {
+            return filteredApps.size();
+        }
+
+        @Override
+        public Object getItem(int position) {
+            return getObjectByIndex(position, this.filteredApps);
         }
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
-            View view = super.getView(position, convertView, parent);
-            TextView appLabel = (TextView) view.getRootView().findViewById(R.id.app_text);
-            appLabel.setTextColor(ContextCompat.getColor(this.context, R.color.primaryTextColor));
-            return view;
+            View item = convertView;
+
+            if (item == null)
+            {
+                LayoutInflater inflater = ((Activity) context).getLayoutInflater();
+                item = inflater.inflate(R.layout.allapps_app, parent, false);
+            }
+
+            AppDetails app = (AppDetails) getObjectByIndex(position, this.filteredApps);
+
+            TextView textViewTitle = (TextView) item.findViewById(R.id.app_text);
+            ImageView imageViewItem = (ImageView) item.findViewById(R.id.app_image);
+
+            textViewTitle.setText(app.getLabel());
+            textViewTitle.setTextColor(ContextCompat.getColor(this.context, R.color.primaryTextColor));
+            imageViewItem.setImageDrawable(app.getIcon());
+
+            item.setOnClickListener(view -> {
+                Intent i = this.context.getPackageManager().getLaunchIntentForPackage(app.getPackageName());
+                context.startActivity(i);
+            });
+
+            return item;
         }
+
     }
 
 }

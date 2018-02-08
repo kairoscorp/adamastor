@@ -2,7 +2,9 @@ package corp.kairos.adamastor.AllApps;
 
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.widget.GridView;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.widget.SearchView;
 
 import java.util.Set;
 
@@ -12,34 +14,54 @@ import corp.kairos.adamastor.AppsManager.AppsManager;
 import corp.kairos.adamastor.Home.HomeActivity;
 import corp.kairos.adamastor.R;
 
+import static corp.kairos.adamastor.ContextList.ContextListActivity.NUMBER_OF_COLUMNS;
+
 public class AllAppsActivity extends AnimationActivity {
     private PackageManager packageManager;
     private AppsManager appsManager;
 
     private Set<AppDetails> allApps;
 
-    private GridView allAppsMenuView;
+    private SearchView searchView;
+    private RecyclerView allAppsMenuView;
+    private AllAppsRecyclerViewAdapter mAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.allapps_menu);
+        setContentView(R.layout.activity_allapps);
 
-        this.allAppsMenuView = findViewById(R.id.allapps_menu);
+        searchView = findViewById(R.id.search_view);
+        allAppsMenuView = findViewById(R.id.allapps_grid);
+
         // Managers
-        this.appsManager = AppsManager.getInstance();
-        this.packageManager = getPackageManager();
+        appsManager = AppsManager.getInstance();
+        packageManager = getPackageManager();
 
-
-        this.allApps = this.appsManager.getAllApps(packageManager, true);
+        allApps = appsManager.getAllApps(packageManager, true);
 
         // Set animations
         super.setAnimation("up");
         super.setUpActivity(HomeActivity.class);
 
-        // Views
-        AllAppsMenuAdapter adapter = new AllAppsMenuAdapter(this, this.allApps);
-        this.allAppsMenuView.setAdapter(adapter);
-    }
+        // Setup views
+        allAppsMenuView = findViewById(R.id.allapps_grid);
+        allAppsMenuView.setLayoutManager(new GridLayoutManager(AllAppsActivity.this, NUMBER_OF_COLUMNS));
+        mAdapter = new AllAppsRecyclerViewAdapter(AllAppsActivity.this, allApps);
+        allAppsMenuView.setAdapter(mAdapter);
 
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String query) {
+                mAdapter.getFilter().filter(query);
+                allAppsMenuView.scrollToPosition(0);
+                return false;
+            }
+        });
+    }
 }

@@ -13,11 +13,22 @@
         <item name="colorPrimary">@color/primaryColor</item>
         <item name="colorPrimaryDark">@color/primaryDarkColor</item>
         <item name="colorAccent">@color/secondaryColor</item>
+
         <!-- Make System Bars Transparent -->
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:navigationBarColor">@android:color/transparent</item>
         <item name="android:windowTranslucentStatus">false</item>
         <item name="android:windowTranslucentNavigation">false</item>
+
+        <item name="searchViewStyle">@style/LauncherTheme.SearchView</item>
+    </style>
+
+    <style name="LauncherTheme.SearchView" parent="Widget.AppCompat.SearchView">
+        <item name="android:color">@color/secondaryLightColor</item>
+        <item name="android:textColor">@color/secondaryLightColor</item>
+        <item name="android:textColorHint">@color/secondaryLightColor</item>
+        <item name="android:editTextColor">@color/secondaryLightColor</item>
+        <item name="android:tint">@color/secondaryLightColor</item>
     </style>
 
     <style name="AppTheme.NoActionBar">
@@ -25,7 +36,7 @@
         <item name="windowNoTitle">true</item>
     </style>
 
-    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar"/>
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
@@ -42,14 +53,12 @@
         <!-- No Action Bars -->
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowActionBar">false</item>
-        <item name="android:windowContentOverlay">@null</item>
 
         <!-- Background Wallpaper -->
         <item name="android:windowBackground">@android:color/transparent</item>
         <item name="android:windowShowWallpaper">true</item>
 
         <!-- Make System Bars Transparent -->
-        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:navigationBarColor">@android:color/transparent</item>
         <item name="android:windowTranslucentStatus">false</item>

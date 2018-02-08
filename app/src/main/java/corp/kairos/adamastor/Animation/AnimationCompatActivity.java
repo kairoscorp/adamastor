@@ -9,7 +9,7 @@ import android.view.MotionEvent;
 import corp.kairos.adamastor.R;
 
 
-public abstract class AnimationCompactActivity extends AppCompatActivity {
+public abstract class AnimationCompatActivity extends AppCompatActivity {
     private Animation animation;
 
     @Override

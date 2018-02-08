@@ -33,11 +33,15 @@
             android:id="@+id/month_day_text_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="36sp"
+            android:textSize="38sp"
             android:layout_alignParentEnd="true"
             android:textColor="@color/primaryTextColor"
             android:layout_marginEnd="16dp"
             android:layout_marginTop="30dp"
+            android:shadowColor="@color/black_overlay"
+            android:shadowDx="0"
+            android:shadowDy="1"
+            android:shadowRadius="2"
             android:text="@string/month_day_dummy_text"
             />
 
@@ -51,6 +55,9 @@
             android:textColor="@color/primaryTextColor"
             android:layout_marginEnd="16dp"
             android:text="@string/weekday_year_dummy_text"
+            android:shadowDx="0"
+            android:shadowDy="1"
+            android:shadowRadius="2"
             />
 
 

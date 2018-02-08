@@ -3,7 +3,6 @@ package corp.kairos.adamastor.Onboarding;
 import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.TextView;
 
@@ -17,30 +16,32 @@ import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-import java.util.Set;
-
+import corp.kairos.adamastor.Animation.AnimationCompatActivity;
 import corp.kairos.adamastor.R;
 import corp.kairos.adamastor.Settings.Settings;
+import corp.kairos.adamastor.UserContext;
 
 
-public class Onboard3LocationActivity extends AppCompatActivity{
+public class Onboard3LocationActivity extends AnimationCompatActivity {
     private Settings settingsUser;
 
     private GoogleMap workMap;
     private GoogleMap homeMap;
     private MapView workplaceView;
     private MapView homeplaceView;
-    public static final int PLACE_PICKER_REQUEST_HOME = 1;
+    public static final int PLACE_PICKER_REQUEST_LEISURE = 1;
     public static final int PLACE_PICKER_REQUEST_WORK = 2;
     private Bundle savedInstanceState;
 
-    private Location homeLoc;
-    private Location workLoc;
+    private Location homeLoc = new Location("provider");
+    private Location workLoc = new Location("provider");
 
     //UMinho coordinates, if no location provider is available, this will center the map in this location, because UMinho is amazing!
     private LatLng pos = new LatLng(41.56131,-8.393804);
     private boolean pickWork = false;
     private boolean pickHome = false;
+    private String homeAddress;
+    private String workAddress;
 
 
 
@@ -57,12 +58,23 @@ public class Onboard3LocationActivity extends AppCompatActivity{
         homeplaceView.onCreate(this.savedInstanceState);
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        super.setAnimation("right");
+    }
 
+    @Override
+    public void onBackPressed() {
+        super.setAnimation("left");
+        startActivity(new Intent(getApplicationContext(),Onboard1WelcomeActivity.class));
+        finish();
+    }
 
     public void pickHomeLocation(View v) {
         PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
         try {
-            startActivityForResult(builder.build(this), PLACE_PICKER_REQUEST_HOME);
+            startActivityForResult(builder.build(this), PLACE_PICKER_REQUEST_LEISURE);
         } catch (GooglePlayServicesRepairableException e) {
             e.printStackTrace();
         } catch (GooglePlayServicesNotAvailableException e) {
@@ -82,20 +94,22 @@ public class Onboard3LocationActivity extends AppCompatActivity{
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == PLACE_PICKER_REQUEST_HOME)
+        if (requestCode == PLACE_PICKER_REQUEST_LEISURE)
             if (resultCode == RESULT_OK) {
                 Place place = PlacePicker.getPlace(this,data);
-                String address = String.format("%s", place.getAddress());
-                showHomeMap(address, place.getLatLng());
-
-        }
-        if (requestCode == PLACE_PICKER_REQUEST_WORK)
-            if (resultCode == RESULT_OK) {
-                Place place = PlacePicker.getPlace(this,data);
-                String address = String.format("%s", place.getAddress());
-                showWorkMap(address,place.getLatLng());
-
-        }
+                homeAddress = String.format("%s", place.getAddress());
+                showHomeMap(homeAddress, place.getLatLng());
+                homeLoc.setLatitude(place.getLatLng().latitude);
+                homeLoc.setLongitude(place.getLatLng().longitude);
+            }
+            if (requestCode == PLACE_PICKER_REQUEST_WORK)
+                if (resultCode == RESULT_OK) {
+                    Place place = PlacePicker.getPlace(this,data);
+                    workAddress = String.format("%s", place.getAddress());
+                    showWorkMap(workAddress,place.getLatLng());
+                    workLoc.setLatitude(place.getLatLng().latitude);
+                    workLoc.setLongitude(place.getLatLng().longitude);
+            }
     }
 
     private void showWorkMap(String address, LatLng pos) {
@@ -110,6 +124,7 @@ public class Onboard3LocationActivity extends AppCompatActivity{
             workMap.moveCamera(CameraUpdateFactory.newLatLng(pos));
             MarkerOptions opts = new MarkerOptions();
             opts.position(pos);
+            workMap.clear();
             workMap.addMarker(opts);
         });
         pickWork = true;
@@ -128,6 +143,7 @@ public class Onboard3LocationActivity extends AppCompatActivity{
             homeMap.moveCamera(CameraUpdateFactory.newLatLng(pos));
             MarkerOptions opts = new MarkerOptions();
             opts.position(pos);
+            homeMap.clear();
             homeMap.addMarker(opts);
         });
         pickHome = true;
@@ -142,8 +158,16 @@ public class Onboard3LocationActivity extends AppCompatActivity{
 
     public void goNext(View v) {
         Intent i = new Intent(this,Onboard4ContextAppsActivity.class);
-        Set<String> contexts = this.settingsUser.getContexts().keySet();
+
+        UserContext leisureContext = this.settingsUser.getUserContext("Leisure");
+        UserContext workContext = this.settingsUser.getUserContext("Work");
+
+        leisureContext.setLocation(homeLoc);
+        workContext.setLocation(workLoc);
+
+        this.settingsUser.setUserContext(leisureContext);
+        this.settingsUser.setUserContext(workContext);
+
         startActivity(i);
-        finish();
     }
 }

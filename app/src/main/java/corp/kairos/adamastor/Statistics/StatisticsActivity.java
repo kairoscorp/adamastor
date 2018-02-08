@@ -9,7 +9,6 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -28,13 +27,13 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
-import corp.kairos.adamastor.Animation.AnimationCompactActivity;
+import corp.kairos.adamastor.Animation.AnimationCompatActivity;
 import corp.kairos.adamastor.AppDetails;
 import corp.kairos.adamastor.AppsManager.AppsManager;
 import corp.kairos.adamastor.Home.HomeActivity;
 import corp.kairos.adamastor.R;
 
-public class StatisticsActivity extends AnimationCompactActivity {
+public class StatisticsActivity extends AnimationCompatActivity {
 
     private PackageManager packageManager;
 
@@ -63,7 +62,7 @@ public class StatisticsActivity extends AnimationCompactActivity {
         super.setRightActivity(HomeActivity.class);
 
         setContentView(R.layout.activity_statistics);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_contexts);
         setSupportActionBar(toolbar);
 
         mChart = findViewById(R.id.stats_context);
