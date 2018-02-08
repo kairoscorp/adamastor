@@ -79,7 +79,7 @@
             android:layout_marginTop="20dp">
 
             <ImageView
-                android:id="@+id/image_home"
+                android:id="@+id/image_leisure"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:layout_alignParentStart="true"
@@ -89,24 +89,24 @@
                 />
 
             <TextView
-                android:id="@+id/home_label"
+                android:id="@+id/leisure_label"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
                 android:layout_marginStart="24dp"
-                android:layout_toEndOf="@+id/image_home"
+                android:layout_toEndOf="@+id/image_leisure"
                 android:layout_weight="1"
                 android:text="@string/leisure_name"
                 android:textColor="@android:color/black"
                 android:textAppearance="@android:style/TextAppearance.Material.Medium" />
 
             <TextView
-                android:id="@+id/home_description"
+                android:id="@+id/leisure_description"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/home_label"
+                android:layout_below="@id/leisure_label"
                 android:layout_marginStart="24dp"
-                android:layout_toEndOf="@+id/image_home"
+                android:layout_toEndOf="@+id/image_leisure"
                 android:layout_weight="1"
                 android:text="@string/onboarding_leisure_description"
                 android:textAppearance="@android:style/TextAppearance.Material.Small" />

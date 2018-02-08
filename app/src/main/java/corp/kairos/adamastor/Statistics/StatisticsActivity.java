@@ -27,13 +27,13 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
-import corp.kairos.adamastor.Animation.AnimationCompactActivity;
+import corp.kairos.adamastor.Animation.AnimationCompatActivity;
 import corp.kairos.adamastor.AppDetails;
 import corp.kairos.adamastor.AppsManager.AppsManager;
 import corp.kairos.adamastor.Home.HomeActivity;
 import corp.kairos.adamastor.R;
 
-public class StatisticsActivity extends AnimationCompactActivity {
+public class StatisticsActivity extends AnimationCompatActivity {
 
     private PackageManager packageManager;
 

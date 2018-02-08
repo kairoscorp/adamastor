@@ -110,6 +110,13 @@
             android:label="@string/onboarding_label"
             android:theme="@style/OnboardingTheme" />
         <activity
+            android:name=".Onboarding.Onboard6FinalActivity"
+            android:label="@string/onboarding_label"
+            android:theme="@style/OnboardingTheme"
+            >
+        </activity>
+
+        <activity
             android:name=".ContextList.ContextListActivity"
             android:theme="@style/LauncherTheme" />
 
