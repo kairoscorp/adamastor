@@ -77,7 +77,7 @@ public class CollectorService extends Service implements GoogleApiClient.Connect
     private boolean checkLocation = false;
     private int userActivityNow = 1;
     private static int predictedContext = 1;
-    private static int predictInterval = 6 * 10;
+    private static int predictInterval = 6;
     private static int predictIteration = 0;
     private static boolean predictionActive;
     private static int etlIteration = 0;
