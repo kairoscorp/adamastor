@@ -16,7 +16,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.RandomAccessFile;
-import java.text.CollationElementIterator;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -27,6 +26,7 @@ import java.util.TreeMap;
 import java.util.concurrent.TimeUnit;
 
 import corp.kairos.adamastor.AppDetails;
+import corp.kairos.adamastor.Settings.Settings;
 
 public class LogDatabaseHelper extends SQLiteOpenHelper {
     private static final String TAG = "LogDatabaseLog";
@@ -119,20 +119,20 @@ public class LogDatabaseHelper extends SQLiteOpenHelper {
         Map<String, Long> result = new TreeMap<>();
         SQLiteDatabase db = this.getReadableDatabase();
 
-        String query = "SELECT logs.context As Context, SUM(logs.id) AS Times " +
-                "FROM 'ServiceLogs' AS logs " +
-                "GROUP BY logs.context;";
+        String query = "SELECT logs.context As Context, COUNT(*) AS Times " +
+                       "FROM 'ServiceLogs' AS logs " +
+                       "GROUP BY logs.context;";
 
         Cursor res = db.rawQuery(query, null);
         res.moveToFirst();
 
-        while (!res.isAfterLast()) {
-            String context = String.valueOf(res.getInt(res.getColumnIndex("Context")));
+        while(!res.isAfterLast()) {
+            int context = res.getInt(res.getColumnIndex("Context"));
 
             // Each record means approximately 10 seconds in the context
             int timeSeconds = res.getInt(res.getColumnIndex("Times")) * 10;
 
-            result.put(context, TimeUnit.SECONDS.toMillis(timeSeconds));
+            result.put(Settings.getContextNameFromId(context), TimeUnit.SECONDS.toMillis(timeSeconds));
             res.moveToNext();
         }
         res.close();
@@ -192,6 +192,7 @@ public class LogDatabaseHelper extends SQLiteOpenHelper {
             entry = entry + "::" + res.getString(res.getColumnIndex("provider"));
             entry = entry + "::" + res.getString(res.getColumnIndex("account"));
             entry = entry + "::" + res.getString(res.getColumnIndex("context"));
+            entry = entry + "::" + res.getString(res.getColumnIndex("foreground"));
             result.add(entry);
             res.moveToNext();
         }
@@ -467,5 +468,34 @@ public class LogDatabaseHelper extends SQLiteOpenHelper {
         buffer.flush();
 
         return buffer.toByteArray();
+    }
+    
+    public Map<String, Long> getContextAppsStatistics(String context) {
+        Map<String, Long> result = new TreeMap<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        int idContext = Settings.getIdFromContextName(context);
+
+        String query =
+                "SELECT logs.foreground As Foreground, COUNT(*) AS Times " +
+                "FROM 'ServiceLogs' AS logs " +
+                "WHERE logs.context = '" + idContext + "' " +
+                "GROUP BY logs.foreground;";
+
+
+        Cursor res = db.rawQuery(query, null );
+        res.moveToFirst();
+
+        while(!res.isAfterLast()) {
+            String activity = res.getString(res.getColumnIndex("Foreground"));
+
+            // Each record means approximately 10 seconds in the context
+            int timeSeconds = res.getInt(res.getColumnIndex("Times")) * 10;
+
+            result.put(activity, TimeUnit.SECONDS.toMillis(timeSeconds));
+
+            res.moveToNext();
+        }
+
+        return result;
     }
 }

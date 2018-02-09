@@ -381,6 +381,13 @@ public class CollectorService extends Service implements GoogleApiClient.Connect
             currentApp = tasks.get(0).processName;
         }
 
+        try{
+            String result = (String) packageManager.getApplicationLabel(packageManager.getApplicationInfo(
+                    currentApp, PackageManager.GET_META_DATA));
+        }catch(Exception e){
+            String result = currentApp;
+        }
+
         return currentApp;
     }
 
@@ -533,6 +540,10 @@ public class CollectorService extends Service implements GoogleApiClient.Connect
         for(AppDetails ad : allApps){
             this.logDatabaseHelper.addEntryAppLookUp(ad.getPackageName());
         }
+    }
+
+    public Map<String, Long> getContextAppsStatistics(String context) {
+        return logDatabaseHelper.getContextAppsStatistics(context);
     }
 
     /**

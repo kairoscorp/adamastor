@@ -1,0 +1,27 @@
+<RelativeLayout
+    android:paddingTop="3dp"
+    android:layout_width="match_parent"
+    android:layout_height="40dp"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <ImageView
+        android:id="@+id/legend_color"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_centerVertical="true"
+        android:background="@color/primaryLightColor"
+        android:cropToPadding="false"
+        android:gravity="center" />
+
+    <TextView
+        android:id="@+id/legend_text"
+        android:layout_width="wrap_content"
+        android:layout_height="30dp"
+        android:layout_centerVertical="true"
+        android:layout_toEndOf="@+id/legend_color"
+        android:layout_marginStart="10dp"
+        android:text="Context: 35 hours, 19%"
+        android:gravity="center"
+        android:textAppearance="@android:style/TextAppearance.Material.Medium"
+        android:textColor="@android:color/black" />
+</RelativeLayout>

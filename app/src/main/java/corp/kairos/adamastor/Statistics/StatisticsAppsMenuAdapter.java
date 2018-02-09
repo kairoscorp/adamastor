@@ -22,16 +22,13 @@ import static corp.kairos.adamastor.Util.getObjectByIndex;
 public class StatisticsAppsMenuAdapter extends ArrayAdapter {
     private Context context;
     private Set<AppDetails> apps;
-    private long finalTotal;
+    private long mostUsedTime;
 
     public StatisticsAppsMenuAdapter(Context context, Set<AppDetails> apps) {
         super(context, R.layout.activity_allapps);
         this.context = context;
         this.apps = apps;
-        finalTotal = 0;
-        for(AppDetails app : apps) {
-            finalTotal += app.getUsageStatistics();
-        }
+        this.mostUsedTime = apps.isEmpty() ? 0L : apps.iterator().next().getUsageStatistics();
     }
 
     @Override
@@ -54,30 +51,47 @@ public class StatisticsAppsMenuAdapter extends ArrayAdapter {
         if (convertView == null)
         {
             LayoutInflater inflater = ((Activity) context).getLayoutInflater();
-            convertView = inflater.inflate(R.layout.statistics_app_layout, parent, false);
+            convertView = inflater.inflate(R.layout.single_app_statistics, parent, false);
         }
 
         AppDetails app = (AppDetails) getObjectByIndex(position, apps);
-        ImageView appIcon = (ImageView)convertView.findViewById(R.id.app_stats_image);
+        ImageView appIcon = (ImageView)convertView.findViewById(R.id.app_statistics_image);
         appIcon.setImageDrawable(app.getIcon());
 
-        TextView appLabel = (TextView)convertView.findViewById(R.id.app_stats_label);
+        TextView appLabel = (TextView)convertView.findViewById(R.id.app_statistcs_name);
         appLabel.setText(app.getLabel());
 
-        ProgressBar appProgressBar = (ProgressBar)convertView.findViewById(R.id.app_stats_progress_bar);
-        long percentage = (app.getUsageStatistics() * 100) / finalTotal;
+        ProgressBar appProgressBar = (ProgressBar)convertView.findViewById(R.id.app_statistics_progress_bar);
+        long percentage = (app.getUsageStatistics() * 100) / mostUsedTime;
         appProgressBar.setProgress((int) percentage);
 
-        TextView appTimeUsage = (TextView)convertView.findViewById(R.id.app_stats_usage_time);
+        TextView appTimeUsage = (TextView)convertView.findViewById(R.id.app_statistcs_time);
 
-        appTimeUsage.setText(TimeUnit.MILLISECONDS.toMinutes(app.getUsageStatistics()) + " minutes");
-
-        TextView appPercentage = (TextView)convertView.findViewById(R.id.app_stats_percentage);
-        String percentageText = percentage + " %";
-        if(percentage < 1) {
-            percentageText = "< 0 %";
+        long usageStatistics = app.getUsageStatistics();
+        String timeUsage = "";
+        long time = TimeUnit.MILLISECONDS.toHours(usageStatistics);
+        if(time < 1) {
+            time = TimeUnit.MILLISECONDS.toMinutes(usageStatistics);
+            if(time < 1) {
+                time = TimeUnit.MILLISECONDS.toSeconds(usageStatistics);
+                if(time < 1) {
+                    time = usageStatistics;
+                    timeUsage = String.format("%dmilli",time);
+                } else {
+                    timeUsage = String.format("%dsec",time);
+                }
+            } else {
+                timeUsage = String.format("%dmin",time);
+            }
+        } else {
+            timeUsage = String.format("%dh%02dm",
+                    TimeUnit.MILLISECONDS.toHours(usageStatistics),
+                    TimeUnit.MILLISECONDS.toMinutes(usageStatistics) -
+                            TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(usageStatistics))
+            );
         }
-        appPercentage.setText(percentageText);
+
+        appTimeUsage.setText(timeUsage + " . ("+(int)percentage+"%)");
 
         return convertView;
     }

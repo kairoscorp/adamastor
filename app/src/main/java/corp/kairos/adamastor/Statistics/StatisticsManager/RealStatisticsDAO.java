@@ -5,7 +5,6 @@ import android.app.usage.UsageStatsManager;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
@@ -36,7 +35,7 @@ public class RealStatisticsDAO implements StatisticsDAO {
 
 
     @Override
-    public Set<AppDetails> getAppsStatistics(Map<String, AppDetails> allAppsDetails, Map<String, AppDetails> appsDetailsWithoutLauncher, UsageStatsManager usm) {
+    public Map<String, AppDetails> getAppsStatistics(Map<String, AppDetails> allAppsDetails, UsageStatsManager usm) {
         Map<String, AppDetails> appStatsMap = new TreeMap<>();
         long time = System.currentTimeMillis();
         List<UsageStats> appList = usm.queryUsageStats(UsageStatsManager.INTERVAL_DAILY,  time - 10000000, time);
@@ -49,7 +48,7 @@ public class RealStatisticsDAO implements StatisticsDAO {
                 if(allAppsDetails.containsKey(appName)) {
                     AppDetails appDetails = allAppsDetails.get(appName);
                     appDetails.setUsageStatistics(appTotalTime);
-                    if(appTotalTime > 0 && appsDetailsWithoutLauncher.containsKey(appName)) {
+                    if(appTotalTime > 0) {
                         if(appStatsMap.containsKey(appName)) {
                             appDetails.setUsageStatistics(appTotalTime + appStatsMap.get(appName).getUsageStatistics());
                         }
@@ -62,8 +61,20 @@ public class RealStatisticsDAO implements StatisticsDAO {
             }
         }
 
-        Set<AppDetails> resultSet = new TreeSet<>(new StatisticsAppDetailsComparator());
-        resultSet.addAll(appStatsMap.values());
-        return resultSet;
+        return appStatsMap;
+    }
+
+    public TreeSet<AppDetails> getContextAppsStatistics(Map<String, AppDetails> allAppsDetails, String context) {
+        TreeSet<AppDetails> result = new TreeSet<>(new StatisticsAppDetailsComparator());
+        Map<String, Long> collectorResult = collectorService.getContextAppsStatistics(context);
+        for(Map.Entry<String, Long> entry : collectorResult.entrySet()) {
+            AppDetails app = allAppsDetails.get(entry.getKey());
+            if(app != null) {
+                app.setUsageStatistics(entry.getValue());
+                result.add(app.clone());
+            }
+        }
+
+        return result;
     }
 }

@@ -9,8 +9,10 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <uses-permission android:name="android.permission.CALL_PHONE" />
     <uses-permission android:name="android.permission.SET_WALLPAPER" />
     <uses-permission android:name="android.permission.SET_WALLPAPER_HINTS" />
+
     <uses-permission
         android:name="android.permission.PACKAGE_USAGE_STATS"
         tools:ignore="ProtectedPermissions" />
@@ -52,22 +54,6 @@
         <activity
             android:name=".AllApps.AllAppsActivity"
             android:theme="@style/LauncherTheme" />
-        <activity
-            android:name=".Settings.ContextRelated.ContextRelatedSettingsActivity"
-            android:label="Onboarding"
-            android:parentActivityName=".Home.HomeActivity">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="corp.kairos.adamastor.Home.HomeActivity" />
-        </activity>
-        <activity
-            android:name=".Settings.ContextRelated.ContextRelatedAppsActivity"
-            android:label="Context Related Apps"
-            android:parentActivityName=".Settings.ContextRelated.ContextRelatedSettingsActivity">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".Settings.ContextRelated.ContextRelatedSettingsActivity" />
-        </activity>
 
         <service
             android:name=".Collector.CollectorService"
@@ -126,11 +112,6 @@
             </intent-filter>
         </service>
 
-        <activity
-            android:name=".Statistics.StatisticsActivity"
-            android:label="@string/title_activity_statistics"
-            android:theme="@style/AppTheme.NoActionBar" />
-
         <receiver android:name=".AppsManager.AppsBroadcastService">
             <intent-filter>
                 <category android:name="android.intent.category.DEFAULT" />
@@ -148,13 +129,21 @@
         <activity
             android:name=".Settings.ContextRelated.EditContextAppsActivity"
             android:label="Context Apps" />
+
         <activity
             android:name=".Settings.LocationSettingsActivity"
             android:label="Location" />
+
         <activity
             android:name=".Settings.KairosSettingsActivity"
             android:label="Kairos Settings"></activity>
+            
         <activity android:name=".Settings.ScheduleSettingsActivity" />
-    </application>
 
+        <activity
+            android:name=".Statistics.StatisticsActivity"
+            android:label="@string/title_activity_statistics"
+            android:theme="@style/AppTheme.NoActionBar" />
+
+    </application>
 </manifest>

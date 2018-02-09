@@ -1,7 +1,6 @@
 package corp.kairos.adamastor.AppsManager;
 
 import android.app.usage.UsageStatsManager;
-import android.content.BroadcastReceiver;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
@@ -14,28 +13,38 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 
 import corp.kairos.adamastor.AppDetails;
-import corp.kairos.adamastor.Settings.Settings;
+import corp.kairos.adamastor.Statistics.StatisticsManager.RandomStatisticsDAO;
 import corp.kairos.adamastor.Statistics.StatisticsManager.RealStatisticsDAO;
 import corp.kairos.adamastor.Statistics.StatisticsManager.StatisticsDAO;
 import corp.kairos.adamastor.Statistics.StatisticsManager.RandomStatisticsDAO;
 import corp.kairos.adamastor.Util;
+import corp.kairos.adamastor.UserContext;
 
 public class AppsManager {
     private Map<String, AppDetails> allAppsDetails;
     private Map<String, AppDetails> appsDetailsWithoutLauncher;
-    private Settings settings;
     private StatisticsDAO statisticsManager;
+
     private static AppsManager instance;
-    private BroadcastReceiver listener;
     protected Boolean force;
 
     private static final String TAG = AppsManager.class.getName();
 
     private AppsManager(){
-        this.statisticsManager = new RandomStatisticsDAO();
+        this.statisticsManager = new RealStatisticsDAO();
         this.allAppsDetails = new TreeMap<>();
         this.appsDetailsWithoutLauncher = new TreeMap<>();
         this.force = true;
+    }
+
+    public boolean switchStatisticsManager (){
+        if(this.statisticsManager instanceof RandomStatisticsDAO) {
+            this.statisticsManager = new RealStatisticsDAO();
+            return true;
+        } else {
+            this.statisticsManager = new RandomStatisticsDAO();
+            return false;
+        }
     }
 
     public static AppsManager getInstance() {
@@ -83,14 +92,47 @@ public class AppsManager {
 
         this.force = false;
     }
-
-    public Set<AppDetails> getAppsStatistics(PackageManager packageManager, UsageStatsManager usm) {
+    
+    public Map<String, AppDetails> getAppsStatistics(PackageManager packageManager, UsageStatsManager usm, Boolean filtered) {
         if(this.needToLoad()) {
             setupApps(packageManager);
         }
-
-        return statisticsManager.getAppsStatistics(this.allAppsDetails, this.appsDetailsWithoutLauncher, usm);
+        Map<String, AppDetails> statistics = statisticsManager.getAppsStatistics(this.appsDetailsWithoutLauncher, usm);
+        Map<String, AppDetails> result = new TreeMap<>();
+        if(filtered) {
+            for(Map.Entry<String, AppDetails> app : statistics.entrySet()) {
+                if(this.appsDetailsWithoutLauncher.containsKey(app.getKey())) {
+                    result.put(app.getKey(), app.getValue());
+                }
+            }
+            return result;
+        }
+        return statistics;
     }
+
+    public Map<String, TreeSet<AppDetails>> getAppsStatisticsByContext(List<String> contextsNames, PackageManager packageManager) {
+        if(this.needToLoad()) {
+            setupApps(packageManager);
+        }
+        Map<String, TreeSet<AppDetails>> result = new TreeMap<>();
+        for(String contextName : contextsNames) {
+            TreeSet<AppDetails> statistics = statisticsManager.getContextAppsStatistics(this.appsDetailsWithoutLauncher, contextName);
+            result.put(contextName, statistics);
+        }
+        return result;
+    }
+
+    public AppDetails getAppStatisticsDetails(String packageName, UserContext userContext, PackageManager packageManager, UsageStatsManager usm) {
+        Map<String, AppDetails> statistics = this.getAppsStatistics(packageManager, usm, false);
+        if(statistics.containsKey(packageName)) {
+            return statistics.get(packageName);
+        } else {
+            AppDetails app = this.allAppsDetails.get(packageName);
+            app.setUsageStatistics(0L);
+            return app;
+        }
+    }
+
 
     public Map<String, Long> getContextStatistics() {
          return statisticsManager.getContextStatistics();

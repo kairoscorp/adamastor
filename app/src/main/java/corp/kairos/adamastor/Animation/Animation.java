@@ -1,11 +1,7 @@
 package corp.kairos.adamastor.Animation;
 
 import android.app.Activity;
-import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.view.MotionEvent;
-
-import java.util.Objects;
 
 import corp.kairos.adamastor.R;
 

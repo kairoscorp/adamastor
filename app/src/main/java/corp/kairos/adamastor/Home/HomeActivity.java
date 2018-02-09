@@ -164,7 +164,12 @@ public class HomeActivity extends AnimationCompatActivity {
             ImageView img = (ImageView) layoutInflater.inflate(R.layout.favourite_app_icon, parentLayout, false);
             img.setImageDrawable(app.getIcon());
             img.setOnClickListener(v -> {
-                Intent intent = getPackageManager().getLaunchIntentForPackage(app.getPackageName());
+                Intent intent = null;
+                if(app.getPackageName().equals("com.android.phone")) {
+                    intent = new Intent(Intent.ACTION_DIAL);
+                } else {
+                    intent = getPackageManager().getLaunchIntentForPackage(app.getPackageName());
+                }
                 this.startActivity(intent);
             });
             img.setOnLongClickListener(view -> {
@@ -352,13 +357,16 @@ public class HomeActivity extends AnimationCompatActivity {
                 != PackageManager.PERMISSION_GRANTED) ||
                 (ActivityCompat.checkSelfPermission(this,
                         android.Manifest.permission.ACCESS_COARSE_LOCATION)
-                        != PackageManager.PERMISSION_GRANTED) ||
+                        != PackageManager.PERMISSION_GRANTED)||
                 (ActivityCompat.checkSelfPermission(this,
                         Manifest.permission.WRITE_EXTERNAL_STORAGE)
                         != PackageManager.PERMISSION_GRANTED) ||
                 (ActivityCompat.checkSelfPermission(this,
+                        Manifest.permission.CALL_PHONE)
+                        != PackageManager.PERMISSION_GRANTED) ||
+                (ActivityCompat.checkSelfPermission(this,
                         Manifest.permission.GET_ACCOUNTS)
-                        != PackageManager.PERMISSION_GRANTED)) {
+                        != PackageManager.PERMISSION_GRANTED)){
 
             requestPermissions();
 
@@ -375,6 +383,7 @@ public class HomeActivity extends AnimationCompatActivity {
                         Manifest.permission.ACCOUNT_MANAGER,
                         Manifest.permission.WRITE_EXTERNAL_STORAGE,
                         Manifest.permission.PACKAGE_USAGE_STATS,
+                        Manifest.permission.CALL_PHONE,
                         Manifest.permission.GET_ACCOUNTS},
                 MY_PERMISSIONS_REQUEST_LOCATION);
     }
