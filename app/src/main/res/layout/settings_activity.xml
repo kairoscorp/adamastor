@@ -18,20 +18,34 @@
 
         <ImageView
             android:id="@+id/imageViewTime"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             app:srcCompat="@drawable/ic_time_48dp" />
 
         <TextView
             android:id="@+id/textViewTime"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
+            android:layout_alignParentTop="true"
             android:layout_marginStart="32dp"
             android:layout_toEndOf="@+id/imageViewTime"
             android:text="@string/settings_schedules_label"
             android:textAppearance="@android:style/TextAppearance.Material.Medium" />
+
+        <TextView
+            android:id="@+id/tvTimeDesc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/textViewTime"
+            android:layout_below="@+id/textViewTime"
+            android:text="@string/schedule_explanation" />
+
     </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/secondaryColor"/>
 
     <RelativeLayout
         android:id="@+id/opt_location"
@@ -44,20 +58,35 @@
 
         <ImageView
             android:id="@+id/imageViewLocation"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             app:srcCompat="@drawable/ic_location48dp" />
 
         <TextView
             android:id="@+id/textViewLocation"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
+            android:layout_alignParentTop="true"
             android:layout_marginStart="32dp"
             android:layout_toEndOf="@+id/imageViewLocation"
             android:text="@string/settings_locations_label"
             android:textAppearance="@android:style/TextAppearance.Material.Medium" />
+
+        <TextView
+            android:id="@+id/tvLocationDesc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/textViewLocation"
+            android:layout_below="@+id/textViewLocation"
+            android:text="@string/location_explanation" />
+
     </RelativeLayout>
+
+    <View
+        android:id="@+id/view"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/secondaryColor" />
 
     <RelativeLayout
         android:id="@+id/opt_context_apps"
@@ -70,18 +99,27 @@
 
         <ImageView
             android:id="@+id/imageViewCtxApps"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             app:srcCompat="@drawable/ic_apps_48dp" />
 
         <TextView
             android:id="@+id/textViewCtxApps"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
+            android:layout_alignParentTop="true"
             android:layout_marginStart="32dp"
             android:layout_toEndOf="@+id/imageViewCtxApps"
             android:text="@string/settings_context_apps_label"
             android:textAppearance="@android:style/TextAppearance.Material.Medium" />
+
+        <TextView
+            android:id="@+id/tvCtxDesc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/textViewCtxApps"
+            android:layout_below="@+id/textViewCtxApps"
+            android:text="@string/apps_explanation" />
     </RelativeLayout>
+
 </android.widget.LinearLayout>

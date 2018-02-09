@@ -66,5 +66,8 @@
     <string name="settings_schedules_label">Schedules</string>
     <string name="settings_locations_label">Locations</string>
     <string name="settings_context_apps_label">Context Apps</string>
+    <string name="schedule_explanation">Redefine your work schedule</string>
+    <string name="location_explanation">Change your work and home locations</string>
+    <string name="apps_explanation">Associate apps to your contexts</string>
 
 </resources>

@@ -13,7 +13,7 @@ public class KairosSettingsActivity extends AnimationCompatActivity {
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.kairos_settings);
+        setContentView(R.layout.settings_activity);
     }
 
     @Override
