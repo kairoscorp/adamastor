@@ -5,17 +5,17 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Build;
-import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ThreadLocalRandom;
 
+import corp.kairos.adamastor.AllApps.AllAppsRecyclerViewAdapter;
 import corp.kairos.adamastor.AppDetails;
 import corp.kairos.adamastor.AppsManager.AppsManager;
 import corp.kairos.adamastor.Collector.CollectorService;
@@ -28,7 +28,7 @@ public class Settings {
 
     private static final String TAG = Settings.class.getName();
 
-    private Map<String,UserContext> contexts;
+    private Map<String, UserContext> contexts;
     public int contextsNumber;
 
     private Context context;
@@ -37,8 +37,9 @@ public class Settings {
     private static final String LOC_LAT = "_lat";
     private static final String LOC_LNG = "_lng";
     private static final String CONTEXT_NAME = "_name";
+    private static final String LOC_ADDR = "_address";
 
-    public static final String [] contextsNames = {
+    public static final String[] contextsNames = {
             "Leisure",
             "Work",
             "Commute"
@@ -57,13 +58,13 @@ public class Settings {
     }
 
     private void setUpContexts() {
-        for(String contextName: contextsNames) {
+        for (String contextName : contextsNames) {
             this.contexts.put(contextName, loadContextSettings(contextName));
         }
     }
 
     public static Settings getInstance(Context c) {
-        if(instance == null) {
+        if (instance == null) {
             instance = new Settings(c);
         }
 
@@ -71,18 +72,19 @@ public class Settings {
     }
 
     public boolean isOnboardingDone() {
-        SharedPreferences sharedPref = context.getSharedPreferences("GENERAL",Context.MODE_PRIVATE);
-        return sharedPref.getBoolean("OnboardingDone",false);
+        SharedPreferences sharedPref = context.getSharedPreferences("GENERAL", Context.MODE_PRIVATE);
+        return sharedPref.getBoolean("OnboardingDone", false);
     }
+
     public void setOnboardingDone() {
-        SharedPreferences sharedPref = context.getSharedPreferences("GENERAL",Context.MODE_PRIVATE);
+        SharedPreferences sharedPref = context.getSharedPreferences("GENERAL", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
-        editor.putBoolean("OnboardingDone",true);
+        editor.putBoolean("OnboardingDone", true);
         editor.apply();
     }
 
     public UserContext loadContextSettings(String contextName) {
-        SharedPreferences sharedPref = context.getSharedPreferences("Prefs_"+contextName, Context.MODE_PRIVATE);
+        SharedPreferences sharedPref = context.getSharedPreferences("Prefs_" + contextName, Context.MODE_PRIVATE);
 
         List<AppDetails> contextApps = new ArrayList<>();
         GregorianCalendar start = new GregorianCalendar();
@@ -90,33 +92,37 @@ public class Settings {
         Location pos = new Location("Provider");
 
         start.setTimeInMillis(sharedPref.getLong(TIME_FROM, 0));
-        end.setTimeInMillis(sharedPref.getLong(TIME_TO,0));
-
-        pos.setLatitude(sharedPref.getFloat(LOC_LAT,0));
-        pos.setLongitude(sharedPref.getFloat(LOC_LNG,0));
+        end.setTimeInMillis(sharedPref.getLong(TIME_TO, 0));
+        pos.setLatitude(sharedPref.getFloat(LOC_LAT, 0));
+        pos.setLongitude(sharedPref.getFloat(LOC_LNG, 0));
+        String address = sharedPref.getString(LOC_ADDR, "");
         Set<AppDetails> allApps = this.appsManager.getAllApps(context.getPackageManager(), true);
 
         for (AppDetails app : allApps) {
-            if(sharedPref.getBoolean(app.getPackageName(), false)) {
+            if (sharedPref.getBoolean(app.getPackageName(), false)) {
                 contextApps.add(app);
             }
         }
 
         UserContext uc = new UserContext(contextName, contextApps);
-        uc.setTimes(start,end);
+        uc.setTimes(start, end);
         uc.setLocation(pos);
+        uc.setAddress(address);
         return uc;
     }
 
     public void saveContextSettings() {
-        for(UserContext userContext : contexts.values()) {
+        for (UserContext userContext : contexts.values()) {
             this.saveContextSettings(userContext);
         }
     }
 
 
     public void saveContextSettings(UserContext userContext) {
-        SharedPreferences sharedPref = context.getSharedPreferences("Prefs_"+userContext.getContextName(), Context.MODE_PRIVATE);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            context.deleteSharedPreferences("Prefs_" + userContext.getContextName());
+        }
+        SharedPreferences sharedPref = context.getSharedPreferences("Prefs_" + userContext.getContextName(), Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
 
         editor.putString(CONTEXT_NAME, userContext.getContextName());
@@ -126,8 +132,9 @@ public class Settings {
         editor.putLong(TIME_TO, userContext.getEnd().getTimeInMillis());
 
         //Save location
-        editor.putFloat(LOC_LAT,(float)userContext.getLocation().getLatitude());
-        editor.putFloat(LOC_LNG,(float)userContext.getLocation().getLongitude());
+        editor.putFloat(LOC_LAT, (float) userContext.getLocation().getLatitude());
+        editor.putFloat(LOC_LNG, (float) userContext.getLocation().getLongitude());
+        editor.putString(LOC_ADDR, userContext.getAddress());
 
         //Save Apps
         for (AppDetails app : userContext.getContextApps()) {
@@ -181,32 +188,33 @@ public class Settings {
         int context = CollectorService.getInstance().getPredictedContext();
         String result;
         switch(context){
-            case 1: result = "Leisure";
-                    break;
-            case 2: result = "Commute";
-                    break;
-            case 3: result = "Work";
-                    break;
-            default: result = "Leisure";
-                    break;
+            case 2:
+                result = "Commute";
+                break;
+            case 3:
+                result = "Work";
+                break;
+            case 1:
+            default:
+                result = "Leisure";
         }
 
         return result;
     }
 
     public void informCollectorContextChange(String contextName){
-
-        int context = 1;
+        int context;
 
         switch(contextName){
-            case "Leisure": context = 1;
+            case "Commute":
+                context = 2;
                 break;
-            case "Commute": context = 2;
+            case "Work":
+                context = 3;
                 break;
-            case "Work": context = 3;
-                break;
-            default: context = 1;
-                break;
+            case "Leisure":
+            default:
+                context = 1;
         }
 
         CollectorService.getInstance().userContextChange(context);
@@ -219,8 +227,8 @@ public class Settings {
 
     public void resetSettings() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            for(String contextName: this.contexts.keySet()) {
-                context.deleteSharedPreferences("Prefs_"+contextName);
+            for (String contextName : this.contexts.keySet()) {
+                context.deleteSharedPreferences("Prefs_" + contextName);
             }
         }
     }
@@ -237,13 +245,13 @@ public class Settings {
         UserContext zeroContext = new UserContext("Other Apps", new ArrayList<>());
         int i;
         Set<AppDetails> allApps = this.appsManager.getAllApps(this.packageManager, false);
-        for (AppDetails app: allApps) {
+        for (AppDetails app : allApps) {
             i = 0;
-            for (UserContext context: contexts) {
+            for (UserContext context : contexts) {
                 if (context.appExists(app)) break;
                 else i++;
             }
-            if (i==contextsNumber) zeroContext.addApp(app);
+            if (i == contextsNumber) zeroContext.addApp(app);
         }
 
         return zeroContext;
@@ -251,6 +259,25 @@ public class Settings {
 
     public UserContext getStartingContext(){
         return this.contexts.get("Home");
+    }
+
+    public List<UserContext> getOrderedUserContexts() {
+        List<UserContext>  userContextList = new ArrayList<>(4);
+
+        // First the active context
+        String currentContextName = this.getContextNamefromCollector();
+        userContextList.add(this.contexts.get(currentContextName));
+
+        // The remaining contexts
+        Set<String> otherKeys = new HashSet<>(this.contexts.keySet());
+        otherKeys.remove(currentContextName);
+        for (String key : otherKeys)
+            userContextList.add(this.contexts.get(key));
+
+        // The context containing apps that aren't in any context
+        userContextList.add(this.getZeroContext());
+
+        return userContextList;
     }
 }
 

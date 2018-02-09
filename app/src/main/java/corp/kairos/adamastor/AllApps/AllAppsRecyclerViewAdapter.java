@@ -16,7 +16,7 @@ import corp.kairos.adamastor.AppDetails;
 import corp.kairos.adamastor.ContextList.AppViewHolder;
 import corp.kairos.adamastor.R;
 
-public class AllAppsRecyclerViewAdapter extends RecyclerView.Adapter<AppViewHolder> implements Filterable {
+public  class AllAppsRecyclerViewAdapter extends RecyclerView.Adapter<AppViewHolder> implements Filterable {
 
     private Context mAppContext;
     private List<AppDetails> mAppsToDisplay;
@@ -42,7 +42,7 @@ public class AllAppsRecyclerViewAdapter extends RecyclerView.Adapter<AppViewHold
 
         holder.iconView.setImageDrawable(currentItem.getIcon());
         holder.labelView.setText(currentItem.getLabel());
-        holder.packageName = currentItem.getPackageName();
+        holder.app = currentItem;
     }
 
     @Override
@@ -130,4 +130,8 @@ public class AllAppsRecyclerViewAdapter extends RecyclerView.Adapter<AppViewHold
         notifyItemMoved(fromPosition, toPosition);
     }
 
+    public void updateData(List<AppDetails> newApps) {
+        mAppsToDisplay = newApps;
+        notifyDataSetChanged();
+    }
 }

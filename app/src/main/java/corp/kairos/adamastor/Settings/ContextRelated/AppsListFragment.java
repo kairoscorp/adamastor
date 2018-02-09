@@ -1,8 +1,7 @@
-package corp.kairos.adamastor.ContextList;
+package corp.kairos.adamastor.Settings.ContextRelated;
 
 
 import android.os.Bundle;
-import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -16,8 +15,6 @@ import java.util.Set;
 import corp.kairos.adamastor.AppDetails;
 import corp.kairos.adamastor.AppsManager.AppsManager;
 import corp.kairos.adamastor.R;
-import corp.kairos.adamastor.Settings.ContextRelated.AppCheckAdapter;
-import corp.kairos.adamastor.Settings.Settings;
 import corp.kairos.adamastor.UserContext;
 import corp.kairos.adamastor.onScroll;
 
@@ -30,7 +27,8 @@ public class AppsListFragment extends Fragment {
     private String userContextName;
 
 
-    public AppsListFragment() {}
+    public AppsListFragment() {
+    }
 
     public static AppsListFragment newInstance(UserContext userContext) {
         AppsListFragment fragment = new AppsListFragment();
@@ -48,9 +46,10 @@ public class AppsListFragment extends Fragment {
         this.allApps = appsManager.getAllApps(getActivity().getPackageManager(), false);
     }
 
-    public UserContext getUserContext () {
+    public UserContext getUserContext() {
         return this.userContext;
     }
+
     public void setUserContext(UserContext uc) {
         this.userContext = uc;
     }

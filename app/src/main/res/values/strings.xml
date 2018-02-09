@@ -29,7 +29,7 @@
     <string name="onboarding_welcome">Welcome to kairos!</string>
     <string name="onboarding_work_description">All the apps you need to be the most productive at work!</string>
     <string name="onboarding_leisure_description">Relax and procrastinate a little bit!</string>
-    <string name="onboarding_commute_description">Go out and explore! You maybe commute!</string>
+    <string name="onboarding_commute_description">You maybe commute!</string>
     <!-- Strings related to onboarding work time -->
     <string name="onboarding_worktime_title">One last thing!</string>
     <string name="onboarding_worktime_description">Kairos needs to know your work schedule so it can better adapt to your personal context.</string>
@@ -46,7 +46,7 @@
     <string name="dummy_context_name">Context 1</string>
 
     <string name="onboarding_finish_text1">All done!</string>
-    <string name="onboarding_finish_text2">You\'ve successfully completed the onboarding! You\'re now ready o boost your produtivity to a whole new level!</string>
+    <string name="onboarding_finish_text2">You\'ve successfully completed the onboarding! You\'re now ready to boost your productivity to a whole new level!</string>
     <string name="onboarding_finish_text3">We hope you enjoy and make good use of Kairos!</string>
 
     <string name="onboarding_location_description">Kairos needs to know your work and home location so it can better define your context depending on your location.</string>
@@ -63,4 +63,11 @@
     <string name="weekday_year_dummy_text">Weekday Year</string>
     <string name="search_hint">Search apps...</string>
     <string name="edit_apps_button">Edit Context Apps</string>
+    <string name="settings_schedules_label">Schedules</string>
+    <string name="settings_locations_label">Locations</string>
+    <string name="settings_context_apps_label">Context Apps</string>
+    <string name="schedule_explanation">Redefine your work schedule</string>
+    <string name="location_explanation">Change your work and home locations</string>
+    <string name="apps_explanation">Associate apps to your contexts</string>
+
 </resources>

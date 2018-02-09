@@ -10,6 +10,7 @@ import com.borax12.materialdaterangepicker.time.TimePickerDialog;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.GregorianCalendar;
 
 import corp.kairos.adamastor.Animation.AnimationCompatActivity;
@@ -18,30 +19,24 @@ import corp.kairos.adamastor.Settings.Settings;
 import corp.kairos.adamastor.UserContext;
 
 
-public class Onboard5ScheduleActivity extends AnimationCompatActivity implements TimePickerDialog.OnTimeSetListener{
-    private final int ONBOARDING_SCHEDULE = 5;
-    private final int ONBOARDING_FINISH = 6;
 
-    private Settings settingsUser;
-    private UserContext workContext;
-    private int screen = ONBOARDING_SCHEDULE;
+public class Onboard5ScheduleActivity extends AnimationCompatActivity implements TimePickerDialog.OnTimeSetListener{
+    public Settings settingsUser;
+    public UserContext workContext;
+    public GregorianCalendar from = new GregorianCalendar();
+    public GregorianCalendar to = new GregorianCalendar();
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.onboard5_schedule);
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         this.settingsUser = Settings.getInstance(this);
+        workContext = settingsUser.getUserContext("Work");
 
-        GregorianCalendar from = new GregorianCalendar();
-        GregorianCalendar to = new GregorianCalendar();
         from.set(GregorianCalendar.HOUR_OF_DAY,9);
         from.set(GregorianCalendar.MINUTE,0);
         to.set(GregorianCalendar.HOUR_OF_DAY,17);
         to.set(GregorianCalendar.MINUTE,0);
-
-        workContext = settingsUser.getUserContext("Work");
-        workContext.setTimes(from, to);
-        settingsUser.setUserContext(workContext);
     }
 
     @Override
@@ -57,21 +52,16 @@ public class Onboard5ScheduleActivity extends AnimationCompatActivity implements
     }
 
     public void showTimePicker(View v) {
-        TimePickerDialog tpd = TimePickerDialog.newInstance(this, 9, 0, true, 17, 0);
+        TimePickerDialog tpd = TimePickerDialog.newInstance(this, from.get(Calendar.HOUR_OF_DAY), from.get(Calendar.MINUTE), true, to.get(Calendar.HOUR_OF_DAY), to.get(Calendar.MINUTE));
         tpd.show(getFragmentManager(), "Timepickerdialog");
     }
 
     @Override
     public void onTimeSet(RadialPickerLayout view, int hourOfDay, int minute, int hourOfDayEnd, int minuteEnd) {
-        GregorianCalendar from = new GregorianCalendar();
-        GregorianCalendar to = new GregorianCalendar();
         from.set(GregorianCalendar.HOUR_OF_DAY,hourOfDay);
         from.set(GregorianCalendar.MINUTE,minute);
         to.set(GregorianCalendar.HOUR_OF_DAY,hourOfDayEnd);
         to.set(GregorianCalendar.MINUTE,minuteEnd);
-
-        workContext.setTimes(from, to);
-        settingsUser.setUserContext(workContext);
 
         TextView timeFrom = findViewById(R.id.work_from);
         TextView timeTo = findViewById(R.id.work_to);
@@ -81,6 +71,8 @@ public class Onboard5ScheduleActivity extends AnimationCompatActivity implements
     }
 
     public void goNext(View v) {
+        workContext.setTimes(from, to);
+        settingsUser.setUserContext(workContext);
         settingsUser.saveContextSettings();
         Intent i = new Intent(this, Onboard6FinalActivity.class);
         startActivity(i);

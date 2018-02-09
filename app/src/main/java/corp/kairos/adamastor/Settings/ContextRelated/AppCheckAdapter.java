@@ -2,7 +2,6 @@ package corp.kairos.adamastor.Settings.ContextRelated;
 
 import android.app.Activity;
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,7 +9,6 @@ import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.util.Set;
@@ -75,7 +73,7 @@ public class AppCheckAdapter extends ArrayAdapter {
         AppDetails app = (AppDetails) getObjectByIndex(position, this.apps);
 
         CheckBox checkBox = (CheckBox) row.findViewById(R.id.app_check_box);
-        ImageView imageView= (ImageView) row.findViewById(R.id.app_check_image);
+        ImageView imageView = (ImageView) row.findViewById(R.id.app_check_image);
         TextView textView = (TextView) row.findViewById(R.id.app_check_label);
 
         textView.setText(app.getLabel());
