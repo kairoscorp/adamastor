@@ -147,7 +147,6 @@ public class HomeActivity extends AnimationCompatActivity {
     }
 
     private void setupContextDisplayer() {
-        // TODO: Make this method get last active context
         this.userContexts = userSettings.getUserContextsAsArray();
 
         setupViewPager();
@@ -183,10 +182,6 @@ public class HomeActivity extends AnimationCompatActivity {
         }
 
         addTabEventListener(this.tabLayout);
-        // TODO: Set last active context
-        // TODO: Substitute for the persisted
-        int starterBackground = getSelectedTabBackground(this.tabLayout.getTabAt(0));
-        BackgroundChanger.changeWallpaper(getApplicationContext(), starterBackground);
     }
 
     private void addTabEventListener(TabLayout tabLayout) {

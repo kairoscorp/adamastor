@@ -1,24 +1,23 @@
 package corp.kairos.adamastor.ContextList;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.View;
 
 import org.apache.commons.lang3.ArrayUtils;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import corp.kairos.adamastor.Animation.AnimationActivity;
 import corp.kairos.adamastor.Home.HomeActivity;
 import corp.kairos.adamastor.R;
-import corp.kairos.adamastor.Settings.ContextRelated.EditContextAppsActivity;
 import corp.kairos.adamastor.Settings.Settings;
 import corp.kairos.adamastor.UserContext;
 import io.github.luizgrp.sectionedrecyclerviewadapter.SectionedRecyclerViewAdapter;
 
 public class ContextListActivity extends AnimationActivity {
     public static int NUMBER_OF_COLUMNS = 4;
-    private UserContext[] userContexts;
     private RecyclerView mRecyclerView;
     public SectionedRecyclerViewAdapter mAdapter;
 
@@ -30,27 +29,26 @@ public class ContextListActivity extends AnimationActivity {
 
         // Load Contexts from Settings
         Settings settings = Settings.getInstance(getApplicationContext());
-        userContexts = ArrayUtils.addAll(settings.getUserContextsAsArray(), settings.getZeroContext());
+
+        List<UserContext> userContexts = settings.getOrderedUserContexts();
 
         // Set side activities
         super.setAnimation("left");
         super.setLeftActivity(HomeActivity.class);
 
-        setupViews();
+        setupViews(userContexts);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        setupViews();
     }
 
-    private void setupViews() {
+    private void setupViews(List<UserContext> userContexts) {
         mAdapter = new SectionedRecyclerViewAdapter();
-        // TODO: Reorder contexts by active first
         // TODO: Reorder apps by most relevant first
-        for (int i = 0; i < userContexts.length; i++) {
-            UserContext aContext = userContexts[i];
+        for (int i = 0; i < userContexts.size(); i++) {
+            UserContext aContext = userContexts.get(i);
             if (aContext.getContextApps().size() > 0)
                 mAdapter.addSection(
                     new ContextSection(
@@ -58,7 +56,7 @@ public class ContextListActivity extends AnimationActivity {
                         this.mAdapter,
                         aContext.getContextName(),
                         aContext.getContextApps(),
-                        (i == 0 || i == userContexts.length-1)
+                        (i == 0 || i == userContexts.size()-1)
                     )
                 );
         }
