@@ -42,7 +42,9 @@
             android:stateNotNeeded="true"
             android:resizeableActivity="false"
             android:theme="@style/HomeTheme"
-            tools:targetApi="eclair">
+            tools:targetApi="eclair"
+            android:screenOrientation="portrait"
+            >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -79,30 +81,44 @@
         <activity
             android:name=".Onboarding.Onboard1WelcomeActivity"
             android:label="@string/onboarding_label"
-            android:theme="@style/OnboardingTheme" />
+            android:theme="@style/OnboardingTheme"
+            android:screenOrientation="portrait"
+            />
         <activity
             android:name=".Onboarding.Onboard2SpecialPermissionActivity"
             android:label="@string/onboarding_label"
-            android:theme="@style/OnboardingTheme" />
+            android:theme="@style/OnboardingTheme"
+            android:screenOrientation="portrait"
+            />
         <activity
             android:name=".Onboarding.Onboard3LocationActivity"
             android:label="@string/onboarding_label"
-            android:theme="@style/OnboardingTheme" />
+            android:theme="@style/OnboardingTheme"
+            android:screenOrientation="portrait"
+            />
         <activity
             android:name=".Onboarding.Onboard4ContextAppsActivity"
             android:label="@string/onboarding_label"
-            android:theme="@style/OnboardingTheme" />
+            android:theme="@style/OnboardingTheme"
+            android:screenOrientation="portrait"
+            />
         <activity
             android:name=".Onboarding.Onboard5ScheduleActivity"
             android:label="@string/onboarding_label"
-            android:theme="@style/OnboardingTheme" />
+            android:theme="@style/OnboardingTheme"
+            android:screenOrientation="portrait"
+            />
         <activity
             android:name=".Onboarding.Onboard6FinalActivity"
             android:label="@string/onboarding_label"
-            android:theme="@style/OnboardingTheme"></activity>
+            android:theme="@style/OnboardingTheme"
+            android:screenOrientation="portrait"
+            />
         <activity
             android:name=".ContextList.ContextListActivity"
-            android:theme="@style/LauncherTheme" />
+            android:theme="@style/LauncherTheme"
+            android:screenOrientation="portrait"
+            />
 
         <service
             android:name=".Collector.CollectorService"
@@ -128,22 +144,32 @@
 
         <activity
             android:name=".Settings.ContextRelated.EditContextAppsActivity"
-            android:label="Context Apps" />
+            android:label="Context Apps"
+            android:screenOrientation="portrait"
+            />
 
         <activity
             android:name=".Settings.LocationSettingsActivity"
-            android:label="Location" />
+            android:label="Location"
+            android:screenOrientation="portrait"
+            />
 
         <activity
             android:name=".Settings.KairosSettingsActivity"
-            android:label="Kairos Settings"></activity>
+            android:label="Kairos Settings"
+            android:screenOrientation="portrait"
+            />
             
-        <activity android:name=".Settings.ScheduleSettingsActivity" />
+        <activity android:name=".Settings.ScheduleSettingsActivity"
+            android:screenOrientation="portrait"
+            />
 
         <activity
             android:name=".Statistics.StatisticsActivity"
             android:label="@string/title_activity_statistics"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"
+            android:screenOrientation="portrait"
+            />
 
     </application>
 </manifest>

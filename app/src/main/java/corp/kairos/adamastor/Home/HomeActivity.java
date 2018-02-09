@@ -491,16 +491,13 @@ public class HomeActivity extends AnimationCompatActivity {
                 public void onAnimationStart(Animator animator) {
                     ImageView iv = ((Activity) ctx).findViewById(R.id.image_options);
                     iv.animate().alpha(0.0f).setDuration(300);
-
                 }
 
                 @Override
                 public void onAnimationEnd(Animator animator) {
-
                     backgroudLayout.setVisibility(View.GONE);
                     Log.i("OLS", "options");
                     ((Activity) ctx).getFragmentManager().beginTransaction().remove(((Activity) ctx).getFragmentManager().findFragmentByTag("OPTIONS")).commit();
-
                 }
 
                 @Override
@@ -513,6 +510,15 @@ public class HomeActivity extends AnimationCompatActivity {
 
                 }
             });
+        }
+    }
+
+    public void updateFragments() {
+        List<android.support.v4.app.Fragment> fragmentList = getSupportFragmentManager().getFragments();
+        for (android.support.v4.app.Fragment fragment : fragmentList) {
+            if (fragment instanceof PlaceholderFragment) {
+                ((PlaceholderFragment) fragment).updateFragmentContent();
+            }
         }
     }
 
