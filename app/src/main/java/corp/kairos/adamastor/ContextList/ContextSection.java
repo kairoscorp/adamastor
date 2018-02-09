@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import corp.kairos.adamastor.AppDetails;
@@ -37,7 +38,7 @@ public class ContextSection extends StatelessSection {
         mAppContext = appContext;
         mAdapter = adapter;
         mContextName = contextName;
-        mContextApps = contextApps;
+        mContextApps = new ArrayList<>(contextApps);
         // TODO: Find a more elegant way to deal with coloring the background of the section 1)
         int numberOfPlaceholderApps = ContextListActivity.NUMBER_OF_COLUMNS - mContextApps.size() % ContextListActivity.NUMBER_OF_COLUMNS;
         if (numberOfPlaceholderApps != ContextListActivity.NUMBER_OF_COLUMNS)

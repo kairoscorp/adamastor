@@ -130,4 +130,8 @@ public class AllAppsRecyclerViewAdapter extends RecyclerView.Adapter<AppViewHold
         notifyItemMoved(fromPosition, toPosition);
     }
 
+    public void updateData(List<AppDetails> newApps) {
+        mAppsToDisplay = newApps;
+        notifyDataSetChanged();
+    }
 }
