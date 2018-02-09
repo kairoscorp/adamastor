@@ -278,13 +278,12 @@ public class HomeActivity extends AnimationCompatActivity {
         int currentContextTab = this.getTabIndexByContextName(context);
 
         if(selectedTab != currentContextTab){
-            this.tabLayout.getTabAt(currentContextTab).select();
-
             if(!fromNotification){
                 this.autoContextChange = true;
                 String previousContext = (String) this.tabLayout.getTabAt(selectedTab).getTag();
                 displayNotification(context, previousContext);
             }
+            this.tabLayout.getTabAt(currentContextTab).select();
         }
     }
 
