@@ -155,6 +155,7 @@ public class StatisticsActivity extends AnimationCompatActivity {
         Map<String, Long> contextStats = appsManager.getContextStatistics();
         long finalTotal = 0;
         long timeInHours, timeInMinutes, timeInSeconds;
+        measure = Measure.HOURS;
         for (Map.Entry<String, Long> stat : contextStats.entrySet()) {
             finalTotal += stat.getValue();
             timeInHours = TimeUnit.MILLISECONDS.toHours(stat.getValue());

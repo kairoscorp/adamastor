@@ -131,7 +131,7 @@ public class LogDatabaseHelper extends SQLiteOpenHelper {
             // Each record means approximately 10 seconds in the context
             int timeSeconds = res.getInt(res.getColumnIndex("Times")) * 10;
 
-            result.put(Settings.contextsNames[context], TimeUnit.SECONDS.toMillis(timeSeconds));
+            result.put(Settings.contextsNames[context - 1], TimeUnit.SECONDS.toMillis(timeSeconds));
             res.moveToNext();
         }
         res.close();
