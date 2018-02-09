@@ -35,6 +35,16 @@ public class RandomStatisticsDAO implements StatisticsDAO {
     }
 
     @Override
+    public int getAppTime(AppDetails app) {
+        return 0;
+    }
+
+    @Override
+    public String lastTimeApp(AppDetails app) {
+        return "fake";
+    }
+
+    @Override
     public Set<AppDetails> getAppsStatistics(Map<String, AppDetails> allAppsDetails, Map<String, AppDetails> appsDetailsWithoutLauncher, UsageStatsManager usm) {
         Map<String, AppDetails> appStatsMap = new TreeMap<>();
         long min = TimeUnit.MINUTES.toMillis(0);

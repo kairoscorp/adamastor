@@ -25,6 +25,17 @@ public class RealStatisticsDAO implements StatisticsDAO {
     }
 
     @Override
+    public int getAppTime(AppDetails app) {
+        return collectorService.getAppTime(app);
+    }
+
+    @Override
+    public String lastTimeApp(AppDetails app) {
+        return collectorService.lastTimeApp(app);
+    }
+
+
+    @Override
     public Set<AppDetails> getAppsStatistics(Map<String, AppDetails> allAppsDetails, Map<String, AppDetails> appsDetailsWithoutLauncher, UsageStatsManager usm) {
         Map<String, AppDetails> appStatsMap = new TreeMap<>();
         long time = System.currentTimeMillis();

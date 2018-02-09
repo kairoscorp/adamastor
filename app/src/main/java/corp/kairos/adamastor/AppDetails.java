@@ -2,25 +2,26 @@ package corp.kairos.adamastor;
 
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 
-public class AppDetails implements Comparable, Parcelable {
+import java.io.Serializable;
 
+public class AppDetails implements Comparable,Serializable,Parcelable{
     private String label;
     private String packageName;
     private Drawable icon;
     private Long usageStatistics;
+    private boolean system;
 
-    public AppDetails(String label, String packageName, Drawable icon) {
+    public AppDetails(String label, String packageName, Drawable icon, boolean system) {
         this.label = label;
         this.packageName = packageName;
         this.icon = icon;
         this.usageStatistics = 0L;
+        this.system= system;
     }
 
     public AppDetails(AppDetails appDetail) {
@@ -28,6 +29,7 @@ public class AppDetails implements Comparable, Parcelable {
         this.packageName = appDetail.getPackageName();
         this.icon = appDetail.getIcon();
         this.usageStatistics = appDetail.getUsageStatistics();
+        this.system = appDetail.isSystem();
     }
 
     public AppDetails(PackageManager pm, String packageName) throws PackageManager.NameNotFoundException {
@@ -75,6 +77,9 @@ public class AppDetails implements Comparable, Parcelable {
         this.usageStatistics = usageStatistics;
     }
 
+    public boolean isSystem() {
+        return system;
+    }
 
     public AppDetails clone() {
         return new AppDetails(this);
@@ -121,7 +126,7 @@ public class AppDetails implements Comparable, Parcelable {
         dest.writeString(packageName);
     }
 
-    public static final Creator<AppDetails> CREATOR = new Creator<AppDetails>() {
+    public static final Parcelable.Creator<AppDetails> CREATOR = new Parcelable.Creator<AppDetails>() {
         @Override
         public AppDetails createFromParcel(Parcel in) {
             return new AppDetails(in);

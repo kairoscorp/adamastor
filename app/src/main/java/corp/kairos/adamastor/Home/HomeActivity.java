@@ -2,25 +2,33 @@ package corp.kairos.adamastor.Home;
 
 
 import android.Manifest;
+import android.animation.Animator;
 import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.app.Fragment;
+import android.app.FragmentTransaction;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.Fragment;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -34,6 +42,7 @@ import corp.kairos.adamastor.ContextList.ContextListActivity;
 import corp.kairos.adamastor.Home.dao.FavouriteAppsDAO;
 import corp.kairos.adamastor.Home.dao.StaticFavouriteAppsDAO;
 import corp.kairos.adamastor.Onboarding.Onboard1WelcomeActivity;
+import corp.kairos.adamastor.OptionsMenu;
 import corp.kairos.adamastor.R;
 import corp.kairos.adamastor.Settings.KairosSettingsActivity;
 import corp.kairos.adamastor.Settings.Settings;
@@ -65,7 +74,7 @@ public class HomeActivity extends AnimationCompatActivity {
         super.onCreate(savedInstanceState);
         this.userSettings = Settings.getInstance(this);
 
-        if (! userSettings.isOnboardingDone()) {
+        if (!userSettings.isOnboardingDone()) {
             // Set animation
             super.setAnimation("up");
 
@@ -103,15 +112,11 @@ public class HomeActivity extends AnimationCompatActivity {
         }
     }
 
-    @Override
-    public void onBackPressed() {
-        // do nothing! its the home screen!
-    }
 
     @SuppressLint("SimpleDateFormat")
     private void setupDates() {
         Date time = Calendar.getInstance().getTime();
-         SimpleDateFormat df = new SimpleDateFormat("MMMM dd");
+        SimpleDateFormat df = new SimpleDateFormat("MMMM dd");
         this.monthDayTextView.setText(df.format(time));
         df = new SimpleDateFormat("EEEE, yyyy");
         this.weekdayYearTextView.setText(df.format(time));
@@ -139,6 +144,10 @@ public class HomeActivity extends AnimationCompatActivity {
             img.setOnClickListener(v -> {
                 Intent intent = getPackageManager().getLaunchIntentForPackage(app.getPackageName());
                 this.startActivity(intent);
+            });
+            img.setOnLongClickListener(view -> {
+                showOptions(this, img.getRootView(), app);
+                return true;
             });
             parentLayout.addView(img);
             i++;
@@ -310,11 +319,103 @@ public class HomeActivity extends AnimationCompatActivity {
     }
 
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        if(requestCode == MY_PERMISSIONS_REQUEST_LOCATION)
+        if (requestCode == MY_PERMISSIONS_REQUEST_LOCATION)
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
                 permissionsGranted = true;
             else
                 permissionsGranted = false;
+    }
+
+    private static void showOptionMenu(Context ctx, AppDetails appDetail, int viewId) {
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("app", appDetail);
+        Fragment options = new OptionsMenu();
+        options.setArguments(bundle);
+        FragmentTransaction transaction = ((Activity) ctx).getFragmentManager().beginTransaction();
+        transaction.replace(viewId, options, "OPTIONS");
+        transaction.addToBackStack("OPTIONS");
+        transaction.commit();
+    }
+
+
+    public static void showOptions(Context ctx, View rootView, AppDetails app) {
+        FrameLayout optionMenu = new FrameLayout(ctx);
+        optionMenu.setBackgroundResource(android.R.color.transparent);
+        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT);
+        params.gravity = Gravity.BOTTOM;
+        params.setMargins(0, 0, 0, getNavigationBarHeight(ctx));
+        optionMenu.setLayoutParams(params);
+        ViewGroup parentView = (ViewGroup) rootView;
+        parentView.addView(optionMenu);
+        optionMenu.setId(R.id.view_option);
+        showOptionMenu(ctx, app, R.id.view_option);
+    }
+
+    public static int getNavigationBarHeight(Context ctx) {
+        Resources resources = ctx.getResources();
+        int resourceId = resources.getIdentifier("navigation_bar_height", "dimen", "android");
+        if (resourceId > 0) {
+            return resources.getDimensionPixelSize(resourceId);
+        }
+        return 0;
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (getFragmentManager().getBackStackEntryCount() > 0) {
+            if (getFragmentManager().findFragmentByTag("OPTIONS") != null) {
+                hideSetContext(this);
+            }
+            if (getFragmentManager().findFragmentByTag("CONTEXT") != null) {
+                getFragmentManager().beginTransaction().remove(getFragmentManager().findFragmentByTag("CONTEXT")).commit();
+                Log.i("OLS", "context");
+
+            }
+            if (findViewById(R.id.select_context) != null) {
+                ((ViewGroup) findViewById(R.id.select_context).getParent()).removeView(findViewById(R.id.select_context));
+                Log.i("OLS", "null");
+
+            }
+            getWindow().setStatusBarColor(0);
+            getWindow().setNavigationBarColor(0);
+
+        } else {
+            finish();
+            super.onBackPressed();
+        }
+    }
+
+    public static void hideSetContext(Context ctx) {
+        RelativeLayout backgroudLayout = ((Activity) ctx).findViewById(R.id.background_layout);
+        if (backgroudLayout != null) {
+            backgroudLayout.animate().translationY(backgroudLayout.getHeight()).setDuration(300).setListener(new Animator.AnimatorListener() {
+                @Override
+                public void onAnimationStart(Animator animator) {
+                    ImageView iv = ((Activity) ctx).findViewById(R.id.image_options);
+                    iv.animate().alpha(0.0f).setDuration(300);
+
+                }
+
+                @Override
+                public void onAnimationEnd(Animator animator) {
+
+                    backgroudLayout.setVisibility(View.GONE);
+                    Log.i("OLS", "options");
+                    ((Activity) ctx).getFragmentManager().beginTransaction().remove(((Activity) ctx).getFragmentManager().findFragmentByTag("OPTIONS")).commit();
+
+                }
+
+                @Override
+                public void onAnimationCancel(Animator animator) {
+
+                }
+
+                @Override
+                public void onAnimationRepeat(Animator animator) {
+
+                }
+            });
+        }
     }
 
 }

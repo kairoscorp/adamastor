@@ -42,7 +42,9 @@ public class UserContext implements Parcelable {
         return contextApps;
     }
     public void addApp(AppDetails app){
-        contextApps.add(app);
+        if(!appExists(app)) {
+            contextApps.add(app);
+        }
     }
 
     public void removeApp(AppDetails app){

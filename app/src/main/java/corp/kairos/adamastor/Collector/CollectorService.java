@@ -145,6 +145,12 @@ public class CollectorService extends Service implements GoogleApiClient.Connect
     public Map<String, Long> getContextStatistics() {
         return logDatabaseHelper.getContextStatistics();
     }
+    public int getAppTime(AppDetails app){
+        return logDatabaseHelper.getAppTime(app);
+    }
+    public String lastTimeApp(AppDetails app){
+        return logDatabaseHelper.lastTimeApp(app);
+    }
 
     //Dumps database to a file and returns the file. Used in regular ETL
     public File dumpDatabaseToCSV(){
@@ -356,11 +362,10 @@ public class CollectorService extends Service implements GoogleApiClient.Connect
 
     private String getForegroundTask() {
         String currentApp = NULL_APP;
-        String result;
         if(android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+            UsageStatsManager usm = (UsageStatsManager) this.getSystemService(Context.USAGE_STATS_SERVICE);
             long time = System.currentTimeMillis();
-            List<UsageStats> appList = usageStatsManager.queryUsageStats(
-                    UsageStatsManager.INTERVAL_DAILY,  time - 10000000, time);
+            List<UsageStats> appList = usm.queryUsageStats(UsageStatsManager.INTERVAL_DAILY,  time - 10000000, time);
             if (appList != null && appList.size() > 0) {
                 SortedMap<Long, UsageStats> mySortedMap = new TreeMap<Long, UsageStats>();
                 for (UsageStats usageStats : appList) {
@@ -375,14 +380,8 @@ public class CollectorService extends Service implements GoogleApiClient.Connect
             List<ActivityManager.RunningAppProcessInfo> tasks = am.getRunningAppProcesses();
             currentApp = tasks.get(0).processName;
         }
-        try{
-            result = (String) packageManager.getApplicationLabel(packageManager.getApplicationInfo(
-                    currentApp, PackageManager.GET_META_DATA));
-        }catch(Exception e){
-            result = currentApp;
-        }
 
-        return result;
+        return currentApp;
     }
 
     private boolean isPhoneActive(){

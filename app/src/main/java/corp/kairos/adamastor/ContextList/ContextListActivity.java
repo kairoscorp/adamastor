@@ -1,8 +1,11 @@
 package corp.kairos.adamastor.ContextList;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
+import android.view.ViewGroup;
 
 import org.apache.commons.lang3.ArrayUtils;
 
@@ -12,6 +15,7 @@ import java.util.List;
 import corp.kairos.adamastor.Animation.AnimationActivity;
 import corp.kairos.adamastor.Home.HomeActivity;
 import corp.kairos.adamastor.R;
+import corp.kairos.adamastor.Settings.ContextRelated.EditContextAppsActivity;
 import corp.kairos.adamastor.Settings.Settings;
 import corp.kairos.adamastor.UserContext;
 import io.github.luizgrp.sectionedrecyclerviewadapter.SectionedRecyclerViewAdapter;
@@ -20,6 +24,7 @@ public class ContextListActivity extends AnimationActivity {
     public static int NUMBER_OF_COLUMNS = 4;
     private RecyclerView mRecyclerView;
     public SectionedRecyclerViewAdapter mAdapter;
+    static public int back;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,8 +40,8 @@ public class ContextListActivity extends AnimationActivity {
         // Set side activities
         super.setAnimation("left");
         super.setLeftActivity(HomeActivity.class);
-
         setupViews(userContexts);
+        back=0;
     }
 
     @Override
@@ -79,4 +84,44 @@ public class ContextListActivity extends AnimationActivity {
         mRecyclerView.setAdapter(mAdapter);
     }
 
+    public void contextFragment() {
+        back++;
+    }
+
+    public void selectContextApps(View v) {
+        startActivity(new Intent(getApplicationContext(), EditContextAppsActivity.class));
+
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (getFragmentManager().getBackStackEntryCount() > 0) {
+            if (back == 1) {
+                if (getFragmentManager().findFragmentByTag("OPTIONS") != null) {
+                    HomeActivity.hideSetContext(this);
+                }
+                if (getFragmentManager().findFragmentByTag("CONTEXT") != null) {
+                    getFragmentManager().beginTransaction().remove(getFragmentManager().findFragmentByTag("CONTEXT")).commit();
+                }
+                if (findViewById(R.id.select_context) != null) {
+                    ((ViewGroup) findViewById(R.id.select_context).getParent()).removeView(findViewById(R.id.select_context));
+                }
+                back--;
+            } else {
+                finish();
+            }
+            getWindow().setStatusBarColor(0);
+            getWindow().setNavigationBarColor(0);
+
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+    public void notifyDataSet() {
+        Settings settings = Settings.getInstance(getApplicationContext());
+        List<UserContext> userContexts = settings.getOrderedUserContexts();
+        setupViews(userContexts);
+        this.mAdapter.notifyDataSetChanged();
+    }
 }
