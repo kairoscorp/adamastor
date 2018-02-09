@@ -111,11 +111,7 @@ public class HomeActivity extends AnimationCompatActivity {
 
         }
     }
-
-    @Override
-    public void onBackPressed() {
-        // do nothing! its the home screen!
-    }
+    
 
     @SuppressLint("SimpleDateFormat")
     private void setupDates() {
