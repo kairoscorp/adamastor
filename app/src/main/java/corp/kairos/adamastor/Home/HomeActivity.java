@@ -259,13 +259,18 @@ public class HomeActivity extends AnimationCompatActivity {
         return result;
     }
 
-    private void switchTabByAutoContextChange(String context){
+    private void switchTab(String context, boolean fromNotification){
         int selectedTab = this.tabLayout.getSelectedTabPosition();
         int currentContextTab = this.getTabIndexByContextName(context);
 
         if(selectedTab != currentContextTab){
-            this.autoContextChange = true;
             this.tabLayout.getTabAt(currentContextTab).select();
+
+            if(!fromNotification){
+                this.autoContextChange = true;
+                String previousContext = (String) this.tabLayout.getTabAt(selectedTab).getTag();
+                displayNotification(context, previousContext);
+            }
         }
     }
 
@@ -277,28 +282,7 @@ public class HomeActivity extends AnimationCompatActivity {
             bindCollectorService();
 
         UserContext current = Settings.getInstance(this).getCurrentUserContext();
-        this.switchTabByAutoContextChange(current.getContextName());
-    }
-
-    private void switchContext(String newContext, boolean fromNotification) {
-        Log.i(TAG, "Context: " + newContext);
-
-        String previousContext = (String) this.tabLayout.getTabAt(this.tabLayout.getSelectedTabPosition()).getTag();
-
-        //only change the selected tab if the returned context is different
-        if(!previousContext.equals(newContext)){
-            //iterate through the tabs to select the one corresponding to the desired context
-            for(int i = 0; i < this.tabLayout.getTabCount(); i++){
-                TabLayout.Tab t = this.tabLayout.getTabAt(i);
-                if(t.getTag().equals(newContext)){
-                    t.select();
-                }
-            }
-            if(!fromNotification) {
-                displayNotification(newContext, previousContext);
-            }
-        }
-
+        this.switchTab(current.getContextName(), false);
     }
 
     private void displayNotification(String newContext, String previousContext) {
@@ -307,8 +291,8 @@ public class HomeActivity extends AnimationCompatActivity {
             case "Work":
                 notificationIcon = R.drawable.ic_work_black;
                 break;
-            case "Home":
-                notificationIcon = R.drawable.ic_home_black;
+            case "Leisure":
+                notificationIcon = R.drawable.ic_leisure_black;
                 break;
             case "Commute":
                 notificationIcon = R.drawable.ic_commute_black;
@@ -332,7 +316,7 @@ public class HomeActivity extends AnimationCompatActivity {
                         .setContentTitle("Switched context")
                         .setContentText("We adjusted the context, are we right?")
                         .addAction(R.drawable.ic_check, "Totally!", yesPendingIntent)
-                        .addAction(R.drawable.shape, "No", noPendingIntent);
+                        .addAction(R.drawable.round_shape, "No", noPendingIntent);
 
         this.notificationManager =
                 (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
@@ -415,7 +399,7 @@ public class HomeActivity extends AnimationCompatActivity {
 
                 Bundle extras = intent.getExtras();
                 String previousContext = extras.getString("previousContext");
-                switchContext(previousContext, true);
+                switchTab(previousContext, true);
             }
 
             // Dismiss the notification
