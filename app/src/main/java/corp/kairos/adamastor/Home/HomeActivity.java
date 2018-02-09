@@ -111,7 +111,7 @@ public class HomeActivity extends AnimationCompatActivity {
 
         }
     }
-    
+
 
     @SuppressLint("SimpleDateFormat")
     private void setupDates() {
