@@ -34,6 +34,7 @@
             android:layout_marginStart="32dp"
             android:layout_toEndOf="@+id/imageViewTime"
             android:text="@string/settings_schedules_label"
+            android:textColor="@color/secondaryColor"
             android:textAppearance="@android:style/TextAppearance.Material.Medium" />
 
         <TextView
@@ -77,6 +78,7 @@
             android:layout_marginStart="32dp"
             android:layout_toEndOf="@+id/imageViewLocation"
             android:text="@string/settings_locations_label"
+            android:textColor="@color/secondaryColor"
             android:textAppearance="@android:style/TextAppearance.Material.Medium" />
 
         <TextView
@@ -121,6 +123,7 @@
             android:layout_marginStart="32dp"
             android:layout_toEndOf="@+id/imageViewCtxApps"
             android:text="@string/settings_context_apps_label"
+            android:textColor="@color/secondaryColor"
             android:textAppearance="@android:style/TextAppearance.Material.Medium" />
 
         <TextView
