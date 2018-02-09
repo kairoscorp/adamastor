@@ -42,13 +42,13 @@ import java.util.Calendar;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
 import corp.kairos.adamastor.AppDetails;
 import corp.kairos.adamastor.AppsManager.AppsManager;
 import corp.kairos.adamastor.ServerMediator.MediatorService;
-import corp.kairos.adamastor.Settings.Settings;
 
 public class CollectorService extends Service implements GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener {
@@ -382,10 +382,10 @@ public class CollectorService extends Service implements GoogleApiClient.Connect
         }
 
         try{
-            result = (String) packageManager.getApplicationLabel(packageManager.getApplicationInfo(
+            String result = (String) packageManager.getApplicationLabel(packageManager.getApplicationInfo(
                     currentApp, PackageManager.GET_META_DATA));
         }catch(Exception e){
-            result = currentApp;
+            String result = currentApp;
         }
 
         return currentApp;
@@ -544,13 +544,6 @@ public class CollectorService extends Service implements GoogleApiClient.Connect
 
     public Map<String, Long> getContextAppsStatistics(String context) {
         return logDatabaseHelper.getContextAppsStatistics(context);
-    }
-
-    public class CollectorServiceBinder extends Binder {
-        public CollectorService getBinder(){
-            Log.i(TAG, "GettingBinder");
-            return CollectorService.this;
-        }
     }
 
     /**

@@ -9,8 +9,8 @@ import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 
 import corp.kairos.adamastor.AppDetails;
-import corp.kairos.adamastor.Statistics.StatisticsAppDetailsComparator;
 import corp.kairos.adamastor.Settings.Settings;
+import corp.kairos.adamastor.Statistics.StatisticsAppDetailsComparator;
 
 public class RandomStatisticsDAO implements StatisticsDAO {
     public RandomStatisticsDAO() {

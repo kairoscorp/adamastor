@@ -4,7 +4,6 @@ import android.app.IntentService;
 import android.content.Intent;
 import android.support.annotation.Nullable;
 import android.util.Log;
-import android.widget.Switch;
 
 import com.google.android.gms.location.ActivityRecognitionResult;
 import com.google.android.gms.location.DetectedActivity;

@@ -1,15 +1,11 @@
 package corp.kairos.adamastor.Settings;
 
-import android.location.Location;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
-import com.google.android.gms.maps.model.LatLng;
-
 import corp.kairos.adamastor.Onboarding.Onboard3LocationActivity;
 import corp.kairos.adamastor.R;
-import corp.kairos.adamastor.UserContext;
 
 
 public class LocationSettingsActivity extends Onboard3LocationActivity {

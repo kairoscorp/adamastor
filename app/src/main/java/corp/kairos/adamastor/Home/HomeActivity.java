@@ -357,13 +357,16 @@ public class HomeActivity extends AnimationCompatActivity {
                 != PackageManager.PERMISSION_GRANTED) ||
                 (ActivityCompat.checkSelfPermission(this,
                         android.Manifest.permission.ACCESS_COARSE_LOCATION)
-                        != PackageManager.PERMISSION_GRANTED) ||
+                        != PackageManager.PERMISSION_GRANTED)||
                 (ActivityCompat.checkSelfPermission(this,
                         Manifest.permission.WRITE_EXTERNAL_STORAGE)
                         != PackageManager.PERMISSION_GRANTED) ||
                 (ActivityCompat.checkSelfPermission(this,
+                        Manifest.permission.CALL_PHONE)
+                        != PackageManager.PERMISSION_GRANTED) ||
+                (ActivityCompat.checkSelfPermission(this,
                         Manifest.permission.GET_ACCOUNTS)
-                        != PackageManager.PERMISSION_GRANTED)) {
+                        != PackageManager.PERMISSION_GRANTED)){
 
             requestPermissions();
 
@@ -380,6 +383,7 @@ public class HomeActivity extends AnimationCompatActivity {
                         Manifest.permission.ACCOUNT_MANAGER,
                         Manifest.permission.WRITE_EXTERNAL_STORAGE,
                         Manifest.permission.PACKAGE_USAGE_STATS,
+                        Manifest.permission.CALL_PHONE,
                         Manifest.permission.GET_ACCOUNTS},
                 MY_PERMISSIONS_REQUEST_LOCATION);
     }

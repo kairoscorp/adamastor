@@ -157,6 +157,15 @@ public class Settings {
         return this.contexts.get(c);
     }
 
+    public static int getIdFromContextName(String contextName) {
+        for(int i = 0; i < contextsNames.length; i++) {
+            if(contextsNames[i].equals(contextName)) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
     public UserContext getUserContext(int id) {
         String currentContextName = contextsNames[id];
         return this.contexts.get(currentContextName);

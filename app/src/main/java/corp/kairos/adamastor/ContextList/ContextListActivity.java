@@ -1,6 +1,5 @@
 package corp.kairos.adamastor.ContextList;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -15,7 +14,6 @@ import java.util.List;
 import corp.kairos.adamastor.Animation.AnimationActivity;
 import corp.kairos.adamastor.Home.HomeActivity;
 import corp.kairos.adamastor.R;
-import corp.kairos.adamastor.Settings.ContextRelated.EditContextAppsActivity;
 import corp.kairos.adamastor.Settings.Settings;
 import corp.kairos.adamastor.UserContext;
 import io.github.luizgrp.sectionedrecyclerviewadapter.SectionedRecyclerViewAdapter;

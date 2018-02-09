@@ -1,8 +1,6 @@
 package corp.kairos.adamastor.Collector;
 
-import android.location.Location;
 import android.util.Log;
-
 
 import org.dmg.pmml.FieldName;
 import org.dmg.pmml.PMML;
@@ -13,19 +11,14 @@ import org.jpmml.evaluator.FieldValueUtil;
 import org.jpmml.evaluator.InputField;
 import org.jpmml.evaluator.ModelEvaluator;
 import org.jpmml.evaluator.ModelEvaluatorFactory;
-import org.jpmml.evaluator.OutputField;
 import org.jpmml.evaluator.TargetField;
-import org.jpmml.model.FieldUtil;
 import org.jpmml.model.SerializationUtil;
-import java.util.Calendar;
 
 import java.io.InputStream;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import corp.kairos.adamastor.Collector.DataCleaner;
-import corp.kairos.adamastor.Settings.Settings;
 
 public class ModelHandler {
 

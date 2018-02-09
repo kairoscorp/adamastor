@@ -54,22 +54,6 @@
         <activity
             android:name=".AllApps.AllAppsActivity"
             android:theme="@style/LauncherTheme" />
-        <activity
-            android:name=".Settings.ContextRelated.ContextRelatedSettingsActivity"
-            android:label="Onboarding"
-            android:parentActivityName=".Home.HomeActivity">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="corp.kairos.adamastor.Home.HomeActivity" />
-        </activity>
-        <activity
-            android:name=".Settings.ContextRelated.ContextRelatedAppsActivity"
-            android:label="Context Related Apps"
-            android:parentActivityName=".Settings.ContextRelated.ContextRelatedSettingsActivity">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".Settings.ContextRelated.ContextRelatedSettingsActivity" />
-        </activity>
 
         <service
             android:name=".Collector.CollectorService"
@@ -155,11 +139,7 @@
             android:label="Kairos Settings"></activity>
             
         <activity android:name=".Settings.ScheduleSettingsActivity" />
-    
-        <activity
-            android:name=".ContextList.EditContextAppsActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
-            
+
         <activity
             android:name=".Statistics.StatisticsActivity"
             android:label="@string/title_activity_statistics"

@@ -9,8 +9,8 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 
 import corp.kairos.adamastor.AppDetails;
-import corp.kairos.adamastor.Statistics.StatisticsAppDetailsComparator;
 import corp.kairos.adamastor.Collector.CollectorService;
+import corp.kairos.adamastor.Statistics.StatisticsAppDetailsComparator;
 
 public class RealStatisticsDAO implements StatisticsDAO {
     private CollectorService collectorService = CollectorService.getInstance();

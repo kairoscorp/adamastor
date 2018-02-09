@@ -16,7 +16,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.RandomAccessFile;
-import java.text.CollationElementIterator;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -25,6 +24,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.concurrent.TimeUnit;
+
+import corp.kairos.adamastor.Settings.Settings;
 
 public class LogDatabaseHelper extends SQLiteOpenHelper {
     private static final String TAG = "LogDatabaseLog";
@@ -124,13 +125,13 @@ public class LogDatabaseHelper extends SQLiteOpenHelper {
         Cursor res = db.rawQuery(query, null);
         res.moveToFirst();
 
-        while (!res.isAfterLast()) {
-            String context = String.valueOf(res.getInt(res.getColumnIndex("Context")));
+        while(!res.isAfterLast()) {
+            int context = res.getInt(res.getColumnIndex("Context"));
 
             // Each record means approximately 10 seconds in the context
             int timeSeconds = res.getInt(res.getColumnIndex("Times")) * 10;
 
-            result.put(context, TimeUnit.SECONDS.toMillis(timeSeconds));
+            result.put(Settings.contextsNames[context], TimeUnit.SECONDS.toMillis(timeSeconds));
             res.moveToNext();
         }
         res.close();
@@ -471,11 +472,12 @@ public class LogDatabaseHelper extends SQLiteOpenHelper {
     public Map<String, Long> getContextAppsStatistics(String context) {
         Map<String, Long> result = new TreeMap<>();
         SQLiteDatabase db = this.getReadableDatabase();
+        int idContext = Settings.getIdFromContextName(context);
 
         String query =
                 "SELECT logs.foreground As Foreground, COUNT(*) AS Times " +
                 "FROM 'ServiceLogs' AS logs " +
-                "WHERE logs.context = '" + context + "' " +
+                "WHERE logs.context = '" + idContext + "' " +
                 "GROUP BY logs.foreground;";
 
 
