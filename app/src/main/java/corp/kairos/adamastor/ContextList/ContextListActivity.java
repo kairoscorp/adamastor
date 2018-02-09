@@ -119,6 +119,9 @@ public class ContextListActivity extends AnimationActivity {
     }
 
     public void notifyDataSet() {
+        Settings settings = Settings.getInstance(getApplicationContext());
+        List<UserContext> userContexts = settings.getOrderedUserContexts();
+        setupViews(userContexts);
         this.mAdapter.notifyDataSetChanged();
     }
 }
