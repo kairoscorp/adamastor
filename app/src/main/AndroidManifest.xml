@@ -112,10 +112,7 @@
         <activity
             android:name=".Onboarding.Onboard6FinalActivity"
             android:label="@string/onboarding_label"
-            android:theme="@style/OnboardingTheme"
-            >
-        </activity>
-
+            android:theme="@style/OnboardingTheme"></activity>
         <activity
             android:name=".ContextList.ContextListActivity"
             android:theme="@style/LauncherTheme" />
@@ -148,8 +145,15 @@
         </receiver>
 
         <activity
-            android:name=".ContextList.EditContextAppsActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:name=".Settings.ContextRelated.EditContextAppsActivity"
+            android:label="Context Apps" />
+        <activity
+            android:name=".Settings.LocationSettingsActivity"
+            android:label="Location" />
+        <activity
+            android:name=".Settings.KairosSettingsActivity"
+            android:label="Kairos Settings"></activity>
+        <activity android:name=".Settings.ScheduleSettingsActivity" />
     </application>
 
 </manifest>

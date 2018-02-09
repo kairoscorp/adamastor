@@ -15,6 +15,7 @@ public class UserContext implements Parcelable {
     private String contextName; //The name of the context
     private List<AppDetails> contextApps; //The list of apps associated with this context
     private Location location;
+    private String address; //the location's address
     private GregorianCalendar init;
     private GregorianCalendar end;
 
@@ -30,6 +31,7 @@ public class UserContext implements Parcelable {
         location = in.readParcelable(Location.class.getClassLoader());
         init = (GregorianCalendar) in.readSerializable();
         end = (GregorianCalendar) in.readSerializable();
+        address = in.readString();
     }
 
     public String getContextName() {
@@ -72,6 +74,9 @@ public class UserContext implements Parcelable {
         this.location = location;
     }
 
+    public void setAddress(String address) { this.address = address; }
+    public  String getAddress() { return this.address; }
+
     public String toString(){
         StringBuilder sb = new StringBuilder(" --- " + contextName + " ---\n");
         for(AppDetails app: contextApps) {
@@ -92,6 +97,7 @@ public class UserContext implements Parcelable {
         dest.writeParcelable(location, flags);
         dest.writeSerializable(init);
         dest.writeSerializable(end);
+        dest.writeString(this.address);
     }
 
     public static final Creator<UserContext> CREATOR = new Creator<UserContext>() {
