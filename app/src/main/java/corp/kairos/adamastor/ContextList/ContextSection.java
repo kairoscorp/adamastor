@@ -1,6 +1,7 @@
 package corp.kairos.adamastor.ContextList;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
@@ -29,7 +30,7 @@ public class ContextSection extends StatelessSection {
 
 
     public ContextSection(Context appContext, SectionedRecyclerViewAdapter adapter,
-                          String contextName, List<AppDetails> contextApps) {
+                          String contextName, List<AppDetails> contextApps,boolean initialExpanded) {
         super(new SectionParameters.Builder(R.layout.allapps_app)
                 .headerResourceId(R.layout.context_header)
                 .footerResourceId(R.layout.context_footer)
@@ -42,7 +43,7 @@ public class ContextSection extends StatelessSection {
         int numberOfPlaceholderApps = ContextListActivity.NUMBER_OF_COLUMNS - mContextApps.size() % ContextListActivity.NUMBER_OF_COLUMNS;
         if (numberOfPlaceholderApps != ContextListActivity.NUMBER_OF_COLUMNS)
             for (int i = 0; i < numberOfPlaceholderApps; i++) {
-                mContextApps.add(new AppDetails("", "", null));
+                mContextApps.add(new AppDetails("", "", null,false));
             }
         mIsExpanded = initialExpanded;
     }

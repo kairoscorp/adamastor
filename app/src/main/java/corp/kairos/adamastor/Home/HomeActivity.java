@@ -36,7 +36,7 @@ import java.util.Date;
 import java.util.List;
 
 import corp.kairos.adamastor.AllApps.AllAppsActivity;
-import corp.kairos.adamastor.Animation.AnimationCompactActivity;
+import corp.kairos.adamastor.Animation.AnimationCompatActivity;
 import corp.kairos.adamastor.AppDetails;
 import corp.kairos.adamastor.AppsManager.AppsManager;
 import corp.kairos.adamastor.Collector.CollectorService;
