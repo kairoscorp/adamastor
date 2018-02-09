@@ -1,8 +1,12 @@
 package corp.kairos.adamastor.Onboarding;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -44,7 +48,9 @@ public class Onboard3LocationActivity extends AnimationCompatActivity {
     private boolean pickHome = false;
     private String homeAddress;
     private String workAddress;
-
+    public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
+    private static final String TAG = Onboard1WelcomeActivity.class.getName();
+    private boolean permissionGranted = false;
 
 
     @Override
@@ -61,6 +67,7 @@ public class Onboard3LocationActivity extends AnimationCompatActivity {
         homeplaceView = findViewById(R.id.mapHome);
         homeplaceView.onCreate(this.savedInstanceState);
         loadInitialMaps();
+        checkPermissions();
     }
 
     @Override
@@ -199,5 +206,41 @@ public class Onboard3LocationActivity extends AnimationCompatActivity {
         save();
         Intent i = new Intent(this,Onboard4ContextAppsActivity.class);
         startActivity(i);
+    }
+
+    private void checkPermissions(){
+        if ((ActivityCompat.checkSelfPermission(this,
+                android.Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) ||
+                (ActivityCompat.checkSelfPermission(this,
+                        android.Manifest.permission.ACCESS_COARSE_LOCATION)
+                        != PackageManager.PERMISSION_GRANTED)||
+                (ActivityCompat.checkSelfPermission(this,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                        != PackageManager.PERMISSION_GRANTED) ||
+                (ActivityCompat.checkSelfPermission(this,
+                        Manifest.permission.GET_ACCOUNTS)
+                        != PackageManager.PERMISSION_GRANTED)){
+
+
+            requestPremissions();
+
+        }else{
+            Log.i(TAG, "permissions OK");
+            permissionGranted = true;
+        }
+    }
+
+    //KAIROS
+    private void requestPremissions(){
+        ActivityCompat.requestPermissions(this,
+                new String[]{Manifest.permission.ACCESS_COARSE_LOCATION,
+                        Manifest.permission.ACCESS_FINE_LOCATION,
+                        Manifest.permission.ACCOUNT_MANAGER,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                        Manifest.permission.PACKAGE_USAGE_STATS,
+                        Manifest.permission.GET_ACCOUNTS},
+                MY_PERMISSIONS_REQUEST_LOCATION);
+        permissionGranted = true;
     }
 }
