@@ -158,14 +158,32 @@ public class Settings {
     }
 
     public static int getIdFromContextName(String contextName) {
-        for(int i = 0; i < contextsNames.length; i++) {
-            if(contextsNames[i].equals(contextName)) {
-                return i;
-            }
+        switch (contextName) {
+            case "Leisure":
+                return 1;
+            case "Commute":
+                return 2;
+            default:
+                return 3;
         }
-        return -1;
     }
 
+    public static String getContextNameFromId(int id) {
+        switch (id) {
+            case 1:
+                return "Leisure";
+            case 2:
+                return "Commute";
+            default:
+                return "Work";
+        }
+    }
+
+    /** Register a user context manual change
+     *  1 - HOME\LEISURE
+     *  2 - TRAVEL\COMMUTE
+     *  3 - WORK
+     **/
     public UserContext getUserContext(int id) {
         String currentContextName = contextsNames[id];
         return this.contexts.get(currentContextName);

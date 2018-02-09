@@ -25,6 +25,7 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.concurrent.TimeUnit;
 
+import corp.kairos.adamastor.AppDetails;
 import corp.kairos.adamastor.Settings.Settings;
 
 public class LogDatabaseHelper extends SQLiteOpenHelper {
@@ -131,7 +132,7 @@ public class LogDatabaseHelper extends SQLiteOpenHelper {
             // Each record means approximately 10 seconds in the context
             int timeSeconds = res.getInt(res.getColumnIndex("Times")) * 10;
 
-            result.put(Settings.contextsNames[context - 1], TimeUnit.SECONDS.toMillis(timeSeconds));
+            result.put(Settings.getContextNameFromId(context), TimeUnit.SECONDS.toMillis(timeSeconds));
             res.moveToNext();
         }
         res.close();
