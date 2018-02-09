@@ -12,7 +12,10 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 
+import java.util.List;
+
 import corp.kairos.adamastor.ContextList.ContextListActivity;
+import corp.kairos.adamastor.Home.HomeActivity;
 import corp.kairos.adamastor.Settings.Settings;
 
 
@@ -133,6 +136,8 @@ public class SetContext extends Fragment {
                     if (getActivity().getClass().getSimpleName().equals("ContextListActivity")) {
                         Log.i("SSS", "nope");
                         ((ContextListActivity) getActivity()).notifyDataSet();
+                    } else if (getActivity().getClass().getSimpleName().equals("HomeActivity")) {
+                        ((HomeActivity) getActivity()).updateFragments();
                     } else {
                         Log.i("SSS", "YES");
 

@@ -11,7 +11,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import corp.kairos.adamastor.AllApps.AllAppsRecyclerViewAdapter;
@@ -39,7 +41,6 @@ public class PlaceholderFragment extends Fragment {
         Bundle bundle = new Bundle();
         bundle.putParcelable(PlaceholderFragment.PARCELABLE_KEY, userContext);
         fragment.setArguments(bundle);
-
         return fragment;
     }
 
@@ -66,7 +67,12 @@ public class PlaceholderFragment extends Fragment {
         Set<AppDetails> appsToDisplay = new HashSet<>(fragmentContext.getContextApps().subList(0, min));
 
         mGrid = parentLayout.findViewById(R.id.home_grid_view);
-        mGrid.setLayoutManager(new GridLayoutManager(getContext(), min));
+        mGrid.setLayoutManager(new GridLayoutManager(getContext(), min){
+            @Override
+            public boolean canScrollVertically() {
+                return false;
+            }
+        });
         mAdapter = new AllAppsRecyclerViewAdapter(getContext(), appsToDisplay) {
             @Override
             public void onBindViewHolder(AppViewHolder holder, int position) {
@@ -94,7 +100,13 @@ public class PlaceholderFragment extends Fragment {
         Settings settings = Settings.getInstance(getContext());
         fragmentContext = settings.getUserContext(fragmentContext.getContextName());
         int min = Math.min(4, fragmentContext.getContextApps().size());
-        mGrid.setLayoutManager(new GridLayoutManager(getContext(), min));
-        mAdapter.updateData(fragmentContext.getContextApps());
+        mGrid.setLayoutManager(new GridLayoutManager(getContext(), min){
+            @Override
+            public boolean canScrollVertically() {
+                return false;
+            }
+        });
+        List<AppDetails> appsToDisplay = new ArrayList<>(fragmentContext.getContextApps().subList(0, min));
+        mAdapter.updateData(appsToDisplay);
     }
 }
