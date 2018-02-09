@@ -5,16 +5,15 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Build;
-import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ThreadLocalRandom;
 
 import corp.kairos.adamastor.AppDetails;
 import corp.kairos.adamastor.AppsManager.AppsManager;
@@ -188,32 +187,33 @@ public class Settings {
         int context = CollectorService.getInstance().getPredictedContext();
         String result;
         switch(context){
-            case 1: result = "Leisure";
-                    break;
-            case 2: result = "Commute";
-                    break;
-            case 3: result = "Work";
-                    break;
-            default: result = "Leisure";
-                    break;
+            case 2:
+                result = "Commute";
+                break;
+            case 3:
+                result = "Work";
+                break;
+            case 1:
+            default:
+                result = "Leisure";
         }
 
         return result;
     }
 
     public void informCollectorContextChange(String contextName){
-
-        int context = 1;
+        int context;
 
         switch(contextName){
-            case "Leisure": context = 1;
+            case "Commute":
+                context = 2;
                 break;
-            case "Commute": context = 2;
+            case "Work":
+                context = 3;
                 break;
-            case "Work": context = 3;
-                break;
-            default: context = 1;
-                break;
+            case "Leisure":
+            default:
+                context = 1;
         }
 
         CollectorService.getInstance().userContextChange(context);
@@ -258,6 +258,25 @@ public class Settings {
 
     public UserContext getStartingContext(){
         return this.contexts.get("Home");
+    }
+
+    public List<UserContext> getOrderedUserContexts() {
+        List<UserContext>  userContextList = new ArrayList<>(4);
+
+        // First the active context
+        String currentContextName = this.getContextNamefromCollector();
+        userContextList.add(this.contexts.get(currentContextName));
+
+        // The remaining contexts
+        Set<String> otherKeys = new HashSet<>(this.contexts.keySet());
+        otherKeys.remove(currentContextName);
+        for (String key : otherKeys)
+            userContextList.add(this.contexts.get(key));
+
+        // The context containing apps that aren't in any context
+        userContextList.add(this.getZeroContext());
+
+        return userContextList;
     }
 }
 
