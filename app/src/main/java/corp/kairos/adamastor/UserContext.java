@@ -6,7 +6,6 @@ import android.os.Parcelable;
 
 import java.util.GregorianCalendar;
 import java.util.List;
-import java.util.Objects;
 
 /*
 * This class represents a context

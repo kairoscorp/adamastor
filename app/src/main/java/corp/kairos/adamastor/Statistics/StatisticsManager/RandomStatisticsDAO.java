@@ -3,15 +3,14 @@ package corp.kairos.adamastor.Statistics.StatisticsManager;
 import android.app.usage.UsageStatsManager;
 
 import java.util.Map;
-import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 
 import corp.kairos.adamastor.AppDetails;
-import corp.kairos.adamastor.Settings.Settings;
 import corp.kairos.adamastor.Statistics.StatisticsAppDetailsComparator;
+import corp.kairos.adamastor.Settings.Settings;
 
 public class RandomStatisticsDAO implements StatisticsDAO {
     public RandomStatisticsDAO() {
@@ -61,8 +60,8 @@ public class RandomStatisticsDAO implements StatisticsDAO {
     }
 
     @Override
-    public Set<AppDetails> getContextAppsStatistics(Map<String, AppDetails> allAppsDetails, String context) {
-        Set<AppDetails> stats = new TreeSet<>(new StatisticsAppDetailsComparator());
+    public TreeSet<AppDetails> getContextAppsStatistics(Map<String, AppDetails> allAppsDetails, String context) {
+        TreeSet<AppDetails> stats = new TreeSet<>(new StatisticsAppDetailsComparator());
         long min = TimeUnit.MINUTES.toMillis(15);
         long max = TimeUnit.MINUTES.toMillis(360);
         long randomTime = 0;
@@ -71,7 +70,7 @@ public class RandomStatisticsDAO implements StatisticsDAO {
             AppDetails app = entry.getValue();
             randomTime =  ThreadLocalRandom.current().nextLong(min, max);
             app.setUsageStatistics(randomTime);
-            stats.add(app);
+            stats.add(app.clone());
         }
 
         return stats;

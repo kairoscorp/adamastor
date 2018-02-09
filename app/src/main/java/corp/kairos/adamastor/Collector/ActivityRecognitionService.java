@@ -11,8 +11,6 @@ import com.google.android.gms.location.DetectedActivity;
 
 import java.util.List;
 
-import corp.kairos.adamastor.AppsManager.AppsManager;
-
 public class ActivityRecognitionService extends IntentService {
 
     private static final String TAG = ActivityRecognitionService.class.getName();

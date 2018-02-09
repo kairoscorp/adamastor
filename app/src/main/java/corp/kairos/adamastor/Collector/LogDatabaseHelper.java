@@ -23,11 +23,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.TreeMap;
 import java.util.concurrent.TimeUnit;
-
-import corp.kairos.adamastor.AppDetails;
 
 public class LogDatabaseHelper extends SQLiteOpenHelper {
     private static final String TAG = "LogDatabaseLog";
@@ -120,7 +117,7 @@ public class LogDatabaseHelper extends SQLiteOpenHelper {
         Map<String, Long> result = new TreeMap<>();
         SQLiteDatabase db = this.getReadableDatabase();
 
-        String query = "SELECT logs.context As Context, COUNT(logs.id) AS Times " +
+        String query = "SELECT logs.context As Context, COUNT(*) AS Times " +
                        "FROM 'ServiceLogs' AS logs " +
                        "GROUP BY logs.context;";
 
@@ -193,6 +190,7 @@ public class LogDatabaseHelper extends SQLiteOpenHelper {
             entry = entry + "::" + res.getString(res.getColumnIndex("provider"));
             entry = entry + "::" + res.getString(res.getColumnIndex("account"));
             entry = entry + "::" + res.getString(res.getColumnIndex("context"));
+            entry = entry + "::" + res.getString(res.getColumnIndex("foreground"));
             result.add(entry);
             res.moveToNext();
         }
@@ -475,10 +473,11 @@ public class LogDatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
 
         String query =
-                "SELECT logs.foreground As Foreground, COUNT(logs.id) AS Times " +
+                "SELECT logs.foreground As Foreground, COUNT(*) AS Times " +
                 "FROM 'ServiceLogs' AS logs " +
                 "WHERE logs.context = '" + context + "' " +
                 "GROUP BY logs.foreground;";
+
 
         Cursor res = db.rawQuery(query, null );
         res.moveToFirst();

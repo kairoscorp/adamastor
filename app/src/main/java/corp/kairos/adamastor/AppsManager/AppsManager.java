@@ -1,12 +1,10 @@
 package corp.kairos.adamastor.AppsManager;
 
 import android.app.usage.UsageStatsManager;
-import android.content.BroadcastReceiver;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.drawable.Drawable;
-import android.util.Log;
 
 import java.util.List;
 import java.util.Map;
@@ -15,9 +13,7 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 
 import corp.kairos.adamastor.AppDetails;
-import corp.kairos.adamastor.Settings.Settings;
-import corp.kairos.adamastor.Statistics.StatisticsActivity;
-import corp.kairos.adamastor.Statistics.StatisticsAppDetailsComparator;
+import corp.kairos.adamastor.Statistics.StatisticsManager.RandomStatisticsDAO;
 import corp.kairos.adamastor.Statistics.StatisticsManager.RealStatisticsDAO;
 import corp.kairos.adamastor.Statistics.StatisticsManager.StatisticsDAO;
 import corp.kairos.adamastor.Statistics.StatisticsManager.RandomStatisticsDAO;
@@ -28,6 +24,7 @@ public class AppsManager {
     private Map<String, AppDetails> allAppsDetails;
     private Map<String, AppDetails> appsDetailsWithoutLauncher;
     private StatisticsDAO statisticsManager;
+
     private static AppsManager instance;
     protected Boolean force;
 
@@ -38,6 +35,16 @@ public class AppsManager {
         this.allAppsDetails = new TreeMap<>();
         this.appsDetailsWithoutLauncher = new TreeMap<>();
         this.force = true;
+    }
+
+    public boolean switchStatisticsManager (){
+        if(this.statisticsManager instanceof RandomStatisticsDAO) {
+            this.statisticsManager = new RealStatisticsDAO();
+            return true;
+        } else {
+            this.statisticsManager = new RandomStatisticsDAO();
+            return false;
+        }
     }
 
     public static AppsManager getInstance() {
@@ -103,13 +110,14 @@ public class AppsManager {
         return statistics;
     }
 
-    public Map<String, Set<AppDetails>> getAppsStatisticsByContext(List<String> contextsNames, PackageManager packageManager) {
+    public Map<String, TreeSet<AppDetails>> getAppsStatisticsByContext(List<String> contextsNames, PackageManager packageManager) {
         if(this.needToLoad()) {
             setupApps(packageManager);
         }
-        Map<String, Set<AppDetails>> result = new TreeMap<>();
+        Map<String, TreeSet<AppDetails>> result = new TreeMap<>();
         for(String contextName : contextsNames) {
-            result.put(contextName, statisticsManager.getContextAppsStatistics(this.appsDetailsWithoutLauncher, contextName));
+            TreeSet<AppDetails> statistics = statisticsManager.getContextAppsStatistics(this.appsDetailsWithoutLauncher, contextName);
+            result.put(contextName, statistics);
         }
         return result;
     }

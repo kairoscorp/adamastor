@@ -22,8 +22,10 @@
 
         <TextView
             android:id="@+id/app_statistcs_name"
-            android:layout_width="wrap_content"
+            android:layout_width="180dp"
             android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="1"
             android:layout_alignBottom="@+id/app_statistcs_time"
             android:layout_toEndOf="@+id/app_statistics_image"
             android:paddingStart="20dp"

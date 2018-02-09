@@ -16,11 +16,13 @@ import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.components.Description;
@@ -32,7 +34,7 @@ import com.github.mikephil.charting.data.PieEntry;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
+import java.util.TreeSet;
 import java.util.concurrent.TimeUnit;
 
 import corp.kairos.adamastor.Animation.AnimationCompatActivity;
@@ -52,11 +54,12 @@ public class StatisticsActivity extends AnimationCompatActivity {
     private static PackageManager packageManager;
     private static AppsManager appsManager;
     private static Settings settings;
-    private static Map<String, Set<AppDetails>> statistics;
+    private static Map<String, TreeSet<AppDetails>> statistics;
 
     private Measure measure = Measure.HOURS; // 0 - HOURS | 1 - MINUTES | 2 - SECONDS | 3 - MILLISECONDS
     private TabLayout tabLayout;
     private PieChart chart;
+    private ListView listView;
     private View mList;
     private View mChart;
     private FloatingActionButton mSwitch;
@@ -81,6 +84,7 @@ public class StatisticsActivity extends AnimationCompatActivity {
 
         tabLayout = (TabLayout) findViewById(R.id.tabs);
         chart = findViewById(R.id.pie_chart);
+        listView = findViewById(R.id.stats_apps_list);
         mList = findViewById(R.id.stats_applications);
         mChart = findViewById(R.id.stats_contexts);
 
@@ -96,13 +100,33 @@ public class StatisticsActivity extends AnimationCompatActivity {
         mSwitch.setOnClickListener(view -> {
             crossFade();
         });
+
+        mSwitch.setOnLongClickListener(view -> {
+            Context context = getApplicationContext();
+            CharSequence text;
+            int duration = Toast.LENGTH_SHORT;
+            if(appsManager.switchStatisticsManager()) {
+                text = "Real Statistics!";
+                Toast toast = Toast.makeText(context, text, duration);
+                toast.show();
+            } else {
+                text = "Fictional Statistics!";
+                Toast toast = Toast.makeText(context, text, duration);
+                toast.show();
+            }
+            loadAppsStatistics();
+            loadContextStatistics();
+
+            chart.animateY(1200);
+            mList.startAnimation(AnimationUtils.loadAnimation(this, R.anim.fade_in));
+
+            return true;
+        });
     }
 
     @Override
     public void onResume(){
         super.onResume();
-
-        statistics = appsManager.getAppsStatisticsByContext(settings.getContextNames(), packageManager);
 
         // Load Application Statistics View
         loadAppsStatistics();
@@ -115,6 +139,8 @@ public class StatisticsActivity extends AnimationCompatActivity {
     private void loadAppsStatistics(){
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
+        statistics = appsManager.getAppsStatisticsByContext(settings.getContextNames(), packageManager);
+
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
         // Set up the ViewPager with the sections adapter.
@@ -288,6 +314,7 @@ public class StatisticsActivity extends AnimationCompatActivity {
          * fragment.
          */
         private static final String ARG_SECTION_NUMBER = "section_number";
+        private static final String ARG_SECTION_STATISTICS = "section_statistics";
 
         public PlaceholderFragment() {
         }
@@ -299,20 +326,24 @@ public class StatisticsActivity extends AnimationCompatActivity {
         public static PlaceholderFragment newInstance(int sectionNumber) {
             PlaceholderFragment fragment = new PlaceholderFragment();
             Bundle args = new Bundle();
-
+            String contextName;
             switch (sectionNumber) {
                 case 1:
-                    args.putString(ARG_SECTION_NUMBER, "Work");
+                    contextName = "Work";
+                    args.putString(ARG_SECTION_NUMBER, contextName);
                     break;
 
                 case 2:
-                    args.putString(ARG_SECTION_NUMBER, "Leisure");
+                    contextName = "Leisure";
+                    args.putString(ARG_SECTION_NUMBER, contextName);
                     break;
 
                 default:
-                    args.putString(ARG_SECTION_NUMBER, "Commute");
+                    contextName = "Commute";
+                    args.putString(ARG_SECTION_NUMBER, contextName);
                     break;
             }
+
             fragment.setArguments(args);
             return fragment;
         }
@@ -322,10 +353,10 @@ public class StatisticsActivity extends AnimationCompatActivity {
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_statistics_activity, stats_applications, false);
 
-            Set<AppDetails> stats = statistics.get(getArguments().getString(ARG_SECTION_NUMBER));
-
             RelativeLayout no_stats = rootView.findViewById(R.id.no_stats_info);
             ListView list = rootView.findViewById(R.id.stats_apps_list);
+
+            TreeSet<AppDetails> stats = statistics.get(getArguments().getString(ARG_SECTION_NUMBER));
 
             if(stats.isEmpty()) {
                 no_stats.setVisibility(View.VISIBLE);

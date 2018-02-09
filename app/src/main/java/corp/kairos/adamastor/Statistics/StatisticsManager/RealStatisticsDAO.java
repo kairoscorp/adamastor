@@ -2,17 +2,15 @@ package corp.kairos.adamastor.Statistics.StatisticsManager;
 
 import android.app.usage.UsageStats;
 import android.app.usage.UsageStatsManager;
-import android.util.Log;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
 import corp.kairos.adamastor.AppDetails;
-import corp.kairos.adamastor.Collector.CollectorService;
 import corp.kairos.adamastor.Statistics.StatisticsAppDetailsComparator;
+import corp.kairos.adamastor.Collector.CollectorService;
 
 public class RealStatisticsDAO implements StatisticsDAO {
     private CollectorService collectorService = CollectorService.getInstance();
@@ -66,14 +64,14 @@ public class RealStatisticsDAO implements StatisticsDAO {
         return appStatsMap;
     }
 
-    public Set<AppDetails> getContextAppsStatistics(Map<String, AppDetails> allAppsDetails, String context) {
-        Set<AppDetails> result = new TreeSet<>(new StatisticsAppDetailsComparator());
+    public TreeSet<AppDetails> getContextAppsStatistics(Map<String, AppDetails> allAppsDetails, String context) {
+        TreeSet<AppDetails> result = new TreeSet<>(new StatisticsAppDetailsComparator());
         Map<String, Long> collectorResult = collectorService.getContextAppsStatistics(context);
         for(Map.Entry<String, Long> entry : collectorResult.entrySet()) {
             AppDetails app = allAppsDetails.get(entry.getKey());
             if(app != null) {
                 app.setUsageStatistics(entry.getValue());
-                result.add(app);
+                result.add(app.clone());
             }
         }
 

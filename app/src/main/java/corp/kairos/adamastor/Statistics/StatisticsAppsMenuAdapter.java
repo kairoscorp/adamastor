@@ -15,7 +15,6 @@ import java.util.concurrent.TimeUnit;
 
 import corp.kairos.adamastor.AppDetails;
 import corp.kairos.adamastor.R;
-import corp.kairos.adamastor.Util;
 
 import static corp.kairos.adamastor.Util.getObjectByIndex;
 
@@ -68,22 +67,31 @@ public class StatisticsAppsMenuAdapter extends ArrayAdapter {
 
         TextView appTimeUsage = (TextView)convertView.findViewById(R.id.app_statistcs_time);
 
-        String measure = "hours";
-        long time = TimeUnit.MILLISECONDS.toHours(app.getUsageStatistics());
+        long usageStatistics = app.getUsageStatistics();
+        String timeUsage = "";
+        long time = TimeUnit.MILLISECONDS.toHours(usageStatistics);
         if(time < 1) {
-            time = TimeUnit.MILLISECONDS.toMinutes(app.getUsageStatistics());
-            measure = "minutes";
+            time = TimeUnit.MILLISECONDS.toMinutes(usageStatistics);
             if(time < 1) {
-                time = TimeUnit.MILLISECONDS.toSeconds(app.getUsageStatistics());
-                measure = "seconds";
+                time = TimeUnit.MILLISECONDS.toSeconds(usageStatistics);
                 if(time < 1) {
-                    time = app.getUsageStatistics();
-                    measure = "milliseconds";
+                    time = usageStatistics;
+                    timeUsage = String.format("%dmilli",time);
+                } else {
+                    timeUsage = String.format("%dsec",time);
                 }
+            } else {
+                timeUsage = String.format("%dmin",time);
             }
+        } else {
+            timeUsage = String.format("%dh%02dm",
+                    TimeUnit.MILLISECONDS.toHours(usageStatistics),
+                    TimeUnit.MILLISECONDS.toMinutes(usageStatistics) -
+                            TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(usageStatistics))
+            );
         }
 
-        appTimeUsage.setText(time + " " + measure);
+        appTimeUsage.setText(timeUsage + " . ("+(int)percentage+"%)");
 
         return convertView;
     }

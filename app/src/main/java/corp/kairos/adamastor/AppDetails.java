@@ -9,12 +9,12 @@ import android.support.annotation.NonNull;
 
 import java.io.Serializable;
 
-public class AppDetails implements Comparable,Serializable,Parcelable{
+public class AppDetails implements Comparable, Parcelable, Serializable {
     private String label;
     private String packageName;
     private Drawable icon;
-    private Long usageStatistics;
     private boolean system;
+    private long usageStatistics;
 
     public AppDetails(String label, String packageName, Drawable icon, boolean system) {
         this.label = label;
@@ -69,11 +69,11 @@ public class AppDetails implements Comparable,Serializable,Parcelable{
         this.icon = icon;
     }
 
-    public Long getUsageStatistics() {
+    public long getUsageStatistics() {
         return usageStatistics;
     }
 
-    public void setUsageStatistics(Long usageStatistics) {
+    public void setUsageStatistics(long usageStatistics) {
         this.usageStatistics = usageStatistics;
     }
 
