@@ -110,7 +110,7 @@
                     android:layout_weight="1"
                     android:backgroundTint="@color/appLabelText"
                     android:maxLines="1"
-                    android:padding="12dp"
+                    android:padding="6dp"
                     android:text="@string/delete"
                     android:textColor="@color/mdtp_white"
                     android:textStyle="bold" />
@@ -127,7 +127,7 @@
                     android:layout_marginTop="8dp"
                     android:layout_weight="1"
                     android:backgroundTint="@color/appLabelText"
-                    android:padding="12dp"
+                    android:padding="6dp"
                     android:text="@string/app_info"
                     android:textColor="@color/mdtp_white"
                     android:textStyle="bold" />
@@ -144,7 +144,7 @@
                     android:layout_marginTop="8dp"
                     android:layout_weight="1"
                     android:backgroundTint="@color/appLabelText"
-                    android:padding="12dp"
+                    android:padding="6dp"
                     android:text="@string/set_context"
                     android:textColor="@color/mdtp_white"
                     android:textStyle="bold" />
