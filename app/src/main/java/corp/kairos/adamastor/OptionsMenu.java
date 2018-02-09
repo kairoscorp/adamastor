@@ -32,6 +32,7 @@ import android.widget.Toast;
 import corp.kairos.adamastor.AllApps.AllAppsActivity;
 import corp.kairos.adamastor.ContextList.ContextListActivity;
 import corp.kairos.adamastor.Home.HomeActivity;
+import corp.kairos.adamastor.Statistics.StatisticsManager.RealStatisticsDAO;
 
 
 /**
@@ -152,8 +153,9 @@ public class OptionsMenu extends Fragment {
         gd.setColor(Color.WHITE);
         gd.setCornerRadius(10);
         rl.setBackground(gd);
-        //lastUsed.setText();
-        //timeUsed.setText();
+        RealStatisticsDAO realStatisticsDAO = new RealStatisticsDAO();
+        lastUsed.setText("Last Used: "+realStatisticsDAO.lastTimeApp(appDetail));
+        timeUsed.setText("Time Used: "+Integer.toString(realStatisticsDAO.getAppTime(appDetail)) +" Seconds");
         getActivity().getWindow().setNavigationBarColor(getResources().getColor(R.color.black_overlay));
         getActivity().getWindow().setStatusBarColor(getResources().getColor(R.color.black_overlay));
         icon.setImageDrawable(appDetail.getIcon());
