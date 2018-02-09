@@ -4,17 +4,22 @@ package corp.kairos.adamastor.Home;
 import android.Manifest;
 import android.animation.Animator;
 import android.annotation.SuppressLint;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.NotificationCompat;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
@@ -69,9 +74,26 @@ public class HomeActivity extends AnimationCompatActivity {
     private boolean autoContextChange = false;
     private boolean permissionsGranted = false;
 
+    private final String NO_ACTION = "NO_ACTION";
+    private final String YES_ACTION = "YES_ACTION";
+
+    /*The ID for context change notifications should be the same every time
+    so that a more recent notification replaces an old undismissed notification
+    */
+    private final int CONTEXT_NOTIFICATION_ID = 12345;
+
+    private NotificationManager notificationManager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        NotificationReceiver nr = new NotificationReceiver();
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(YES_ACTION);
+        filter.addAction(NO_ACTION);
+        registerReceiver(nr, filter);
+
         this.userSettings = Settings.getInstance(this);
 
         if (!userSettings.isOnboardingDone()) {
@@ -246,13 +268,18 @@ public class HomeActivity extends AnimationCompatActivity {
         return result;
     }
 
-    private void switchTabByAutoContextChange(String context){
-        int  selectedTab = this.tabLayout.getSelectedTabPosition();
+    private void switchTab(String context, boolean fromNotification){
+        int selectedTab = this.tabLayout.getSelectedTabPosition();
         int currentContextTab = this.getTabIndexByContextName(context);
 
         if(selectedTab != currentContextTab){
-            this.autoContextChange = true;
             this.tabLayout.getTabAt(currentContextTab).select();
+
+            if(!fromNotification){
+                this.autoContextChange = true;
+                String previousContext = (String) this.tabLayout.getTabAt(selectedTab).getTag();
+                displayNotification(context, previousContext);
+            }
         }
     }
 
@@ -264,7 +291,46 @@ public class HomeActivity extends AnimationCompatActivity {
             bindCollectorService();
 
         UserContext current = Settings.getInstance(this).getCurrentUserContext();
-        this.switchTabByAutoContextChange(current.getContextName());
+        this.switchTab(current.getContextName(), false);
+    }
+
+    private void displayNotification(String newContext, String previousContext) {
+        int notificationIcon = 0;
+        switch (newContext){
+            case "Work":
+                notificationIcon = R.drawable.ic_work_black;
+                break;
+            case "Leisure":
+                notificationIcon = R.drawable.ic_leisure_black;
+                break;
+            case "Commute":
+                notificationIcon = R.drawable.ic_commute_black;
+                break;
+        }
+
+        //No Intent
+        Intent noIntent = new Intent();
+        noIntent.setAction(NO_ACTION);
+        noIntent.putExtra("previousContext", previousContext);
+        PendingIntent noPendingIntent = PendingIntent.getBroadcast(this, 1, noIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+
+        //Yes Intent
+        Intent yesIntent = new Intent();
+        yesIntent.setAction(YES_ACTION);
+        PendingIntent yesPendingIntent = PendingIntent.getBroadcast(this, 2, yesIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+
+        NotificationCompat.Builder notificationBuilder =
+                new NotificationCompat.Builder(this)
+                        .setSmallIcon(notificationIcon)
+                        .setContentTitle("Switched context")
+                        .setContentText("We adjusted the context, are we right?")
+                        .addAction(R.drawable.ic_check, "Totally!", yesPendingIntent)
+                        .addAction(R.drawable.round_shape, "No", noPendingIntent);
+
+        this.notificationManager =
+                (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+
+        this.notificationManager.notify(CONTEXT_NOTIFICATION_ID, notificationBuilder.build());
     }
 
     public void showAllAppsMenu(View v) {
@@ -326,6 +392,30 @@ public class HomeActivity extends AnimationCompatActivity {
                 permissionsGranted = false;
     }
 
+    public class NotificationReceiver extends BroadcastReceiver{
+
+        public NotificationReceiver() {
+        }
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Log.i(TAG,  "Intent arrived");
+
+            String action = intent.getAction();
+
+            if(action.equals(NO_ACTION)){
+                Log.i(TAG,  "NO_ACTION Intent arrived");
+
+                Bundle extras = intent.getExtras();
+                String previousContext = extras.getString("previousContext");
+                switchTab(previousContext, true);
+            }
+
+            // Dismiss the notification
+            notificationManager.cancel(CONTEXT_NOTIFICATION_ID);
+        }
+    }
+  
     private static void showOptionMenu(Context ctx, AppDetails appDetail, int viewId) {
         Bundle bundle = new Bundle();
         bundle.putSerializable("app", appDetail);
